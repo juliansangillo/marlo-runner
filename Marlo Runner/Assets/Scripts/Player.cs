@@ -7,8 +7,13 @@ public class Player : MonoBehaviour {
     public float movementSpeed = 4f;
     public float acceleration = 2.5f;
     public float jumpingSpeed = 6f;
+    public float jumpDuration = 0.75f;
 
     private float speed = 0f;
+    private float jumpingTimer = 0f;
+
+    private bool canJump = false;
+    private bool jumping = false;
 
     // Start is called before the first frame update
     void Start() {
@@ -29,14 +34,33 @@ public class Player : MonoBehaviour {
             GetComponent<Rigidbody>().velocity.z
         );
 
-        if(Input.GetMouseButtonDown(0) || Input.GetKey("space")) {
-            GetComponent<Rigidbody>().velocity = new Vector3(
-                GetComponent<Rigidbody>().velocity.x,
-                jumpingSpeed,
-                GetComponent<Rigidbody>().velocity.z
-            );
+        bool pressingJumpButton = Input.GetMouseButton(0) || Input.GetKey("space");
+        if(pressingJumpButton) {
+            if(canJump) {
+                jumping = true;
+            }
         }
 
+        if(jumping) {
+            jumpingTimer += Time.deltaTime;
+
+            if(pressingJumpButton && jumpingTimer < jumpDuration) {
+                GetComponent<Rigidbody>().velocity = new Vector3(
+                    GetComponent<Rigidbody>().velocity.x,
+                    jumpingSpeed,
+                    GetComponent<Rigidbody>().velocity.z
+                );
+            }
+        }
+
+    }
+
+    void OnTriggerStay(Collider trig) {
+        if(trig.tag == "JumpingArea") {
+            canJump = true;
+            jumping = false;
+            jumpingTimer = 0f;
+        }
     }
 
 }

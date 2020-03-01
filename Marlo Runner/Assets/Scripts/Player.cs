@@ -17,6 +17,7 @@ public class Player : MonoBehaviour {
     private float speed = 0f;
     private float jumpingTimer = 0f;
 
+    private bool paused = false;
     private bool canJump = false;
     private bool jumping = false;
     private bool canWallJump = false;
@@ -36,7 +37,7 @@ public class Player : MonoBehaviour {
         }
 
         GetComponent<Rigidbody>().velocity = new Vector3(
-            speed,
+            paused ? 0 : speed,
             GetComponent<Rigidbody>().velocity.y,
             GetComponent<Rigidbody>().velocity.z
         );
@@ -46,6 +47,10 @@ public class Player : MonoBehaviour {
             if(canJump) {
                 jumping = true;
             }
+        }
+
+        if(paused && pressingJumpButton) {
+            paused = false;
         }
 
         if(jumping) {
@@ -76,6 +81,10 @@ public class Player : MonoBehaviour {
             }
         }
 
+    }
+
+    public void Pause() {
+        paused = true;
     }
 
     void OnTriggerEnter(Collider trig) {

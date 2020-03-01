@@ -17,4 +17,13 @@ public class Coin : MonoBehaviour {
         model.transform.RotateAround(model.transform.position, Vector3.up, rotatingSpeed * Time.deltaTime);
     }
 
+    public void Vanish() {
+        StartCoroutine(VanishRoutine());
+    }
+
+    private IEnumerator VanishRoutine() {
+        yield return new WaitForSeconds(0.5f);
+        Destroy(this.gameObject);
+    }
+
 }

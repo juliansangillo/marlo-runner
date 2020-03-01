@@ -8,12 +8,16 @@ public class Player : MonoBehaviour {
     public float acceleration = 2.5f;
     public float jumpingSpeed = 6f;
     public float jumpDuration = 0.75f;
+    public float verticalWallJumpingSpeed = 5f;
+    public float horizontalWallJumpingSpeed = 3.5f;
 
     private float speed = 0f;
     private float jumpingTimer = 0f;
 
     private bool canJump = false;
     private bool jumping = false;
+    private bool canWallJump = false;
+    private bool wallJumpLeft = false;
 
     // Start is called before the first frame update
     void Start() {
@@ -53,14 +57,44 @@ public class Player : MonoBehaviour {
             }
         }
 
+        if(canWallJump) {
+            speed = 0;
+
+            if(pressingJumpButton) {
+                canWallJump = false;
+                
+                speed = wallJumpLeft ? -horizontalWallJumpingSpeed : horizontalWallJumpingSpeed;
+
+                GetComponent<Rigidbody>().velocity = new Vector3(
+                    GetComponent<Rigidbody>().velocity.x,
+                    verticalWallJumpingSpeed,
+                    GetComponent<Rigidbody>().velocity.z
+                );
+            }
+        }
+
     }
 
     void OnTriggerStay(Collider trig) {
+
         if(trig.tag == "JumpingArea") {
             canJump = true;
             jumping = false;
             jumpingTimer = 0f;
         }
+        else if(trig.tag == "WallJumpingArea") {
+            canWallJump = true;
+            wallJumpLeft = transform.position.x < trig.transform.position.x;
+        }
+
+    }
+
+    void OnTriggerExit(Collider trig) {
+
+        if(trig.tag == "WallJumpingArea") {
+            canWallJump = false;
+        }
+
     }
 
 }

@@ -5,9 +5,19 @@ using System;
 
 public class Player : MonoBehaviour {
 
+    [Header("Movement Fields")]
+    [Range(4f, 6f)]
     public float movementSpeed = 4f;
+    public float movementSpeedRight = 8f;
+    public float movementSpeedLeft = 2f;
+
+    [Header("Acceleration")]
     public float acceleration = 2.5f;
-    public float jumpingSpeed = 6f;
+    public float deacceleration = 5.0f;
+
+    [Header("Jumping Fields")]
+    public float normalJumpingSpeed = 6f;
+    public float longJumpingSpeed = 10f;
     public float jumpDuration = 0.75f;
     public float verticalWallJumpingSpeed = 5f;
     public float horizontalWallJumpingSpeed = 3.5f;
@@ -15,6 +25,7 @@ public class Player : MonoBehaviour {
     public Action onCollectCoin;
 
     private float speed = 0f;
+    private float jumpingSpeed = 0f;
     private float jumpingTimer = 0f;
 
     private bool paused = false;
@@ -24,18 +35,28 @@ public class Player : MonoBehaviour {
     private bool wallJumpLeft = false;
     private bool onSpeedAreaLeft = false;
     private bool onSpeedAreaRight = false;
+    private bool onLongJumpBlock = false;
 
     // Start is called before the first frame update
     void Start() {
-        
+        jumpingSpeed = normalJumpingSpeed;
     }
 
     // Update is called once per frame
     void Update() {
 
         speed += acceleration * Time.deltaTime;
-        if(speed > movementSpeed) {
-            speed = movementSpeed;
+
+        float targetMovementSpeed = movementSpeed;
+        if(onSpeedAreaLeft) {
+            targetMovementSpeed = movementSpeedLeft;
+        }
+        else if(onSpeedAreaRight) {
+            targetMovementSpeed = movementSpeedRight;
+        }
+
+        if(speed > targetMovementSpeed) {
+            speed -= deacceleration * Time.deltaTime;
         }
 
         GetComponent<Rigidbody>().velocity = new Vector3(
@@ -59,6 +80,10 @@ public class Player : MonoBehaviour {
             jumpingTimer += Time.deltaTime;
 
             if(pressingJumpButton && jumpingTimer < jumpDuration) {
+                if(onLongJumpBlock) {
+                    jumpingSpeed = longJumpingSpeed;
+                }
+
                 GetComponent<Rigidbody>().velocity = new Vector3(
                     GetComponent<Rigidbody>().velocity.x,
                     jumpingSpeed,
@@ -106,6 +131,10 @@ public class Player : MonoBehaviour {
             }
         }
 
+        if(trig.GetComponent<LongJumpBlock>() != null) {
+            onLongJumpBlock = true;
+        }
+
     }
 
     void OnTriggerStay(Collider trig) {
@@ -113,6 +142,7 @@ public class Player : MonoBehaviour {
         if(trig.tag == "JumpingArea") {
             canJump = true;
             jumping = false;
+            jumpingSpeed = normalJumpingSpeed;
             jumpingTimer = 0f;
         }
         else if(trig.tag == "WallJumpingArea") {
@@ -136,6 +166,10 @@ public class Player : MonoBehaviour {
             else if(speedArea.direction == Direction.Right) {
                 onSpeedAreaRight = false;
             }
+        }
+
+        if(trig.GetComponent<LongJumpBlock>() != null) {
+            onLongJumpBlock = false;
         }
 
     }

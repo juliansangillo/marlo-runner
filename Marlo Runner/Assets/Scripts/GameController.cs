@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class GameController : MonoBehaviour {
 
@@ -9,6 +10,7 @@ public class GameController : MonoBehaviour {
     public Text scoreText;
 
     private int score;
+    private float restartTimer = 3f;
 
     // Start is called before the first frame update
     void Start() {
@@ -23,6 +25,13 @@ public class GameController : MonoBehaviour {
     // Update is called once per frame
     void Update() {
         
+        if(player.Dead) {
+            restartTimer -= Time.deltaTime;
+            if(restartTimer <= 0f) {
+                SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+            }
+        }
+
     }
 
 }

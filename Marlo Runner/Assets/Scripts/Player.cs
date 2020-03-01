@@ -28,6 +28,7 @@ public class Player : MonoBehaviour {
     private float jumpingSpeed = 0f;
     private float jumpingTimer = 0f;
 
+    private bool dead = false;
     private bool paused = false;
     private bool canJump = false;
     private bool jumping = false;
@@ -37,6 +38,12 @@ public class Player : MonoBehaviour {
     private bool onSpeedAreaRight = false;
     private bool onLongJumpBlock = false;
 
+    public bool Dead {
+        get {
+            return dead;
+        }
+    }
+
     // Start is called before the first frame update
     void Start() {
         jumpingSpeed = normalJumpingSpeed;
@@ -44,6 +51,10 @@ public class Player : MonoBehaviour {
 
     // Update is called once per frame
     void Update() {
+
+        if(dead) {
+            return;
+        }
 
         speed += acceleration * Time.deltaTime;
 
@@ -135,6 +146,10 @@ public class Player : MonoBehaviour {
             onLongJumpBlock = true;
         }
 
+        if(trig.GetComponent<Enemy>() != null) {
+            Kill();
+        }
+
     }
 
     void OnTriggerStay(Collider trig) {
@@ -171,6 +186,15 @@ public class Player : MonoBehaviour {
         if(trig.GetComponent<LongJumpBlock>() != null) {
             onLongJumpBlock = false;
         }
+
+    }
+
+    void Kill() {
+
+        dead = true;
+        GetComponent<BoxCollider>().enabled = false;
+        GetComponent<Rigidbody>().velocity = Vector3.zero;
+        GetComponent<Rigidbody>().AddForce(new Vector3(0, 500f, -800f));
 
     }
 

@@ -22,6 +22,8 @@ public class Player : MonoBehaviour {
     private bool jumping = false;
     private bool canWallJump = false;
     private bool wallJumpLeft = false;
+    private bool onSpeedAreaLeft = false;
+    private bool onSpeedAreaRight = false;
 
     // Start is called before the first frame update
     void Start() {
@@ -94,6 +96,16 @@ public class Player : MonoBehaviour {
             onCollectCoin();
         }
 
+        SpeedArea speedArea = trig.GetComponent<SpeedArea>();
+        if(speedArea != null) {
+            if(speedArea.direction == Direction.Left) {
+                onSpeedAreaLeft = true;
+            }
+            else if(speedArea.direction == Direction.Right) {
+                onSpeedAreaRight = true;
+            }
+        }
+
     }
 
     void OnTriggerStay(Collider trig) {
@@ -114,6 +126,16 @@ public class Player : MonoBehaviour {
 
         if(trig.tag == "WallJumpingArea") {
             canWallJump = false;
+        }
+
+        SpeedArea speedArea = trig.GetComponent<SpeedArea>();
+        if(speedArea != null) {
+            if(speedArea.direction == Direction.Left) {
+                onSpeedAreaLeft = false;
+            }
+            else if(speedArea.direction == Direction.Right) {
+                onSpeedAreaRight = false;
+            }
         }
 
     }

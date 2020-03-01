@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 
 public class Player : MonoBehaviour {
 
@@ -10,6 +11,8 @@ public class Player : MonoBehaviour {
     public float jumpDuration = 0.75f;
     public float verticalWallJumpingSpeed = 5f;
     public float horizontalWallJumpingSpeed = 3.5f;
+
+    public Action onCollectCoin;
 
     private float speed = 0f;
     private float jumpingTimer = 0f;
@@ -71,6 +74,15 @@ public class Player : MonoBehaviour {
                     GetComponent<Rigidbody>().velocity.z
                 );
             }
+        }
+
+    }
+
+    void OnTriggerEnter(Collider trig) {
+        
+        if(trig.transform.GetComponent<Coin>() != null) {
+            Destroy(trig.gameObject);
+            onCollectCoin();
         }
 
     }

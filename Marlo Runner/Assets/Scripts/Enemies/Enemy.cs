@@ -4,14 +4,17 @@ using UnityEngine;
 
 public class Enemy : MonoBehaviour {
 
-    // Start is called before the first frame update
-    void Start() {
-        
+    protected bool dead = false;
+    public bool Dead {
+        get {
+            return dead;
+        }
     }
-
-    // Update is called once per frame
-    void Update() {
-        
+    
+    protected virtual void OnKill() {
+        dead = true;
+        GetComponent<BoxCollider>().enabled = false;
+        GameObject.Find("Player").GetComponent<Player>().Jump(true);
     }
 
 }

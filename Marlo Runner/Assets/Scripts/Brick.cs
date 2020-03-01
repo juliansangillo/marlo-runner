@@ -7,7 +7,7 @@ public class Brick : MonoBehaviour {
     public bool hasCoin;
     public GameObject coinPrefab;
 
-    void OnDestroy() {
+    void OnKill() {
         if(hasCoin) {
             GameObject coinObj = GameObject.Instantiate(coinPrefab);
             coinObj.transform.position = transform.position + new Vector3(0, 0.7f, 0);

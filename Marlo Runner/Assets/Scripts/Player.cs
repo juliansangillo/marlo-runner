@@ -79,7 +79,7 @@ public class Player : MonoBehaviour {
         bool pressingJumpButton = Input.GetMouseButton(0) || Input.GetKey("space");
         if(pressingJumpButton) {
             if(canJump) {
-                jumping = true;
+                Jump();
             }
         }
 
@@ -147,7 +147,10 @@ public class Player : MonoBehaviour {
         }
 
         if(trig.GetComponent<Enemy>() != null) {
-            Kill();
+            Enemy enemy = trig.GetComponent<Enemy>();
+            if(enemy.Dead == false) {
+                Kill();
+            }
         }
 
     }
@@ -196,6 +199,18 @@ public class Player : MonoBehaviour {
         GetComponent<Rigidbody>().velocity = Vector3.zero;
         GetComponent<Rigidbody>().AddForce(new Vector3(0, 500f, -800f));
 
+    }
+
+    public void Jump(bool forced = false) {
+        jumping = true;
+
+        if(forced) {
+            GetComponent<Rigidbody>().velocity = new Vector3(
+                GetComponent<Rigidbody>().velocity.x,
+                jumpingSpeed,
+                GetComponent<Rigidbody>().velocity.z
+            );
+        }
     }
 
 }

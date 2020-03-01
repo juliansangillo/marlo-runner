@@ -18,6 +18,7 @@ public class Destroyer : MonoBehaviour {
 
     private void OnTriggerEnter(Collider trig) {
         if(trig.transform.GetComponent<Player>() != null) {
+            target.SendMessage("OnKill");
             Destroy(target.gameObject);
         }
     }

@@ -10,6 +10,8 @@ public class GameController : MonoBehaviour {
     public Text scoreText;
     public Text endLevelText;
 
+    public float gravity = 9.81f;
+
     private int score;
     private float restartTimer = 3f;
     private float finishTimer = 5f;
@@ -29,6 +31,8 @@ public class GameController : MonoBehaviour {
 
     // Update is called once per frame
     void Update() {
+
+        Physics.gravity = new Vector3(0, -gravity, 0);
         
         if(player.Dead) {
             restartTimer -= Time.deltaTime;

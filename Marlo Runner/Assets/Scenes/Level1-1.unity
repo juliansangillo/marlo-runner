@@ -277,6 +277,7 @@ MonoBehaviour:
   player: {fileID: 562367883}
   scoreText: {fileID: 756604939}
   endLevelText: {fileID: 1005621319}
+  gravity: 25
 --- !u!4 &14996542
 Transform:
   m_ObjectHideFlags: 0
@@ -1690,14 +1691,14 @@ MonoBehaviour:
   movementSpeedLeft: 2
   acceleration: 4
   deacceleration: 5
-  normalJumpingSpeed: 6
-  longJumpingSpeed: 10
-  jumpDuration: 0.35
-  verticalWallJumpingSpeed: 5
+  normalJumpingSpeed: 10
+  longJumpingSpeed: 15
+  jumpDuration: 0.2
+  verticalWallJumpingSpeed: 10
   horizontalWallJumpingSpeed: 5
   invincibilityDuration: 5
---- !u!65 &562367884
-BoxCollider:
+--- !u!135 &562367884
+SphereCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -1707,7 +1708,7 @@ BoxCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 1, y: 1, z: 1}
+  m_Radius: 0.5
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!54 &562367887
 Rigidbody:

@@ -237,7 +237,7 @@ public class Player : MonoBehaviour {
     void Kill() {
 
         dead = true;
-        GetComponent<BoxCollider>().enabled = false;
+        GetComponent<Collider>().enabled = false;
         GetComponent<Rigidbody>().velocity = Vector3.zero;
         GetComponent<Rigidbody>().AddForce(new Vector3(0, 500f, -800f));
 
@@ -293,6 +293,18 @@ public class Player : MonoBehaviour {
         model.SetActive(true);
 
         hasInvincibility = false;
+
+    }
+
+    public void OnDestroyBrick() {
+
+        GetComponent<Rigidbody>().velocity = new Vector3(
+            GetComponent<Rigidbody>().velocity.x,
+            0,
+            GetComponent<Rigidbody>().velocity.z
+        );
+        canJump = false;
+        jumping = false;
 
     }
 

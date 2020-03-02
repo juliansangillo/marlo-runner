@@ -6,6 +6,7 @@ public class Shell : MonoBehaviour {
 
     public float rotatingSpeed = 180f;
     public float movementSpeed = 10f;
+    public float radiusTolerance = 0.4f;
 
     private bool movingRight = true;
     
@@ -28,10 +29,11 @@ public class Shell : MonoBehaviour {
     }
 
     void OnTriggerEnter(Collider other) {
+
         if(other.GetComponent<Enemy>() != null) {
             Destroy(other.gameObject);
         }
-        else {
+        else if(transform.position.y < other.transform.position.y + radiusTolerance) {
             if(transform.position.x < other.transform.position.x && movingRight) {
                 movingRight = false;
             }
@@ -39,6 +41,7 @@ public class Shell : MonoBehaviour {
                 movingRight = true;
             }
         }
+
     }
 
 }

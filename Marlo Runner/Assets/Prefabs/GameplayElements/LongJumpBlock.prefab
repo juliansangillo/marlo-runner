@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 5115396203988196262}
   - component: {fileID: 8621192089856186520}
   - component: {fileID: 6456816638561425634}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: LongJumpBlock
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -70,6 +70,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: Arrow
       objectReference: {fileID: 0}
+    - target: {fileID: 1046907969247097918, guid: ab7f204c6557af14881272e0a25bece0,
+        type: 3}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
     - target: {fileID: 1046907969247097917, guid: ab7f204c6557af14881272e0a25bece0,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -124,6 +129,21 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1046907969111450913, guid: ab7f204c6557af14881272e0a25bece0,
+        type: 3}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 1046907967899081806, guid: ab7f204c6557af14881272e0a25bece0,
+        type: 3}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 1046907969002269139, guid: ab7f204c6557af14881272e0a25bece0,
+        type: 3}
+      propertyPath: m_Layer
+      value: 9
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: ab7f204c6557af14881272e0a25bece0, type: 3}

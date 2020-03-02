@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 9177229075109844173}
   - component: {fileID: 9177229075109844170}
   - component: {fileID: 9177229075109844171}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Cube
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -87,7 +87,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 9177229075635937541}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Model
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -121,7 +121,7 @@ GameObject:
   - component: {fileID: 9177229076797774561}
   - component: {fileID: 9177229076797774560}
   - component: {fileID: 9177229076797774591}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: SimpleEnemy
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -181,7 +181,7 @@ GameObject:
   - component: {fileID: 9177229077136536631}
   - component: {fileID: 9177229077136536629}
   - component: {fileID: 9177229077136536630}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: DestructionArea
   m_TagString: Untagged
   m_Icon: {fileID: 0}

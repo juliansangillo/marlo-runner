@@ -23,6 +23,7 @@ public class Player : MonoBehaviour {
     [Header("Jumping Fields")]
     public float normalJumpingSpeed = 6f;
     public float longJumpingSpeed = 10f;
+    public float destroyEnemyJumpingSpeed = 9f;
     public float jumpDuration = 0.75f;
     public float verticalWallJumpingSpeed = 5f;
     public float horizontalWallJumpingSpeed = 3.5f;
@@ -243,14 +244,14 @@ public class Player : MonoBehaviour {
 
     }
 
-    public void Jump(bool forced = false) {
+    public void Jump(bool hitEnemy = false) {
         
         jumping = true;
 
-        if(forced) {
+        if(hitEnemy) {
             GetComponent<Rigidbody>().velocity = new Vector3(
                 GetComponent<Rigidbody>().velocity.x,
-                jumpingSpeed,
+                destroyEnemyJumpingSpeed,
                 GetComponent<Rigidbody>().velocity.z
             );
         }

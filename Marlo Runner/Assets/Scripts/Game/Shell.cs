@@ -33,6 +33,10 @@ public class Shell : MonoBehaviour {
         if(other.GetComponent<Enemy>() != null) {
             Destroy(other.gameObject);
         }
+        else if(other.GetComponent<Destroyer>() != null ||
+                other.tag == "JumpingArea") {
+            return;
+        }
         else if(transform.position.y < other.transform.position.y + radiusTolerance) {
             if(transform.position.x < other.transform.position.x && movingRight) {
                 movingRight = false;
@@ -42,6 +46,23 @@ public class Shell : MonoBehaviour {
             }
         }
 
+    }
+
+    void OnCollisionEnter(Collision other) {
+
+        if(other.gameObject.GetComponent<Player>() != null) {
+            return;
+        }
+
+        if(transform.position.y < other.transform.position.y + radiusTolerance) {
+            if(transform.position.x < other.transform.position.x && movingRight) {
+                movingRight = false;
+            }
+            else if(transform.position.x > other.transform.position.x && !movingRight) {
+                movingRight = true;
+            }
+        }
+        
     }
 
 }

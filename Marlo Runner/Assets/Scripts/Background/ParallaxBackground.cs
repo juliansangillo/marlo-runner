@@ -7,6 +7,7 @@ public class ParallaxBackground : MonoBehaviour {
     public GameObject referenceObj;
     public float elementSize;
     public float elementOffset;
+    public float speed;
 
     private List<GameObject> backgroundElements;
     
@@ -31,6 +32,10 @@ public class ParallaxBackground : MonoBehaviour {
                     element.transform.position.z
                 );
             }
+        }
+
+        foreach(GameObject element in backgroundElements) {
+            element.transform.position += Vector3.left * speed * Time.deltaTime;
         }
     }
 

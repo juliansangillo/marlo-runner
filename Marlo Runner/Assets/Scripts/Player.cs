@@ -5,6 +5,11 @@ using System;
 
 public class Player : MonoBehaviour {
 
+    [Header("Visuals")]
+    public GameObject model;
+    public GameObject normalModel;
+    public GameObject powerUpModel;
+
     [Header("Movement Fields")]
     [Range(4f, 6f)]
     public float movementSpeed = 4f;
@@ -22,6 +27,9 @@ public class Player : MonoBehaviour {
     public float verticalWallJumpingSpeed = 5f;
     public float horizontalWallJumpingSpeed = 3.5f;
 
+    [Header("Power ups")]
+    public float invincibilityDuration = 5f;
+
     public Action onCollectCoin;
 
     private float speed = 0f;
@@ -37,6 +45,10 @@ public class Player : MonoBehaviour {
     private bool onSpeedAreaLeft = false;
     private bool onSpeedAreaRight = false;
     private bool onLongJumpBlock = false;
+    private bool finished = false;
+
+    private bool hasPowerUp = false;
+    private bool hasInvincibility = false;
 
     public bool Dead {
         get {
@@ -44,9 +56,20 @@ public class Player : MonoBehaviour {
         }
     }
 
+    public bool Finished {
+        get {
+            return finished;
+        }
+    }
+
     // Start is called before the first frame update
     void Start() {
+        
         jumpingSpeed = normalJumpingSpeed;
+
+        normalModel.SetActive(true);
+        powerUpModel.SetActive(false);
+
     }
 
     // Update is called once per frame
@@ -148,8 +171,16 @@ public class Player : MonoBehaviour {
 
         if(trig.GetComponent<Enemy>() != null) {
             Enemy enemy = trig.GetComponent<Enemy>();
-            if(enemy.Dead == false) {
-                Kill();
+            if(!hasInvincibility && !enemy.Dead) {
+                if(!hasPowerUp) {
+                    Kill();
+                }
+                else {
+                    hasPowerUp = false;
+                    normalModel.SetActive(true);
+                    powerUpModel.SetActive(false);
+                    ApplyInvincibility();
+                }
             }
         }
 
@@ -157,6 +188,11 @@ public class Player : MonoBehaviour {
             PowerUp powerUp = trig.GetComponent<PowerUp>();
             powerUp.Collect();
             ApplyPowerUp();
+        }
+
+        if(trig.GetComponent<FinishLine>() != null) {
+            hasInvincibility = true;
+            finished = true;
         }
 
     }
@@ -208,6 +244,7 @@ public class Player : MonoBehaviour {
     }
 
     public void Jump(bool forced = false) {
+        
         jumping = true;
 
         if(forced) {
@@ -217,11 +254,45 @@ public class Player : MonoBehaviour {
                 GetComponent<Rigidbody>().velocity.z
             );
         }
+
     }
 
     void ApplyPowerUp() {
 
-        
+        hasPowerUp = true;
+        normalModel.SetActive(false);
+        powerUpModel.SetActive(true);
+
+    }
+
+    void ApplyInvincibility() {
+
+        hasInvincibility = true;
+        StartCoroutine(InvincibilityRoutine());
+
+    }
+
+    private IEnumerator InvincibilityRoutine() {
+
+        float initialWaitingTime = invincibilityDuration * 0.75f;
+        int initialBlinks = 20;
+
+        for(int i = 0; i < initialBlinks; i++) {
+            model.SetActive(!model.activeSelf);
+            yield return new WaitForSeconds(initialWaitingTime / initialBlinks);
+        }
+
+        float finalWaitingTime = invincibilityDuration * 0.25f;
+        int finalBlinks = 30;
+
+        for(int i = 0; i < finalBlinks; i++) {
+            model.SetActive(!model.activeSelf);
+            yield return new WaitForSeconds(finalWaitingTime / finalBlinks);
+        }
+
+        model.SetActive(true);
+
+        hasInvincibility = false;
 
     }
 

@@ -4,21 +4,15 @@ using UnityEngine;
 
 public class CameraFollow : MonoBehaviour {
 
-    public GameObject target;
+    public Player player;
     public Vector3 offset;
     public float speed = 5f;
-
-    // Start is called before the first frame update
-    void Start() {
-        
-    }
 
     // Update is called once per frame
     void FixedUpdate() {
 
-        Player player = target.GetComponent<Player>();
-        if(!player.Dead) {
-            Vector3 targetPosition = new Vector3(target.transform.position.x + offset.x, target.transform.position.y + offset.y, transform.position.z + offset.z);
+        if(!player.Dead && !player.Finished) {
+            Vector3 targetPosition = new Vector3(player.transform.position.x + offset.x, player.transform.position.y + offset.y, transform.position.z + offset.z);
             transform.position = Vector3.Lerp(transform.position, targetPosition, speed * Time.deltaTime);
         }
         

@@ -8,9 +8,12 @@ public class GameController : MonoBehaviour {
 
     public Player player;
     public Text scoreText;
+    public Text endLevelText;
 
     private int score;
     private float restartTimer = 3f;
+    private float finishTimer = 5f;
+    private bool finished = false;
 
     // Start is called before the first frame update
     void Start() {
@@ -19,6 +22,8 @@ public class GameController : MonoBehaviour {
             score++;
             scoreText.text = "Score: " + score;
         };
+
+        endLevelText.enabled = false;
 
     }
 
@@ -31,6 +36,26 @@ public class GameController : MonoBehaviour {
                 SceneManager.LoadScene(SceneManager.GetActiveScene().name);
             }
         }
+
+        if(player.Finished) {
+            if(!finished) {
+                finished = true;
+                OnFinish();
+            }
+
+            finishTimer -= Time.deltaTime;
+            if(finishTimer <= 0f) {
+                SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+            }
+        }
+
+    }
+
+    void OnFinish() {
+
+        endLevelText.enabled = true;
+        endLevelText.text = "You beat " + SceneManager.GetActiveScene().name + "!";
+        endLevelText.text += "\nYour score: " + score;
 
     }
 

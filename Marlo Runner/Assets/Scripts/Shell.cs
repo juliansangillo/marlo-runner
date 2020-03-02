@@ -31,7 +31,7 @@ public class Shell : MonoBehaviour {
         if(other.GetComponent<Enemy>() != null) {
             Destroy(other.gameObject);
         }
-        else if(other.GetComponent<Brick>()) {
+        else {
             if(transform.position.x < other.transform.position.x && movingRight) {
                 movingRight = false;
             }

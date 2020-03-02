@@ -153,6 +153,12 @@ public class Player : MonoBehaviour {
             }
         }
 
+        if(trig.GetComponent<PowerUp>() != null) {
+            PowerUp powerUp = trig.GetComponent<PowerUp>();
+            powerUp.Collect();
+            ApplyPowerUp();
+        }
+
     }
 
     void OnTriggerStay(Collider trig) {
@@ -211,6 +217,12 @@ public class Player : MonoBehaviour {
                 GetComponent<Rigidbody>().velocity.z
             );
         }
+    }
+
+    void ApplyPowerUp() {
+
+        
+
     }
 
 }

@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-using UnityEngine.SceneManagement;
 
 public class GameController : MonoBehaviour {
 
@@ -37,7 +36,7 @@ public class GameController : MonoBehaviour {
         if(player.Dead) {
             restartTimer -= Time.deltaTime;
             if(restartTimer <= 0f) {
-                SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+                LevelManager.Instance.ReloadLevel();
             }
         }
 
@@ -49,7 +48,7 @@ public class GameController : MonoBehaviour {
 
             finishTimer -= Time.deltaTime;
             if(finishTimer <= 0f) {
-                SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+                LevelManager.Instance.LoadNextLevel();
             }
         }
 
@@ -58,7 +57,7 @@ public class GameController : MonoBehaviour {
     void OnFinish() {
 
         endLevelText.enabled = true;
-        endLevelText.text = "You beat " + SceneManager.GetActiveScene().name + "!";
+        endLevelText.text = "You beat " + LevelManager.Instance.LevelName + "!";
         endLevelText.text += "\nYour score: " + score;
 
     }

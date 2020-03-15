@@ -1,22 +1,15 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
-public class Shell : MonoBehaviour {
+public class Shell : Enemy {
 
-    public float rotatingSpeed = 180f;
-    public float movementSpeed = 10f;
-    public float radiusTolerance = 0.4f;
+    [SerializeField] private float rotatingSpeed = 180f;
+    [SerializeField] private float movementSpeed = 10f;
+    [SerializeField] private float radiusTolerance = 0.4f;
 
     private bool movingRight = true;
-    
-    // Start is called before the first frame update
-    void Start() {
-        
-    }
+    private int count = 5;
 
-    // Update is called once per frame
-    void Update() {
+    private void Update() {
         
         transform.RotateAround(transform.position, Vector3.up, rotatingSpeed * Time.deltaTime);
 
@@ -26,35 +19,24 @@ public class Shell : MonoBehaviour {
             transform.position.z
         );
 
+        if(count <= 0)
+            GetComponent<BoxCollider>().enabled = true;
+        else
+            count--;
+
     }
 
-    void OnTriggerEnter(Collider other) {
+    private void OnCollisionEnter(Collision other) {
 
-        if(other.GetComponent<Enemy>() != null) {
+        if(other.gameObject.GetComponent<Enemy>() != null) {
             Destroy(other.gameObject);
         }
-        else if(other.GetComponent<Destroyer>() != null ||
-                other.tag == "JumpingArea") {
+        else if(other.gameObject.GetComponent<Player>() != null ||
+                other.gameObject.GetComponent<Destroyer>() != null ||
+                other.gameObject.tag == "JumpingArea") {
             return;
         }
         else if(transform.position.y < other.transform.position.y + radiusTolerance) {
-            if(transform.position.x < other.transform.position.x && movingRight) {
-                movingRight = false;
-            }
-            else if(transform.position.x > other.transform.position.x && !movingRight) {
-                movingRight = true;
-            }
-        }
-
-    }
-
-    void OnCollisionEnter(Collision other) {
-
-        if(other.gameObject.GetComponent<Player>() != null) {
-            return;
-        }
-
-        if(transform.position.y < other.transform.position.y + radiusTolerance) {
             if(transform.position.x < other.transform.position.x && movingRight) {
                 movingRight = false;
             }

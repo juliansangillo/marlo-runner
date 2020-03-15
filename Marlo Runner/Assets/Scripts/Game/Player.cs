@@ -1,37 +1,35 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System;
+using System.Collections;
 using UnityEngine;
-using System;
 
 public class Player : MonoBehaviour {
 
     [Header("Visuals")]
-    public GameObject model;
-    public GameObject normalModel;
-    public GameObject powerUpModel;
+    [SerializeField] private GameObject model = null;
+    [SerializeField] private GameObject normalModel = null;
+    [SerializeField] private GameObject powerUpModel = null;
 
     [Header("Movement Fields")]
-    [Range(4f, 6f)]
-    public float movementSpeed = 4f;
-    public float movementSpeedRight = 8f;
-    public float movementSpeedLeft = 2f;
+    [SerializeField] [Range(1f, 15f)] private float movementSpeed = 0;
+    [SerializeField] [Range(1f, 15f)] private float movementSpeedRight = 0;
+    [SerializeField] [Range(1f, 15f)] private float movementSpeedLeft = 0;
 
     [Header("Acceleration")]
-    public float acceleration = 2.5f;
-    public float deacceleration = 5.0f;
+    [SerializeField] private float acceleration = 0;
+    [SerializeField] private float deacceleration = 0;
 
     [Header("Jumping Fields")]
-    public float normalJumpingSpeed = 6f;
-    public float longJumpingSpeed = 10f;
-    public float destroyEnemyJumpingSpeed = 9f;
-    public float jumpDuration = 0.75f;
-    public float verticalWallJumpingSpeed = 5f;
-    public float horizontalWallJumpingSpeed = 3.5f;
+    [SerializeField] private float normalJumpingSpeed = 0;
+    [SerializeField] private float longJumpingSpeed = 0;
+    [SerializeField] private float destroyEnemyJumpingSpeed = 0;
+    [SerializeField] private float jumpDuration = 0;
+    [SerializeField] private float verticalWallJumpingSpeed = 0;
+    [SerializeField] private float horizontalWallJumpingSpeed = 0;
+    [SerializeField] private float horizontalBounceAfterHit = 0;
+    [SerializeField] private float verticalBounceAfterHit = 0;
 
     [Header("Power ups")]
-    public float invincibilityDuration = 5f;
-
-    public Action onCollectCoin;
+    [SerializeField] private float invincibilityDuration = 0;
 
     private float speed = 0f;
     private float jumpingSpeed = 0f;
@@ -51,6 +49,8 @@ public class Player : MonoBehaviour {
     private bool hasPowerUp = false;
     private bool hasInvincibility = false;
 
+    private Action onCollectCoin;
+
     public bool Dead {
         get {
             return dead;
@@ -63,8 +63,51 @@ public class Player : MonoBehaviour {
         }
     }
 
-    // Start is called before the first frame update
-    void Start() {
+    public Action OnCollectCoin {
+        get {
+            return onCollectCoin;
+        }
+        set {
+            onCollectCoin = value;
+        }
+    }
+
+    public void Pause() {
+
+        paused = true;
+
+    }
+
+    public void Jump(bool hitEnemy = false) {
+        
+        if(!finished)
+            jumping = true;
+
+        if(hitEnemy) {
+            Rigidbody body = GetComponent<Rigidbody>();
+
+            body.velocity = new Vector3(
+                body.velocity.x,
+                destroyEnemyJumpingSpeed,
+                body.velocity.z
+            );
+        }
+
+    }
+
+    public void OnDestroyBrick() {
+
+        GetComponent<Rigidbody>().velocity = new Vector3(
+            GetComponent<Rigidbody>().velocity.x,
+            0,
+            GetComponent<Rigidbody>().velocity.z
+        );
+        canJump = false;
+        jumping = false;
+
+    }
+
+    private void Start() {
         
         jumpingSpeed = normalJumpingSpeed;
 
@@ -73,16 +116,38 @@ public class Player : MonoBehaviour {
 
     }
 
-    // Update is called once per frame
-    void Update() {
+    private void Update() {
 
         if(dead) {
             return;
         }
 
-        speed += acceleration * Time.deltaTime;
+        move();
 
-        float targetMovementSpeed = movementSpeed;
+        bool pressingJumpButton = Input.GetMouseButton(0) || Input.GetKey("space");
+        if(pressingJumpButton) {
+            if(canJump)
+                Jump();
+        }
+
+        if(jumping)
+            OnJumpIf(pressingJumpButton);
+
+        if(canWallJump) {
+            speed = 0;
+
+            if(pressingJumpButton)
+                wallJump();
+        }
+
+    }
+
+    private void move() {
+
+        float targetMovementSpeed;
+        Rigidbody body = GetComponent<Rigidbody>();
+
+        targetMovementSpeed = movementSpeed;
         if(onSpeedAreaLeft) {
             targetMovementSpeed = movementSpeedLeft;
         }
@@ -93,149 +158,196 @@ public class Player : MonoBehaviour {
         if(speed > targetMovementSpeed) {
             speed -= deacceleration * Time.deltaTime;
         }
-
-        GetComponent<Rigidbody>().velocity = new Vector3(
-            paused ? 0 : speed,
-            GetComponent<Rigidbody>().velocity.y,
-            GetComponent<Rigidbody>().velocity.z
-        );
-
-        bool pressingJumpButton = Input.GetMouseButton(0) || Input.GetKey("space");
-        if(pressingJumpButton) {
-            if(canJump) {
-                Jump();
-            }
+        else {
+            speed += acceleration * Time.deltaTime;
         }
 
-        if(paused && pressingJumpButton) {
+        body.velocity = new Vector3(
+            paused ? 0 : speed,
+            body.velocity.y,
+            body.velocity.z
+        );
+
+    }
+
+    private void OnJumpIf(bool pressingJumpButton) {
+
+        Rigidbody body = GetComponent<Rigidbody>();
+
+        if(paused) {
             paused = false;
         }
 
-        if(jumping) {
-            jumpingTimer += Time.deltaTime;
+        jumpingTimer += Time.deltaTime;
 
-            if(pressingJumpButton && jumpingTimer < jumpDuration) {
-                if(onLongJumpBlock) {
-                    jumpingSpeed = longJumpingSpeed;
-                }
-
-                GetComponent<Rigidbody>().velocity = new Vector3(
-                    GetComponent<Rigidbody>().velocity.x,
-                    jumpingSpeed,
-                    GetComponent<Rigidbody>().velocity.z
-                );
+        if(pressingJumpButton && jumpingTimer < jumpDuration) {
+            if(onLongJumpBlock) {
+                jumpingSpeed = longJumpingSpeed;
             }
-        }
 
-        if(canWallJump) {
-            speed = 0;
-
-            if(pressingJumpButton) {
-                canWallJump = false;
-                
-                speed = wallJumpLeft ? -horizontalWallJumpingSpeed : horizontalWallJumpingSpeed;
-
-                GetComponent<Rigidbody>().velocity = new Vector3(
-                    GetComponent<Rigidbody>().velocity.x,
-                    verticalWallJumpingSpeed,
-                    GetComponent<Rigidbody>().velocity.z
-                );
-            }
+            body.velocity = new Vector3(
+                body.velocity.x,
+                jumpingSpeed,
+                body.velocity.z
+            );
         }
 
     }
 
-    public void Pause() {
-        paused = true;
-    }
+    private void wallJump() {
 
-    void OnTriggerEnter(Collider trig) {
+        Rigidbody body = GetComponent<Rigidbody>();
+
+        canWallJump = false;
         
-        if(trig.transform.GetComponent<Coin>() != null) {
-            Destroy(trig.gameObject);
+        speed = wallJumpLeft ? -horizontalWallJumpingSpeed : horizontalWallJumpingSpeed;
+
+        body.velocity = new Vector3(
+            body.velocity.x,
+            verticalWallJumpingSpeed,
+            body.velocity.z
+        );
+
+    }
+
+    private void OnCollisionEnter(Collision other) {
+
+        checkForEnemy(other);
+        
+    }
+
+    private void OnTriggerEnter(Collider other) {
+        
+        checkForCoin(other);
+        checkForSpeedArea(other);
+        checkForPowerUp(other);
+        checkForFinishLine(other);
+
+    }
+
+    private void OnTriggerStay(Collider other) {
+
+        if(other.tag == "JumpingArea") {
+            canJump = true;
+            jumping = false;
+            jumpingSpeed = normalJumpingSpeed;
+            jumpingTimer = 0f;
+        }
+        else if(other.tag == "WallJumpingArea") {
+            canWallJump = true;
+            wallJumpLeft = transform.position.x < other.transform.position.x;
+        }
+
+    }
+
+    private void OnTriggerExit(Collider other) {
+
+        if(other.tag == "WallJumpingArea") {
+            canWallJump = false;
+        }
+
+        checkForExitSpeedArea(other);
+
+    }
+
+    private void checkForCoin(Collider other) {
+
+        if(other.transform.GetComponent<Coin>() != null) {
+            Destroy(other.gameObject);
             onCollectCoin();
         }
 
-        SpeedArea speedArea = trig.GetComponent<SpeedArea>();
+    }
+
+    private void checkForSpeedArea(Collider other) {
+
+        SpeedArea speedArea = other.GetComponent<SpeedArea>();
         if(speedArea != null) {
-            if(speedArea.direction == Direction.Left) {
+            if(speedArea.GetDirection == Direction.Left) {
                 onSpeedAreaLeft = true;
             }
-            else if(speedArea.direction == Direction.Right) {
+            else if(speedArea.GetDirection == Direction.Right) {
                 onSpeedAreaRight = true;
             }
         }
 
-        if(trig.GetComponent<LongJumpBlock>() != null) {
+        if(other.tag == "LongJumpBlock") {
             onLongJumpBlock = true;
         }
 
-        if(trig.GetComponent<Enemy>() != null) {
-            Enemy enemy = trig.GetComponent<Enemy>();
-            if(!hasInvincibility && !enemy.Dead) {
-                if(!hasPowerUp) {
-                    Kill();
-                }
-                else {
-                    hasPowerUp = false;
-                    normalModel.SetActive(true);
-                    powerUpModel.SetActive(false);
-                    ApplyInvincibility();
-                }
-            }
-        }
+    }
 
-        if(trig.GetComponent<PowerUp>() != null) {
-            PowerUp powerUp = trig.GetComponent<PowerUp>();
+    private void checkForEnemy(Collision other) {
+
+        Enemy enemy = other.gameObject.GetComponent<Enemy>();
+        if(enemy != null)
+            if(!hasInvincibility && !enemy.Dead)
+                if(!hasPowerUp)
+                    Kill();
+                else
+                    takeAHit();
+            else if(hasInvincibility)
+                speed = 0;
+
+    }
+
+    private void takeAHit() {
+
+        hasPowerUp = false;
+        normalModel.SetActive(true);
+        powerUpModel.SetActive(false);
+
+        speed = -horizontalBounceAfterHit;
+
+        Rigidbody body = GetComponent<Rigidbody>();
+        body.velocity = new Vector3(
+            body.velocity.x,
+            verticalBounceAfterHit,
+            body.velocity.z
+        );
+
+        ApplyInvincibility();
+
+    }
+
+    private void checkForPowerUp(Collider other) {
+
+        PowerUp powerUp = other.GetComponent<PowerUp>();
+        if(powerUp != null) {
             powerUp.Collect();
             ApplyPowerUp();
         }
 
-        if(trig.GetComponent<FinishLine>() != null) {
+    }
+
+    private void checkForFinishLine(Collider other) {
+
+        if(other.tag == "FinishLine") {
             hasInvincibility = true;
             finished = true;
         }
 
     }
 
-    void OnTriggerStay(Collider trig) {
+    private void checkForExitSpeedArea(Collider other) {
 
-        if(trig.tag == "JumpingArea") {
-            canJump = true;
-            jumping = false;
-            jumpingSpeed = normalJumpingSpeed;
-            jumpingTimer = 0f;
-        }
-        else if(trig.tag == "WallJumpingArea") {
-            canWallJump = true;
-            wallJumpLeft = transform.position.x < trig.transform.position.x;
-        }
-
-    }
-
-    void OnTriggerExit(Collider trig) {
-
-        if(trig.tag == "WallJumpingArea") {
-            canWallJump = false;
-        }
-
-        SpeedArea speedArea = trig.GetComponent<SpeedArea>();
+        SpeedArea speedArea = other.GetComponent<SpeedArea>();
         if(speedArea != null) {
-            if(speedArea.direction == Direction.Left) {
+            if(speedArea.GetDirection == Direction.Left) {
                 onSpeedAreaLeft = false;
             }
-            else if(speedArea.direction == Direction.Right) {
+            else if(speedArea.GetDirection == Direction.Right) {
                 onSpeedAreaRight = false;
             }
         }
 
-        if(trig.GetComponent<LongJumpBlock>() != null) {
+        if(other.tag == "LongJumpBlock") {
             onLongJumpBlock = false;
         }
 
     }
 
-    void Kill() {
+    private void Kill() {
 
         dead = true;
         GetComponent<Collider>().enabled = false;
@@ -244,21 +356,7 @@ public class Player : MonoBehaviour {
 
     }
 
-    public void Jump(bool hitEnemy = false) {
-        
-        jumping = true;
-
-        if(hitEnemy) {
-            GetComponent<Rigidbody>().velocity = new Vector3(
-                GetComponent<Rigidbody>().velocity.x,
-                destroyEnemyJumpingSpeed,
-                GetComponent<Rigidbody>().velocity.z
-            );
-        }
-
-    }
-
-    void ApplyPowerUp() {
+    private void ApplyPowerUp() {
 
         hasPowerUp = true;
         normalModel.SetActive(false);
@@ -266,7 +364,7 @@ public class Player : MonoBehaviour {
 
     }
 
-    void ApplyInvincibility() {
+    private void ApplyInvincibility() {
 
         hasInvincibility = true;
         StartCoroutine(InvincibilityRoutine());
@@ -294,18 +392,6 @@ public class Player : MonoBehaviour {
         model.SetActive(true);
 
         hasInvincibility = false;
-
-    }
-
-    public void OnDestroyBrick() {
-
-        GetComponent<Rigidbody>().velocity = new Vector3(
-            GetComponent<Rigidbody>().velocity.x,
-            0,
-            GetComponent<Rigidbody>().velocity.z
-        );
-        canJump = false;
-        jumping = false;
 
     }
 

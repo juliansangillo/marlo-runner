@@ -1,17 +1,33 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class MenuController : MonoBehaviour {
 
-    public GameObject helpPanel;
+    [SerializeField] private GameObject helpPanel = null;
+
+    private LevelManager manager;
 
     public void OnPressPlay() {
-        LevelManager.Instance.LoadLevel(1, 1);
+
+        manager.LoadNextLevel();
+
     }
 
     public void OnPressHelp() {
+
         helpPanel.SetActive(true);
+
+    }
+
+    public void OnPressQuit() {
+
+        Application.Quit();
+
+    }
+
+    private void Awake() {
+
+        manager = LevelManager.Instance;
+        
     }
 
 }

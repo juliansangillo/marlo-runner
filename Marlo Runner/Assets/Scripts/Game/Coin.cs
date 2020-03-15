@@ -1,29 +1,29 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class Coin : MonoBehaviour {
 
-    public GameObject model;
-    public float rotatingSpeed = 30f;
-
-    // Start is called before the first frame update
-    void Start() {
-        
-    }
-
-    // Update is called once per frame
-    void Update() {
-        model.transform.RotateAround(model.transform.position, Vector3.up, rotatingSpeed * Time.deltaTime);
-    }
+    [SerializeField] private GameObject model = null;
+    [SerializeField] private float rotatingSpeed = 0;
 
     public void Vanish() {
+
         StartCoroutine(VanishRoutine());
+
+    }
+    
+    private void Update() {
+
+        model.transform.RotateAround(model.transform.position, Vector3.up, rotatingSpeed * Time.deltaTime);
+
     }
 
     private IEnumerator VanishRoutine() {
+
         yield return new WaitForSeconds(0.5f);
+        
         Destroy(this.gameObject);
+
     }
 
 }

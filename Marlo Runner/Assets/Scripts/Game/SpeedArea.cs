@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public enum Direction {
     Left,
@@ -9,21 +7,21 @@ public enum Direction {
 
 public class SpeedArea : MonoBehaviour {
 
-    public Direction direction;
+    [SerializeField] private Direction direction = Direction.Right;
 
-    // Start is called before the first frame update
-    void Start() {
-        if(direction == Direction.Left) {
-            for(int i = 0; i < transform.childCount; i++) {
-                Transform child = transform.GetChild(i);
-                child.RotateAround(child.position, Vector3.up, 180);
-            }
+    public Direction GetDirection {
+        get {
+            return direction;
         }
     }
 
-    // Update is called once per frame
-    void Update() {
+    private void Start() {
         
+        if(direction == Direction.Left) {
+            Transform child = transform.GetChild(0);
+            child.RotateAround(child.position, Vector3.up, 180);
+        }
+
     }
 
 }

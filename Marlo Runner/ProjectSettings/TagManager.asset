@@ -7,6 +7,8 @@ TagManager:
   - JumpingArea
   - WallJumpingArea
   - Destructable
+  - LongJumpBlock
+  - FinishLine
   layers:
   - Default
   - TransparentFX

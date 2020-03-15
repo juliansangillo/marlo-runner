@@ -1,26 +1,16 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class Destroyer : MonoBehaviour {
     
-    public GameObject target;
+    [SerializeField] private GameObject target = null;
     
-    // Start is called before the first frame update
-    void Start() {
-        
-    }
+    private void OnTriggerEnter(Collider other) {
 
-    // Update is called once per frame
-    void Update() {
-        
-    }
-
-    private void OnTriggerEnter(Collider trig) {
-        if(trig.transform.GetComponent<Player>() != null) {
+        if(other.transform.GetComponent<Player>() != null) {
             target.SendMessage("OnKill");
             Destroy(target.gameObject);
         }
+
     }
 
 }

@@ -1,15 +1,12 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class CameraFollow : MonoBehaviour {
 
-    public Player player;
-    public Vector3 offset;
-    public float speed = 5f;
+    [SerializeField] private Player player = null;
+    [SerializeField] private Vector3 offset = Vector3.zero;
+    [SerializeField] private float speed = 0;
 
-    // Update is called once per frame
-    void FixedUpdate() {
+    private void FixedUpdate() {
 
         if(!player.Dead && !player.Finished) {
             Vector3 targetPosition = new Vector3(player.transform.position.x + offset.x, player.transform.position.y + offset.y, transform.position.z + offset.z);

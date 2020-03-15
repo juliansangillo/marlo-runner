@@ -1,10 +1,11 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class Enemy : MonoBehaviour {
 
     protected bool dead = false;
+
+    [SerializeField] protected GameObject player = null;
+    
     public bool Dead {
         get {
             return dead;
@@ -12,9 +13,11 @@ public class Enemy : MonoBehaviour {
     }
     
     protected virtual void OnKill() {
+
         dead = true;
         GetComponent<BoxCollider>().enabled = false;
-        GameObject.Find("Player").GetComponent<Player>().Jump(true);
+        player.GetComponent<Player>().Jump(true);
+
     }
 
 }

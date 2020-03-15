@@ -1,27 +1,33 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class Brick : MonoBehaviour {
 
-    public bool hasCoin;
-    public GameObject coinPrefab;
+    [SerializeField] private GameObject playerObj = null;
+    [SerializeField] private bool hasCoin = false;
+    [SerializeField] private GameObject coinPrefab = null;
 
-    void OnKill() {
+    private void OnKill() {
 
-        Player player = GameObject.Find("Player").GetComponent<Player>();
+        Player player = playerObj.GetComponent<Player>();
 
-        if(hasCoin) {
-            GameObject coinObj = GameObject.Instantiate(coinPrefab);
-            coinObj.transform.position = transform.position + new Vector3(0, 0.7f, 0);
-
-            Coin coin = coinObj.GetComponent<Coin>();
-            coin.Vanish();
-
-            player.onCollectCoin();
-        }
+        if(hasCoin)
+            dropCoin(player);
 
         player.OnDestroyBrick();
+
+    }
+
+    private void dropCoin(Player player) {
+
+        GameObject coinObj = GameObject.Instantiate(coinPrefab);
+        coinObj.GetComponent<Collider>().enabled = false;
+        coinObj.transform.position = transform.position + new Vector3(0, 0.7f, 0);
+
+        Coin coin = coinObj.GetComponent<Coin>();
+        coin.Vanish();
+
+        player.OnCollectCoin();
+
     }
 
 }

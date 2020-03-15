@@ -1,19 +1,11 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class PowerUp : MonoBehaviour {
     
-    public GameObject model;
-    public float rotatingSpeed = 200f;
-    public GameObject effectPrefab;
+    [SerializeField] private GameObject model = null;
+    [SerializeField] private float rotatingSpeed = 0;
+    [SerializeField] private GameObject effectPrefab = null;
 
-    // Start is called before the first frame update
-    void Start() {
-        
-    }
-
-    // Update is called once per frame
     void Update() {
 
         model.transform.RotateAround(model.transform.position, Vector3.up, rotatingSpeed * Time.deltaTime);

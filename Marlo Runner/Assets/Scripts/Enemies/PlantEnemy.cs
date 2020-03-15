@@ -1,56 +1,62 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class PlantEnemy : Enemy {
 
-    public float visibleHeight = 0f;
-    public float hiddenHeight = -2.3f;
-    public float movementSpeed = 2f;
-    public float waitingDuration = 5f;
+    [SerializeField] private float visibleHeight = 0;
+    [SerializeField] private float hiddenHeight = 0;
+    [SerializeField] private float movementSpeed = 0;
+    [SerializeField] private float waitingDuration = 0;
 
     private bool hiding = true;
     private float waitingTimer = 0f;
     
-    // Start is called before the first frame update
-    void Start() {
+    private void Start() {
+
         waitingTimer = waitingDuration;
+
     }
 
-    // Update is called once per frame
-    void Update() {
+    private void Update() {
 
-        if(hiding) {
-            if(transform.localPosition.y > hiddenHeight) {
-                transform.localPosition = new Vector3 (
-                    transform.localPosition.x,
-                    transform.localPosition.y - movementSpeed * Time.deltaTime,
-                    transform.localPosition.z
-                );
-            }
-            else {
-                waitingTimer -= Time.deltaTime;
-                if(waitingTimer <= 0f) {
-                    waitingTimer = waitingDuration;
-                    hiding = false;
-                }
-            }
-        }
-        else {
-            if(transform.localPosition.y < visibleHeight) {
-                transform.localPosition = new Vector3 (
-                    transform.localPosition.x,
-                    transform.localPosition.y + movementSpeed * Time.deltaTime,
-                    transform.localPosition.z
-                );
-            }
-            else {
-                waitingTimer -= Time.deltaTime;
-                if(waitingTimer <= 0f) {
-                    waitingTimer = waitingDuration;
-                    hiding = true;
-                }
-            }
+        if(hiding)
+            if(transform.localPosition.y > hiddenHeight)
+                recede();
+            else
+                wait(false);
+        else
+            if(transform.localPosition.y < visibleHeight)
+                rise();
+            else
+                wait(true);
+
+    }
+
+    private void rise() {
+
+        transform.localPosition = new Vector3 (
+            transform.localPosition.x,
+            transform.localPosition.y + movementSpeed * Time.deltaTime,
+            transform.localPosition.z
+        );
+
+    }
+
+    private void recede() {
+
+        transform.localPosition = new Vector3 (
+            transform.localPosition.x,
+            transform.localPosition.y - movementSpeed * Time.deltaTime,
+            transform.localPosition.z
+        );
+
+    }
+
+    private void wait(bool willHide) {
+
+        waitingTimer -= Time.deltaTime;
+        if(waitingTimer <= 0f) {
+            waitingTimer = waitingDuration;
+            hiding = willHide;
         }
 
     }

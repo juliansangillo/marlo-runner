@@ -89,6 +89,7 @@ GameObject:
   - component: {fileID: 2054098409246217535}
   - component: {fileID: 2054098409246217529}
   - component: {fileID: 2054098409246217530}
+  - component: {fileID: 4801881633684463674}
   - component: {fileID: 2054098409246217534}
   m_Layer: 8
   m_Name: Player
@@ -141,6 +142,18 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 120
   m_CollisionDetection: 0
+--- !u!75 &4801881633684463674
+ConstantForce:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2054098409246217532}
+  m_Enabled: 1
+  m_Force: {x: 0, y: -6.5, z: 0}
+  m_RelativeForce: {x: 0, y: 0, z: 0}
+  m_Torque: {x: 0, y: 0, z: 0}
+  m_RelativeTorque: {x: 0, y: 0, z: 0}
 --- !u!114 &2054098409246217534
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -156,18 +169,20 @@ MonoBehaviour:
   model: {fileID: 2054098409710025012}
   normalModel: {fileID: 2054098409284707537}
   powerUpModel: {fileID: 2054098409795439359}
-  movementSpeed: 4
-  movementSpeedRight: 8
-  movementSpeedLeft: 2
-  acceleration: 4
-  deacceleration: 5
-  normalJumpingSpeed: 10
+  movementSpeed: 5.5
+  movementSpeedRight: 15
+  movementSpeedLeft: 3
+  acceleration: 6
+  deacceleration: 6
+  normalJumpingSpeed: 8
   longJumpingSpeed: 15
-  destroyEnemyJumpingSpeed: 16
-  jumpDuration: 0.2
-  verticalWallJumpingSpeed: 10
+  destroyEnemyJumpingSpeed: 12
+  jumpDuration: 0.25
+  verticalWallJumpingSpeed: 8
   horizontalWallJumpingSpeed: 5
-  invincibilityDuration: 5
+  horizontalBounceAfterHit: 5
+  verticalBounceAfterHit: 8
+  invincibilityDuration: 6
 --- !u!1 &2054098409284707537
 GameObject:
   m_ObjectHideFlags: 0

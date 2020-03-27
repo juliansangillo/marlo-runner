@@ -17,6 +17,7 @@ public class Enemy : MonoBehaviour {
         dead = true;
         GetComponent<BoxCollider>().enabled = false;
         player.GetComponent<Player>().Jump(true);
+        player.GetComponent<Player>().OnCollectCoin();
 
     }
 

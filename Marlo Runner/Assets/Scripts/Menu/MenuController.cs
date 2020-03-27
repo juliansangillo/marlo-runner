@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Zenject;
+using UnityEngine;
 
 public class MenuController : MonoBehaviour {
 
@@ -24,10 +25,22 @@ public class MenuController : MonoBehaviour {
 
     }
 
-    private void Awake() {
+    [Inject]
+    private void Construct(LevelManager manager) {
 
-        manager = LevelManager.Instance;
-        
+        this.manager = manager;
+
+    }
+
+    private void Start() {
+
+        GameObject obj = GameObject.FindWithTag("PlayerInfo");
+
+        if(obj != null) {
+            IInfo playerData = obj.GetComponent<InfoObject>().GetInfo();
+            playerData["lives"] = playerData["maxLives"];
+        }
+
     }
 
 }

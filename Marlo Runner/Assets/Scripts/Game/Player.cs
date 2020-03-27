@@ -29,7 +29,10 @@ public class Player : MonoBehaviour {
     [SerializeField] private float verticalBounceAfterHit = 0;
 
     [Header("Power ups")]
+    [SerializeField] private int maxLives = 0;
     [SerializeField] private float invincibilityDuration = 0;
+
+    private IInfo playerData;
 
     private float speed = 0f;
     private float jumpingSpeed = 0f;
@@ -113,6 +116,12 @@ public class Player : MonoBehaviour {
 
         normalModel.SetActive(true);
         powerUpModel.SetActive(false);
+
+        playerData = GetComponent<InfoObjectControl>().InfoObj.GetInfo();
+        if(!playerData.Exists("lives") && !playerData.Exists("maxLives")) {
+            playerData["lives"] = maxLives;
+            playerData["maxLives"] = maxLives;
+        }
 
     }
 
@@ -312,11 +321,16 @@ public class Player : MonoBehaviour {
 
     private void checkForPowerUp(Collider other) {
 
-        PowerUp powerUp = other.GetComponent<PowerUp>();
-        if(powerUp != null) {
-            powerUp.Collect();
-            ApplyPowerUp();
-        }
+        PickUp pickUp = other.GetComponent<PickUp>();
+        if(pickUp != null)
+            if(pickUp.gameObject.tag == "PowerUp") {
+                pickUp.Collect();
+                ApplyPowerUp();
+            }
+            else if(pickUp.gameObject.tag == "ExtraLives") {
+                pickUp.Collect();
+                ApplyExtraLives();
+            }
 
     }
 
@@ -354,6 +368,8 @@ public class Player : MonoBehaviour {
         GetComponent<Rigidbody>().velocity = Vector3.zero;
         GetComponent<Rigidbody>().AddForce(new Vector3(0, 500f, -800f));
 
+        playerData["lives"]--;
+
     }
 
     private void ApplyPowerUp() {
@@ -361,6 +377,12 @@ public class Player : MonoBehaviour {
         hasPowerUp = true;
         normalModel.SetActive(false);
         powerUpModel.SetActive(true);
+
+    }
+
+    public void ApplyExtraLives() {
+
+        playerData["lives"] = maxLives;
 
     }
 

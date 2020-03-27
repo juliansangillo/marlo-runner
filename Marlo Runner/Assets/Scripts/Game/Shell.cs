@@ -4,7 +4,6 @@ public class Shell : Enemy {
 
     [SerializeField] private float rotatingSpeed = 180f;
     [SerializeField] private float movementSpeed = 10f;
-    [SerializeField] private float radiusTolerance = 0.4f;
 
     private bool movingRight = true;
     private int count = 5;
@@ -33,10 +32,10 @@ public class Shell : Enemy {
         }
         else if(other.gameObject.GetComponent<Player>() != null ||
                 other.gameObject.GetComponent<Destroyer>() != null ||
-                other.gameObject.tag == "JumpingArea") {
+                other.transform.position.y + other.transform.localScale.y / 2 < transform.position.y) {
             return;
         }
-        else if(transform.position.y < other.transform.position.y + radiusTolerance) {
+        else {
             if(transform.position.x < other.transform.position.x && movingRight) {
                 movingRight = false;
             }

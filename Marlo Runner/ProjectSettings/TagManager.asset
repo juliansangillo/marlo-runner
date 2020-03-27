@@ -9,6 +9,11 @@ TagManager:
   - Destructable
   - LongJumpBlock
   - FinishLine
+  - SaveSystem
+  - PlayerInfo
+  - ExtraLives
+  - PowerUp
+  - Test
   layers:
   - Default
   - TransparentFX

@@ -91,6 +91,7 @@ GameObject:
   - component: {fileID: 2054098409246217530}
   - component: {fileID: 4801881633684463674}
   - component: {fileID: 2054098409246217534}
+  - component: {fileID: 8168295530162022620}
   m_Layer: 8
   m_Name: Player
   m_TagString: Untagged
@@ -150,8 +151,8 @@ ConstantForce:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2054098409246217532}
   m_Enabled: 1
-  m_Force: {x: 0, y: -6.5, z: 0}
-  m_RelativeForce: {x: 0, y: 0, z: 0}
+  m_Force: {x: 0, y: 0, z: 0}
+  m_RelativeForce: {x: 0, y: -6.5, z: 0}
   m_Torque: {x: 0, y: 0, z: 0}
   m_RelativeTorque: {x: 0, y: 0, z: 0}
 --- !u!114 &2054098409246217534
@@ -182,7 +183,23 @@ MonoBehaviour:
   horizontalWallJumpingSpeed: 5
   horizontalBounceAfterHit: 5
   verticalBounceAfterHit: 8
+  maxLives: 3
   invincibilityDuration: 6
+--- !u!114 &8168295530162022620
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2054098409246217532}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8f9fab947cbc1e94895962718e6e319e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  infoObjectPrefab: {fileID: 4930218162400744029, guid: b68081fbb7fa3a74da26f58c92a4d240,
+    type: 3}
+  objectTag: PlayerInfo
 --- !u!1 &2054098409284707537
 GameObject:
   m_ObjectHideFlags: 0

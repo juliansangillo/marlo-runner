@@ -5,7 +5,7 @@ public class MenuController : MonoBehaviour {
 
     [SerializeField] private GameObject helpPanel = null;
 
-    private LevelManager manager;
+    private ILevelManager manager;
 
     public void OnPressPlay() {
 
@@ -26,7 +26,7 @@ public class MenuController : MonoBehaviour {
     }
 
     [Inject]
-    private void Construct(LevelManager manager) {
+    private void Construct(ILevelManager manager) {
 
         this.manager = manager;
 

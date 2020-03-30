@@ -13,7 +13,7 @@ public class GameController : MonoBehaviour {
     [SerializeField] private float restartTimer = 0;
     [SerializeField] private float finishTimer = 0;
 
-    private LevelManager manager;
+    private ILevelManager manager;
     private SignalBus signalBus;
 
     private int score = 0;
@@ -42,7 +42,7 @@ public class GameController : MonoBehaviour {
     }
 
     [Inject]
-    private void Construct(LevelManager manager, SignalBus signalBus) {
+    private void Construct(ILevelManager manager, SignalBus signalBus) {
 
         this.manager = manager;
         this.signalBus = signalBus;

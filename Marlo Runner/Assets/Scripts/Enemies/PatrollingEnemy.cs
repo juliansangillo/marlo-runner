@@ -4,9 +4,9 @@ public class PatrollingEnemy : Enemy {
 
     [SerializeField] private float speed = 0;
     [SerializeField] private float movementAmplitude = 0;
+    [SerializeField] private bool movingLeft = true;
 
     private Vector3 initialPosition;
-    private bool movingLeft = true;
 
     protected virtual void Start() {
 

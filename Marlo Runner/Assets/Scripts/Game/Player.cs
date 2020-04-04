@@ -141,6 +141,9 @@ public class Player : MonoBehaviour {
 
         if(jumping)
             OnJumpIf(pressingJumpButton);
+        
+        //Debug.Log("Can Jump: " + canJump);
+        //Debug.Log("Jumping: " + jumping);
 
         if(canWallJump) {
             speed = 0;

@@ -6,7 +6,13 @@ public class Shell : Enemy {
     [SerializeField] private float movementSpeed = 10f;
 
     private bool movingRight = true;
-    private int count = 5;
+    private float count = 0.1f;
+
+    private void Start() {
+        
+        GetComponent<BoxCollider>().enabled = false;
+
+    }
 
     private void Update() {
         
@@ -18,10 +24,9 @@ public class Shell : Enemy {
             transform.position.z
         );
 
+        count -= Time.deltaTime;
         if(count <= 0)
             GetComponent<BoxCollider>().enabled = true;
-        else
-            count--;
 
     }
 

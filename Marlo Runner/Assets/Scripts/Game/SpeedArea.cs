@@ -15,13 +15,4 @@ public class SpeedArea : MonoBehaviour {
         }
     }
 
-    private void Start() {
-        
-        if(direction == Direction.Left) {
-            Transform child = transform.GetChild(0);
-            child.RotateAround(child.position, Vector3.up, 180);
-        }
-
-    }
-
 }

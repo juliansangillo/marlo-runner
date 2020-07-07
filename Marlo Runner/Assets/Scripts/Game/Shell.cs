@@ -32,7 +32,7 @@ public class Shell : Enemy {
 
     private void OnCollisionEnter(Collision other) {
 
-        if(other.gameObject.GetComponent<Enemy>() != null) {
+        if(other.gameObject.GetComponent<Enemy>() != null && other.gameObject.GetComponent<PlantEnemy>() == null) {
             Destroy(other.gameObject);
         }
         else if(other.gameObject.GetComponent<Player>() != null ||

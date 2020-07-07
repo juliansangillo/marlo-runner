@@ -5,9 +5,10 @@ using UnityEngine;
 public class Player : MonoBehaviour {
 
     [Header("Visuals")]
-    [SerializeField] private GameObject model = null;
     [SerializeField] private GameObject normalModel = null;
     [SerializeField] private GameObject powerUpModel = null;
+    [SerializeField] private Animator normalAnimator = null;
+    [SerializeField] private Animator powerUpAnimator = null;
 
     [Header("Movement Fields")]
     [SerializeField] [Range(1f, 15f)] private float movementSpeed = 0;
@@ -15,7 +16,8 @@ public class Player : MonoBehaviour {
     [SerializeField] [Range(1f, 15f)] private float movementSpeedLeft = 0;
 
     [Header("Acceleration")]
-    [SerializeField] private float acceleration = 0;
+    [SerializeField] private float initialAcceleration = 0;
+    [SerializeField] private float finalAcceleration = 0;
     [SerializeField] private float deacceleration = 0;
 
     [Header("Jumping Fields")]
@@ -35,6 +37,7 @@ public class Player : MonoBehaviour {
     private IInfo playerData;
 
     private float speed = 0f;
+    private float acceleration = 0;
     private float jumpingSpeed = 0f;
     private float jumpingTimer = 0f;
 
@@ -53,6 +56,8 @@ public class Player : MonoBehaviour {
     private bool hasInvincibility = false;
 
     private Action onCollectCoin;
+
+    private float distanceToFloor;
 
     public bool Dead {
         get {
@@ -113,15 +118,32 @@ public class Player : MonoBehaviour {
     private void Start() {
         
         jumpingSpeed = normalJumpingSpeed;
+        acceleration = initialAcceleration;
 
-        normalModel.SetActive(true);
-        powerUpModel.SetActive(false);
+        StartCoroutine(accelRoutine());
+
+        SetNormalModel();
 
         playerData = GetComponent<InfoObjectControl>().InfoObj.GetInfo();
         if(!playerData.Exists("lives") && !playerData.Exists("maxLives")) {
             playerData["lives"] = maxLives;
             playerData["maxLives"] = maxLives;
         }
+
+        normalAnimator.SetBool("dead", false);
+        powerUpAnimator.SetBool("dead", false);
+
+    }
+
+    private IEnumerator accelRoutine() {
+ 
+        yield return new WaitWhile(
+            delegate () {
+                return speed < movementSpeed;
+            }
+        );
+
+        acceleration = finalAcceleration;
 
     }
 
@@ -141,9 +163,6 @@ public class Player : MonoBehaviour {
 
         if(jumping)
             OnJumpIf(pressingJumpButton);
-        
-        //Debug.Log("Can Jump: " + canJump);
-        //Debug.Log("Jumping: " + jumping);
 
         if(canWallJump) {
             speed = 0;
@@ -151,6 +170,15 @@ public class Player : MonoBehaviour {
             if(pressingJumpButton)
                 wallJump();
         }
+
+        Ray landingRay = new Ray(transform.position, Vector3.down);
+        RaycastHit hit;
+        if(Physics.Raycast(landingRay, out hit))
+            if(hit.collider.tag == "JumpingArea" && hit.distance != distanceToFloor) {
+                distanceToFloor = hit.distance;
+                normalAnimator.SetFloat("distance", distanceToFloor);
+                powerUpAnimator.SetFloat("distance", distanceToFloor);
+            }
 
     }
 
@@ -306,8 +334,7 @@ public class Player : MonoBehaviour {
     private void takeAHit() {
 
         hasPowerUp = false;
-        normalModel.SetActive(true);
-        powerUpModel.SetActive(false);
+        SetNormalModel();
 
         speed = -horizontalBounceAfterHit;
 
@@ -367,7 +394,10 @@ public class Player : MonoBehaviour {
     private void Kill() {
 
         dead = true;
-        GetComponent<Collider>().enabled = false;
+        normalAnimator.SetBool("dead", true);
+        powerUpAnimator.SetBool("dead", true);
+        Collider collider = GetComponent<Collider>();
+        collider.enabled = false;
         GetComponent<Rigidbody>().velocity = Vector3.zero;
         GetComponent<Rigidbody>().AddForce(new Vector3(0, 500f, -800f));
 
@@ -378,8 +408,21 @@ public class Player : MonoBehaviour {
     private void ApplyPowerUp() {
 
         hasPowerUp = true;
-        normalModel.SetActive(false);
+        SetPowerUpModel();
+
+    }
+
+    private void SetNormalModel() {
+
+        normalModel.SetActive(true);
+        powerUpModel.SetActive(false);
+
+    }
+
+    private void SetPowerUpModel() {
+
         powerUpModel.SetActive(true);
+        normalModel.SetActive(false);
 
     }
 
@@ -402,7 +445,7 @@ public class Player : MonoBehaviour {
         int initialBlinks = 20;
 
         for(int i = 0; i < initialBlinks; i++) {
-            model.SetActive(!model.activeSelf);
+            normalModel.SetActive(!normalModel.activeSelf);
             yield return new WaitForSeconds(initialWaitingTime / initialBlinks);
         }
 
@@ -410,11 +453,11 @@ public class Player : MonoBehaviour {
         int finalBlinks = 30;
 
         for(int i = 0; i < finalBlinks; i++) {
-            model.SetActive(!model.activeSelf);
+            normalModel.SetActive(!normalModel.activeSelf);
             yield return new WaitForSeconds(finalWaitingTime / finalBlinks);
         }
 
-        model.SetActive(true);
+        normalModel.SetActive(true);
 
         hasInvincibility = false;
 

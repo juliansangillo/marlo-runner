@@ -8,9 +8,7 @@ public class PickUp : MonoBehaviour {
 
     void Update() {
 
-        model.transform.RotateAround(model.transform.position, Vector3.up, rotatingSpeed * Time.deltaTime);
-        model.transform.RotateAround(model.transform.position, Vector3.right, rotatingSpeed * Time.deltaTime);
-        model.transform.RotateAround(model.transform.position, Vector3.forward, rotatingSpeed * Time.deltaTime);
+        model.transform.RotateAround(model.transform.position, Vector3.up, rotatingSpeed * -Time.deltaTime);
         
     }
 

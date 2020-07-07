@@ -497,12 +497,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7624cc03b03f8304b8ed06f6c9c565fc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  model: {fileID: 2054098409710025012}
   normalModel: {fileID: 1456158027354390874}
   powerUpModel: {fileID: 6811305290644001608}
   normalAnimator: {fileID: 3600662215741413858}
   powerUpAnimator: {fileID: 5002288774719993373}
-  movementSpeed: 5.5
+  movementSpeed: 6
   movementSpeedRight: 15
   movementSpeedLeft: 3
   initialAcceleration: 1.5

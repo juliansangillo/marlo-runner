@@ -152,5 +152,5 @@ jobs:
           file: bin/*.zip
           file_glob: true
           tag: v${{ steps.version.outputs.value }}
-          release_name: ${{ RELEASE_NAME }} ${{ steps.raw-version.outputs.value }}
+          release_name: ${{ env.RELEASE_NAME }} ${{ steps.raw-version.outputs.value }}
           prerelease: ${{ steps.is-prerelease.outputs.value }}

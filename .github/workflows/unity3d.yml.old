@@ -1,0 +1,141 @@
+name: Unity3D
+on:
+  push:
+    branches:
+      - alpha
+      - beta
+      - master
+  workflow_dispatch:
+    branches:
+      - alpha
+jobs:
+  ci:
+    runs-on: ubuntu-latest
+    container: sicklecell29/unity3d
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - name: Initialize
+        id: build-settings
+        uses: ./.github/actions/get-build-settings
+
+      #Automatic version bumping -------------------------------------------------------------------------
+      - name: Version
+        id: version
+        uses: juliansangillo/tag-version@v1
+        with:
+          production-branch: master
+          test-branch: beta
+          dev-branch: alpha
+
+      #Build ---------------------------------------------------------------------------------------------
+      - name: Activate
+        uses: ./.github/actions/activate-unity
+        env:
+          LICENSE_FILE: .github/Unity.ulf
+        with:
+          license-file: ${{ env.LICENSE_FILE }}
+          encryption-key: ${{ secrets.UNITY_LICENSE_ENCRYPTION_KEY }}
+
+      - name: Build
+        uses: ./.github/actions/unity-build
+        with:
+          project-path: ${{ steps.build-settings.outputs.project-path }}
+          build-name: ${{ steps.build-settings.outputs.build-name }}
+          platform: |-
+            linux64
+            win64
+            win32
+            osx
+
+      #Release -------------------------------------------------------------------------------------------
+      - name: Create Release
+        id: release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: v${{ steps.version.outputs.revision }}
+          release_name: ${{ steps.build-settings.outputs.build-name }} ${{ steps.version.outputs.revision }}
+          draft: false
+          prerelease: ${{ steps.version.outputs.is-prerelease == 'true' }}
+
+      - name: Release Linux x64 Build
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.release.outputs.upload_url }}
+          asset_path: ./${{ env.linux64_name }}.zip
+          asset_name: ${{ env.linux64_name }}.zip
+          asset_content_type: application/zip
+        if: ${{ env.linux64 == 'true' }}
+
+      - name: Release Windows x64 Build
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.release.outputs.upload_url }}
+          asset_path: ./${{ env.win64_name }}.zip
+          asset_name: ${{ env.win64_name }}.zip
+          asset_content_type: application/zip
+        if: ${{ env.win64 == 'true' }}
+
+      - name: Release Windows x86 Build
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.release.outputs.upload_url }}
+          asset_path: ./${{ env.win32_name }}.zip
+          asset_name: ${{ env.win32_name }}.zip
+          asset_content_type: application/zip
+        if: ${{ env.win32 == 'true' }}
+
+      - name: Release Mac OSX Build
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.release.outputs.upload_url }}
+          asset_path: ./${{ env.osx_name }}.zip
+          asset_name: ${{ env.osx_name }}.zip
+          asset_content_type: application/zip
+        if: ${{ env.osx == 'true' }}
+
+      #Archive --------------------------------------------------------------------------------------------
+      - name: Archive Linux x64 Build
+        uses: actions/upload-artifact@v2
+        with:
+          name: ${{ env.linux64_name }}
+          path: ${{ env.linux64_bin }}
+          if-no-files-found: error
+        if: ${{ env.linux64 == 'true' }}
+
+      - name: Archive Windows x64 Build
+        uses: actions/upload-artifact@v2
+        with:
+          name: ${{ env.win64_name }}
+          path: ${{ env.win64_bin }}
+          if-no-files-found: error
+        if: ${{ env.win64 == 'true' }}
+
+      - name: Archive Windows x86 Build
+        uses: actions/upload-artifact@v2
+        with:
+          name: ${{ env.win32_name }}
+          path: ${{ env.win32_bin }}
+          if-no-files-found: error
+        if: ${{ env.win32 == 'true' }}
+
+      - name: Archive Mac OSX Build
+        uses: actions/upload-artifact@v2
+        with:
+          name: ${{ env.osx_name }}
+          path: ${{ env.osx_bin }}
+          if-no-files-found: error
+        if: ${{ env.osx == 'true' }}

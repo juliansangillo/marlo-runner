@@ -8,136 +8,149 @@ on:
   workflow_dispatch:
     branches:
       - alpha
-      - beta
-      - master
+env:
+  PROJECT_PATH: ./Marlo Runner
+  BUILD_NAME: MarloRunner
+  RELEASE_NAME: Marlo Runner
 jobs:
-  ci:
+  initialize:
+    name: Initialize
     runs-on: ubuntu-latest
-    container: sicklecell29/unity3d
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        
+      - name: Create Version
+        id: composer
+        uses: juliansangillo/version-composer@v1
+        with:
+          test-branch: beta
+          dev-branch: alpha
+          test-tag: BETA
+          dev-tag: ALPHA
+
+      - name: Write Config
+        id: conf
+        uses: schdck/create-env-json@v1
+        with:
+          file-name: unity3d.config
+          version: ${{ steps.composer.outputs.version }}
+          raw-version: ${{ steps.composer.outputs.raw-version }}
+          is-prerelease: ${{ steps.composer.outputs.is-prerelease }}
+
+      - name: Upload Config
+        uses: actions/upload-artifact@v2
+        with:
+          name: unity3d.config
+          path: ${{ steps.conf.outputs.full-path }}
+  
+  build:
+    name: Build - ${{ matrix.targetPlatform }} - Unity ver. ${{ matrix.unityVersion }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        unityVersion:
+          - 2020.1.0f1
+        targetPlatform:
+          - StandaloneLinux64
+          #- StandaloneWindows64
+          #- StandaloneWindows
+          #- StandaloneOSX
     steps:
       - name: Checkout
         uses: actions/checkout@v2
         with:
-          fetch-depth: 0
+          lfs: true
 
-      - name: Initialize
-        id: build-settings
-        uses: ./.github/actions/get-build-settings
+      - name: Download Config
+        uses: actions/download-artifact@v2
+        with:
+          name: unity3d.config
 
-      #Automatic version bumping -------------------------------------------------------------------------
-      - name: Version
+      - name: Get Version
         id: version
-        uses: juliansangillo/tag-version@v1
+        uses: ashley-taylor/read-json-property-action@v1.0
         with:
-          production-branch: master
-          test-branch: beta
-          dev-branch: alpha
+          path: unity3d.config
+          property: version
 
-      #Build ---------------------------------------------------------------------------------------------
-      - name: Activate
-        uses: ./.github/actions/activate-unity
-        env:
-          LICENSE_FILE: .github/Unity.ulf
+      - name: Cache
+        uses: actions/cache@v2
         with:
-          license-file: ${{ env.LICENSE_FILE }}
-          encryption-key: ${{ secrets.UNITY_LICENSE_ENCRYPTION_KEY }}
+          path: ${{ env.PROJECT_PATH }}/Library
+          key: Library-${{ env.PROJECT_PATH }}-${{ matrix.targetPlatform }}
+          restore-keys: |
+            Library-${{ env.PROJECT_PATH }}-
+            Library-
 
       - name: Build
-        uses: ./.github/actions/unity-build
+        uses: webbertakken/unity-builder@v1.2
         with:
-          project-path: ${{ steps.build-settings.outputs.project-path }}
-          build-name: ${{ steps.build-settings.outputs.build-name }}
-          platform: |-
-            linux64
-            win64
-            win32
-            osx
+          buildsPath: bin
+          projectPath: ${{ env.PROJECT_PATH }}
+          buildName: ${{ env.BUILD_NAME }}
+          version: ${{ steps.version.outputs.value }}
+          versioning: custom
+          unityVersion: ${{ matrix.unityVersion }}
+          targetPlatform: ${{ matrix.targetPlatform }}
 
-      #Release -------------------------------------------------------------------------------------------
-      - name: Create Release
-        id: release
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          tag_name: v${{ steps.version.outputs.revision }}
-          release_name: ${{ steps.build-settings.outputs.build-name }} ${{ steps.version.outputs.revision }}
-          draft: false
-          prerelease: ${{ steps.version.outputs.is-prerelease == 'true' }}
-
-      - name: Release Linux x64 Build
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.release.outputs.upload_url }}
-          asset_path: ./${{ env.linux64_name }}.zip
-          asset_name: ${{ env.linux64_name }}.zip
-          asset_content_type: application/zip
-        if: ${{ env.linux64 == 'true' }}
-
-      - name: Release Windows x64 Build
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.release.outputs.upload_url }}
-          asset_path: ./${{ env.win64_name }}.zip
-          asset_name: ${{ env.win64_name }}.zip
-          asset_content_type: application/zip
-        if: ${{ env.win64 == 'true' }}
-
-      - name: Release Windows x86 Build
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.release.outputs.upload_url }}
-          asset_path: ./${{ env.win32_name }}.zip
-          asset_name: ${{ env.win32_name }}.zip
-          asset_content_type: application/zip
-        if: ${{ env.win32 == 'true' }}
-
-      - name: Release Mac OSX Build
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.release.outputs.upload_url }}
-          asset_path: ./${{ env.osx_name }}.zip
-          asset_name: ${{ env.osx_name }}.zip
-          asset_content_type: application/zip
-        if: ${{ env.osx == 'true' }}
-
-      #Archive --------------------------------------------------------------------------------------------
-      - name: Archive Linux x64 Build
+      - name: Archive
         uses: actions/upload-artifact@v2
         with:
-          name: ${{ env.linux64_name }}
-          path: ${{ env.linux64_bin }}
-          if-no-files-found: error
-        if: ${{ env.linux64 == 'true' }}
+          name: ${{ env.BUILD_NAME }}-${{ matrix.targetPlatform }}-${{ matrix.unityVersion }}
+          path: bin/${{ env.BUILD_NAME }}
 
-      - name: Archive Windows x64 Build
-        uses: actions/upload-artifact@v2
+  release:
+    name: Release
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      
+      - name: Download Config
+        uses: actions/download-artifact@v2
         with:
-          name: ${{ env.win64_name }}
-          path: ${{ env.win64_bin }}
-          if-no-files-found: error
-        if: ${{ env.win64 == 'true' }}
+          name: unity3d.config
 
-      - name: Archive Windows x86 Build
-        uses: actions/upload-artifact@v2
+      - name: Get Version
+        id: version
+        uses: ashley-taylor/read-json-property-action@v1.0
         with:
-          name: ${{ env.win32_name }}
-          path: ${{ env.win32_bin }}
-          if-no-files-found: error
-        if: ${{ env.win32 == 'true' }}
+          path: unity3d.config
+          property: version
 
-      - name: Archive Mac OSX Build
-        uses: actions/upload-artifact@v2
+      - name: Get Raw Version
+        id: raw-version
+        uses: ashley-taylor/read-json-property-action@v1.0
         with:
-          name: ${{ env.osx_name }}
-          path: ${{ env.osx_bin }}
-          if-no-files-found: error
-        if: ${{ env.osx == 'true' }}
+          path: unity3d.config
+          property: raw-version
+
+      - name: Get Is Prerelease
+        id: is-prerelease
+        uses: ashley-taylor/read-json-property-action@v1.0
+        with:
+          path: unity3d.config
+          property: is-prerelease
+
+      - name: Download Builds
+        uses: actions/download-artifact@v2
+        with:
+          name: ${{ env.BUILD_NAME }}*
+          path: bin
+
+      - name: Versioning
+        uses: juliansangillo/version-maestro@v1
+        #with:
+          #version: ${{ steps.version.outputs.value }}
+
+      - name: Release
+        uses: svenstaro/upload-release-action@v2
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          file: bin/*.zip
+          file_glob: true
+          tag: v${{ steps.version.outputs.value }}
+          release_name: ${{ RELEASE_NAME }} ${{ steps.raw-version.outputs.value }}
+          prerelease: ${{ steps.is-prerelease.outputs.value }}

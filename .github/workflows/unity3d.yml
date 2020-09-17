@@ -87,6 +87,8 @@ jobs:
 
       - name: Build
         uses: webbertakken/unity-builder@v1.2
+        env:
+          UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
         with:
           buildsPath: bin
           projectPath: ${{ env.PROJECT_PATH }}

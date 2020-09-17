@@ -92,7 +92,7 @@ jobs:
           projectPath: ${{ env.PROJECT_PATH }}
           buildName: ${{ env.BUILD_NAME }}
           version: ${{ steps.version.outputs.value }}
-          versioning: custom
+          versioning: Custom
           unityVersion: ${{ matrix.unityVersion }}
           targetPlatform: ${{ matrix.targetPlatform }}
 

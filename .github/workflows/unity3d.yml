@@ -9,7 +9,7 @@ on:
     branches:
       - alpha
 env:
-  PROJECT_PATH: ./Marlo Runner
+  PROJECT_PATH: "./Marlo Runner"
   BUILD_NAME: MarloRunner
   RELEASE_NAME: Marlo Runner
 jobs:
@@ -79,10 +79,10 @@ jobs:
       - name: Cache
         uses: actions/cache@v2
         with:
-          path: "${{ env.PROJECT_PATH }}/Library"
-          key: "Library-${{ env.PROJECT_PATH }}-${{ matrix.targetPlatform }}"
+          path: ${{ env.PROJECT_PATH }}/Library
+          key: Library-${{ env.PROJECT_PATH }}-${{ matrix.targetPlatform }}
           restore-keys: |
-            "Library-${{ env.PROJECT_PATH }}-"
+            Library-${{ env.PROJECT_PATH }}-
             Library-
 
       - name: Build
@@ -91,8 +91,8 @@ jobs:
           UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
         with:
           buildsPath: bin
-          projectPath: "${{ env.PROJECT_PATH }}"
-          buildName: "${{ env.BUILD_NAME }}"
+          projectPath: ${{ env.PROJECT_PATH }}
+          buildName: ${{ env.BUILD_NAME }}
           version: ${{ steps.version.outputs.value }}
           versioning: Custom
           unityVersion: ${{ matrix.unityVersion }}
@@ -101,8 +101,8 @@ jobs:
       - name: Archive
         uses: actions/upload-artifact@v2
         with:
-          name: "${{ env.BUILD_NAME }}-${{ matrix.targetPlatform }}-${{ matrix.unityVersion }}"
-          path: "bin/${{ env.BUILD_NAME }}"
+          name: ${{ env.BUILD_NAME }}-${{ matrix.targetPlatform }}-${{ matrix.unityVersion }}
+          path: bin/${{ env.BUILD_NAME }}
 
   release:
     name: Release
@@ -141,7 +141,7 @@ jobs:
       - name: Download Builds
         uses: actions/download-artifact@v2
         with:
-          name: "${{ env.BUILD_NAME }}*"
+          name: ${{ env.BUILD_NAME }}*
           path: bin
 
       - name: Versioning
@@ -156,5 +156,5 @@ jobs:
           file: bin/*.zip
           file_glob: true
           tag: v${{ steps.version.outputs.value }}
-          release_name: "${{ env.RELEASE_NAME }} ${{ steps.raw-version.outputs.value }}"
+          release_name: ${{ env.RELEASE_NAME }} ${{ steps.raw-version.outputs.value }}
           prerelease: ${{ steps.is-prerelease.outputs.value }}

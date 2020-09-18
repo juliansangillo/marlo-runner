@@ -9,7 +9,7 @@ on:
     branches:
       - alpha
 env:
-  PROJECT_PATH: "./Marlo Runner"
+  PROJECT_PATH: ./Marlo Runner
   BUILD_NAME: MarloRunner
   RELEASE_NAME: Marlo Runner
 jobs:
@@ -51,6 +51,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
+        projectPath:
+          - ./Marlo Runner
         unityVersion:
           - 2020.1.0f1
         targetPlatform:
@@ -91,7 +93,7 @@ jobs:
           UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
         with:
           buildsPath: bin
-          projectPath: ${{ env.PROJECT_PATH }}
+          projectPath: ${{ matrix.projectPath }}
           buildName: ${{ env.BUILD_NAME }}
           version: ${{ steps.version.outputs.value }}
           versioning: Custom

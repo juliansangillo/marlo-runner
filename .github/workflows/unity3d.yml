@@ -99,6 +99,7 @@ jobs:
           versioning: Custom
           unityVersion: ${{ matrix.unityVersion }}
           targetPlatform: ${{ matrix.targetPlatform }}
+          customParameters: -nographics
 
       - name: Archive
         uses: actions/upload-artifact@v2

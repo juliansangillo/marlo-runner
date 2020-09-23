@@ -105,7 +105,7 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: ${{ env.BUILD_NAME }}-${{ matrix.targetPlatform }}-${{ matrix.unityVersion }}
-          path: bin/${{ env.BUILD_NAME }}
+          path: bin/${{ matrix.targetPlatform }}
 
   release:
     name: Release

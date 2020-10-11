@@ -5,15 +5,13 @@ TagManager:
   serializedVersion: 2
   tags:
   - JumpingArea
-  - WallJumpingArea
-  - Destructable
-  - LongJumpBlock
-  - FinishLine
-  - SaveSystem
-  - PlayerInfo
-  - ExtraLives
   - PowerUp
-  - Test
+  - Destructable
+  - FinishLine
+  - LongJumpBlock
+  - ExtraLives
+  - WallJumpingArea
+  - PlayerInfo
   layers:
   - Default
   - TransparentFX
@@ -23,9 +21,9 @@ TagManager:
   - UI
   - 
   - 
-  - Player
-  - Areas
-  - Enemy
+  - 
+  - 
+  - 
   - 
   - 
   - 

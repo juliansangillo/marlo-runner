@@ -24,7 +24,7 @@ echo "BUILD_NAME" > /tmp/build-name;
 echo "VERSION" > /tmp/version;
 echo "PLATFORMS" > /tmp/platforms;
 echo "IS_DEVELOPMENT_BUILD" > /tmp/is-development-build;'''
-        sh 'gsutil cp /tmp/Unity.ulf $TMP_GS_PATH/Unity.ulf;'
+        sh 'gsutil cp /tmp/Unity.ulf gs://$TMP_BUCKET/$JOB_NAME/$BUILD_NUMBER;'
         echo 'Initialize complete'
       }
     }
@@ -38,10 +38,8 @@ echo "IS_DEVELOPMENT_BUILD" > /tmp/is-development-build;'''
 
   }
   environment {
-    SUPPORTED_PLATFORMS_CSV = 'supported-platforms.csv'
-    SUPPORTED_PLATFORMS_GS_PATH = 'gs://unity-firebuild-config/$SUPPORTED_PLATFORMS_CSV'
-    BUILD_GS_PATH = 'gs://unity-firebuild-artifacts/$JOB_NAME/$BUILD_NUMBER'
-    TMP_GS_PATH = 'gs://unity-firebuild-tmp/$JOB_NAME/$BUILD_NUMBER'
+    BUILD_BUCKET = 'unity-firebuild-artifacts'
+    TMP_BUCKET = 'unity-firebuild-tmp'
   }
   options {
     skipDefaultCheckout(true)

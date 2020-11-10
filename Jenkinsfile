@@ -24,7 +24,7 @@ echo "BUILD_NAME" > /tmp/build-name;
 echo "VERSION" > /tmp/version;
 echo "PLATFORMS" > /tmp/platforms;
 echo "IS_DEVELOPMENT_BUILD" > /tmp/is-development-build;'''
-        googleStorageUpload(credentialsId: 'unity-firebuild', bucket: 'unity-firebuild-tmp', pattern: '/tmp/Unity.ulf')
+        googleStorageUpload(credentialsId: 'unity-firebuild', bucket: 'gs://unity-firebuild-tmp/$JOB_NAME/$BUILD_NAME', pattern: '/tmp/Unity.ulf')
         echo 'Initialize complete'
       }
     }

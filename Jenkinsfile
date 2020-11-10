@@ -24,7 +24,7 @@ echo "BUILD_NAME" > /tmp/build-name;
 echo "VERSION" > /tmp/version;
 echo "PLATFORMS" > /tmp/platforms;
 echo "IS_DEVELOPMENT_BUILD" > /tmp/is-development-build;'''
-        googleStorageUpload(credentialsId: 'unity-firebuild', bucket: 'gs://unity-firebuild-tmp/$JOB_NAME/$BUILD_NAME', pattern: '/tmp/Unity.ulf')
+        googleStorageUpload(credentialsId: 'unity-firebuild', bucket: '${TMP_GS_PATH}/Unity.ulf', pattern: '/tmp/Unity.ulf')
         echo 'Initialize complete'
       }
     }
@@ -41,6 +41,7 @@ echo "IS_DEVELOPMENT_BUILD" > /tmp/is-development-build;'''
     SUPPORTED_PLATFORMS_CSV = 'supported-platforms.csv'
     SUPPORTED_PLATFORMS_GS_PATH = 'gs://unity-firebuild-config/$SUPPORTED_PLATFORMS_CSV'
     BUILD_GS_PATH = 'gs://unity-firebuild-artifacts/$JOB_NAME/$BUILD_NUMBER'
+    TMP_GS_PATH = 'gs://unity-firebuild-tmp/$JOB_NAME/$BUILD_NUMBER'
   }
   options {
     skipDefaultCheckout(true)

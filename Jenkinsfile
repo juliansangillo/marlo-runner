@@ -24,7 +24,7 @@ echo "BUILD_NAME" > /tmp/build-name;
 echo "VERSION" > /tmp/version;
 echo "PLATFORMS" > /tmp/platforms;
 echo "IS_DEVELOPMENT_BUILD" > /tmp/is-development-build;'''
-        googleStorageUpload(credentialsId: 'unity-firebuild', bucket: '${TMP_GS_PATH}/Unity.ulf', pattern: '/tmp/Unity.ulf')
+        sh 'gsutil cp /tmp/Unity.ulf $TMP_GS_PATH/Unity.ulf;'
         echo 'Initialize complete'
       }
     }

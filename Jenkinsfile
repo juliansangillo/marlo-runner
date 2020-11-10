@@ -3,7 +3,8 @@ pipeline {
   stages {
     stage('Initialize') {
       steps {
-        node(label: 'jenkins-agent')
+        sh '''echo "foo, I am initialized ...";
+echo "Hello World!";'''
       }
     }
 

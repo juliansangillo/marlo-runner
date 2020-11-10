@@ -14,7 +14,4 @@ echo "$(hostname)";'''
     }
 
   }
-  options {
-    skipDefaultCheckout(true)
-  }
 }

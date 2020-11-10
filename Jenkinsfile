@@ -1,7 +1,9 @@
 pipeline {
-  agent any
-  options {
-    skipDefaultCheckout true
+  agent {
+    node {
+      label 'jenkins-agent'
+    }
+
   }
   stages {
     stage('Initialize') {
@@ -11,5 +13,8 @@ echo "Hello World!";'''
       }
     }
 
+  }
+  options {
+    skipDefaultCheckout(true)
   }
 }

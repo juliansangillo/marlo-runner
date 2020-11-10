@@ -24,9 +24,7 @@ echo "BUILD_NAME" > /tmp/build-name;
 echo "VERSION" > /tmp/version;
 echo "PLATFORMS" > /tmp/platforms;
 echo "IS_DEVELOPMENT_BUILD" > /tmp/is-development-build;'''
-        sh '''echo "$JENKINS_SA" > /tmp/key-file;
-gcloud auth activate-service-account --key-file=/tmp/key-file;'''
-        sh 'gsutil cp /tmp/Unity.ulf gs://$TMP_BUCKET/$JOB_NAME/$BUILD_NUMBER;'
+        googleStorageUpload(credentialsId: 'unity-firebuild', bucket: 'gs://${env.TMP_BUCKET}/${env.JOB_NAME}/${env.BUILD_NUMBER}', pattern: '/tmp/Unity.ulf')
         echo 'Initialize complete'
       }
     }

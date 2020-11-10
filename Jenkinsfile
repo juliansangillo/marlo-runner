@@ -18,12 +18,12 @@ export VERSION=1.0.0;
 export PLATFORMS="StandaloneLinux64";
 export IS_DEVELOPMENT_BUILD=false;
 
-LICENSE > /tmp/Unity.ulf;
-PROJECT_PATH > /tmp/project-path;
-BUILD_NAME > /tmp/build-name;
-VERSION > /tmp/version;
-PLATFORMS > /tmp/platforms;
-IS_DEVELOPMENT_BUILD > /tmp/is-development-build;'''
+echo "LICENSE" > /tmp/Unity.ulf;
+echo "PROJECT_PATH" > /tmp/project-path;
+echo "BUILD_NAME" > /tmp/build-name;
+echo "VERSION" > /tmp/version;
+echo "PLATFORMS" > /tmp/platforms;
+echo "IS_DEVELOPMENT_BUILD" > /tmp/is-development-build;'''
         googleStorageUpload(credentialsId: 'unity-firebuild', bucket: 'unity-firebuild-tmp', pattern: '/tmp/Unity.ulf')
         echo 'Initialize complete'
       }

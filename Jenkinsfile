@@ -9,7 +9,7 @@ pipeline {
     stage('Initialize') {
       steps {
         sh '''echo "foo, I am initialized ...";
-echo "Hello World!";'''
+echo "$(hostname)";'''
       }
     }
 

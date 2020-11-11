@@ -18,13 +18,13 @@ export VERSION=1.0.0;
 export PLATFORMS="StandaloneLinux64";
 export IS_DEVELOPMENT_BUILD=false;
 
-echo "LICENSE" > /tmp/Unity.ulf;
-echo "PROJECT_PATH" > /tmp/project-path;
-echo "BUILD_NAME" > /tmp/build-name;
-echo "VERSION" > /tmp/version;
-echo "PLATFORMS" > /tmp/platforms;
-echo "IS_DEVELOPMENT_BUILD" > /tmp/is-development-build;'''
-        echo 'gs://${env.TMP_BUCKET}/${env.JOB_NAME}/${env.BUILD_NUMBER}'
+echo "$LICENSE" > /tmp/Unity.ulf;
+echo "$PROJECT_PATH" > /tmp/project-path;
+echo "$BUILD_NAME" > /tmp/build-name;
+echo "$VERSION" > /tmp/version;
+echo "$PLATFORMS" > /tmp/platforms;
+echo "$IS_DEVELOPMENT_BUILD" > /tmp/is-development-build;'''
+        echo "gs://$TMP_BUCKET/$JOB_NAME/$BUILD_NUMBER"
         echo 'Initialize complete'
       }
     }

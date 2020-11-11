@@ -1,12 +1,13 @@
 pipeline {
-  agent {
-    node {
-      label 'jenkins-agent'
-    }
-
-  }
+  agent any
   stages {
     stage('Initialize') {
+      agent {
+        node {
+          label 'jenkins-agent'
+        }
+
+      }
       steps {
         echo 'Initialize starting .....'
         script {
@@ -19,13 +20,28 @@ pipeline {
         }
 
         sh """echo "Ingest config file";
-                echo "${env.LICENSE}";
-                echo "${env.PROJECT_PATH}";
-                echo "${env.BUILD_NAME}";
-                echo "${env.VERSION}";
-                echo "${env.PLATFORMS}";
-                echo "${env.IS_DEVELOPMENT_BUILD}";"""
+                                echo "${env.LICENSE}";
+                                echo "${env.PROJECT_PATH}";
+                                echo "${env.BUILD_NAME}";
+                                echo "${env.VERSION}";
+                                echo "${env.PLATFORMS}";
+                                echo "${env.IS_DEVELOPMENT_BUILD}";"""
         echo 'Initialize complete'
+      }
+    }
+
+    stage('Build') {
+      agent {
+        node {
+          label 'jenkins-agent'
+        }
+
+      }
+      when {
+        equals expected: true, actual: Deploy
+      }
+      steps {
+        echo 'Hello'
       }
     }
 

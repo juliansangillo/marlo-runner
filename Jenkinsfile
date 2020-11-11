@@ -20,12 +20,12 @@ pipeline {
         }
 
         sh """echo "Ingest config file";
-                                                                echo "${env.LICENSE}";
-                                                                echo "${env.PROJECT_PATH}";
-                                                                echo "${env.BUILD_NAME}";
-                                                                echo "${env.VERSION}";
-                                                                echo "${env.PLATFORMS}";
-                                                                echo "${env.IS_DEVELOPMENT_BUILD}";"""
+                                                                                echo "${env.LICENSE}";
+                                                                                echo "${env.PROJECT_PATH}";
+                                                                                echo "${env.BUILD_NAME}";
+                                                                                echo "${env.VERSION}";
+                                                                                echo "${env.PLATFORMS}";
+                                                                                echo "${env.IS_DEVELOPMENT_BUILD}";"""
         echo 'Initialize complete'
       }
     }
@@ -39,9 +39,12 @@ pipeline {
       }
       when {
         expression {
-          return Initialize
+          PLATFORM != 'StandaloneLinux64'
         }
 
+      }
+      environment {
+        PLATFORM = 'StandaloneLinux64'
       }
       steps {
         echo 'Hello'

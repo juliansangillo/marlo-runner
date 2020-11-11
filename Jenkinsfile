@@ -20,12 +20,12 @@ pipeline {
         }
 
         sh """echo "Ingest config file";
-                                                                                                                                                                                        echo "${env.LICENSE}";
-                                                                                                                                                                                        echo "${env.PROJECT_PATH}";
-                                                                                                                                                                                        echo "${env.BUILD_NAME}";
-                                                                                                                                                                                        echo "${env.VERSION}";
-                                                                                                                                                                                        echo "${env.PLATFORMS}";
-                                                                                                                                                                                        echo "${env.IS_DEVELOPMENT_BUILD}";"""
+                                                                                                                                                                                                        echo "${env.LICENSE}";
+                                                                                                                                                                                                        echo "${env.PROJECT_PATH}";
+                                                                                                                                                                                                        echo "${env.BUILD_NAME}";
+                                                                                                                                                                                                        echo "${env.VERSION}";
+                                                                                                                                                                                                        echo "${env.PLATFORMS}";
+                                                                                                                                                                                                        echo "${env.IS_DEVELOPMENT_BUILD}";"""
         echo 'Initialize complete'
       }
     }
@@ -48,7 +48,7 @@ pipeline {
       }
       steps {
         echo 'Hello'
-        sh 'echo "${env.PLATFORM}";'
+        echo "${env.PLATFORM}"
       }
     }
 

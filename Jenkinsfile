@@ -18,32 +18,14 @@ pipeline {
           env.IS_DEVELOPMENT_BUILD=false
         }
 
-        sh """
-                echo "Ingest config file";
-
+        sh """echo "Ingest config file";
                 echo "${env.LICENSE}";
                 echo "${env.PROJECT_PATH}";
                 echo "${env.BUILD_NAME}";
                 echo "${env.VERSION}";
                 echo "${env.PLATFORMS}";
-                echo "${env.IS_DEVELOPMENT_BUILD}";
-                """
+                echo "${env.IS_DEVELOPMENT_BUILD}";"""
         echo 'Initialize complete'
-      }
-    }
-
-    stage('Build') {
-      steps {
-        echo 'Build starting .....'
-        sh """
-                echo "${env.LICENSE}";
-                echo "${env.PROJECT_PATH}";
-                echo "${env.BUILD_NAME}";
-                echo "${env.VERSION}";
-                echo "${env.PLATFORMS}";
-                echo "${env.IS_DEVELOPMENT_BUILD}";
-                """
-        echo 'Build complete'
       }
     }
 

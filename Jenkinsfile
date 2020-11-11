@@ -23,9 +23,7 @@ echo "PROJECT_PATH" > /tmp/project-path;
 echo "BUILD_NAME" > /tmp/build-name;
 echo "VERSION" > /tmp/version;
 echo "PLATFORMS" > /tmp/platforms;
-echo "IS_DEVELOPMENT_BUILD" > /tmp/is-development-build;
-echo "Test";'''
-        echo "gs://$TMP_BUCKET/$JOB_NAME/$BUILD_NUMBER"
+echo "IS_DEVELOPMENT_BUILD" > /tmp/is-development-build;'''
         echo 'Initialize complete'
       }
     }

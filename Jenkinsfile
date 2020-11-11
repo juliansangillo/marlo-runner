@@ -11,12 +11,12 @@ pipeline {
         echo 'Initialize starting .....'
         sh '''echo "Ingest config file";
 
-export env.LICENSE="";
-export env.PROJECT_PATH="./Marlo Runner";
-export env.BUILD_NAME=MarloRunner;
-export env.VERSION=1.0.0;
-export env.PLATFORMS="StandaloneLinux64";
-export env.IS_DEVELOPMENT_BUILD=false;
+env.LICENSE="";
+env.PROJECT_PATH="./Marlo Runner";
+env.BUILD_NAME=MarloRunner;
+env.VERSION=1.0.0;
+env.PLATFORMS="StandaloneLinux64";
+env.IS_DEVELOPMENT_BUILD=false;
 
 echo "${env.LICENSE}" > /tmp/Unity.ulf;
 echo "${env.PROJECT_PATH}" > /tmp/project-path;

@@ -20,12 +20,12 @@ pipeline {
         }
 
         sh """echo "Ingest config file";
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                echo "${env.LICENSE}";
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                echo "${env.PROJECT_PATH}";
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                echo "${env.BUILD_NAME}";
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                echo "${env.VERSION}";
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                echo "${env.PLATFORMS}";
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                echo "${env.IS_DEVELOPMENT_BUILD}";"""
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        echo "${env.LICENSE}";
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        echo "${env.PROJECT_PATH}";
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        echo "${env.BUILD_NAME}";
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        echo "${env.VERSION}";
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        echo "${env.PLATFORMS}";
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        echo "${env.IS_DEVELOPMENT_BUILD}";"""
         echo 'Initialize complete'
       }
     }
@@ -38,26 +38,22 @@ pipeline {
 
       }
       when {
+        beforeAgent true
         expression {
           def platform_list = env.PLATFORMS.split(' ')
-          return platform_list.contains(env.PLATFORM)
+          return platform_list.contains("${env.PLATFORM}")
         }
 
       }
-      environment {
-        PLATFORM = 'StandaloneLinux64'
-      }
       steps {
         echo 'Hello'
-        echo "${env.PLATFORM}"
-        echo "${env.PLATFORMS}"
       }
     }
 
   }
   environment {
     BUILD_BUCKET = 'unity-firebuild-artifacts'
-    PLATFORM = 'StandaloneOSX'
+    PLATFORM = 'StandaloneLinux64'
   }
   options {
     skipDefaultCheckout(true)

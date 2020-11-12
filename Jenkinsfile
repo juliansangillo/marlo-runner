@@ -19,49 +19,7 @@ pipeline {
     }
 
     stage('Build') {
-      parallel {
-        stage('Build Linux x64') {
-          agent any
-          when {
-            beforeAgent true
-            expression {
-              def platform_list = env.PLATFORMS.split(' ')
-              return platform_list.contains("${env.LINUX64_PLATFORM}")
-            }
-
-          }
-          steps {
-            echo 'Hello'
-            sh 'echo "$(hostname)";'
-          }
-        }
-
-        stage('Build Windows x64') {
-          agent any
-          when {
-            beforeAgent true
-            expression {
-              def platform_list = env.PLATFORMS.split(' ')
-              return platform_list.contains("${env.WIN64_PLATFORM}")
-            }
-
-          }
-          steps {
-            echo 'Hello'
-            sh 'echo "$(hostname)";'
-          }
-        }
-
-      }
-    }
-
-    stage('Matrix') {
-      agent {
-        node {
-          label 'jenkins-agent'
-        }
-
-      }
+      agent any
       steps {
         script {
           def axisValues = env.PLATFORMS.split(' ')

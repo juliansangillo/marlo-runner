@@ -56,7 +56,12 @@ pipeline {
     }
 
     stage('Matrix') {
-      agent any
+      agent {
+        node {
+          label 'jenkins-agent'
+        }
+
+      }
       steps {
         script {
           def axisValues = env.PLATFORMS.split(' ')

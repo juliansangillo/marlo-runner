@@ -69,7 +69,7 @@ pipeline {
           for(int i=0; i< axisValues.size(); i++) {
             def axisValue = axisValues[i]
             tasks["${axisValue}"] = {
-              node(axisValue) {
+              node('jenkins-agent') {
                 println "Node=${env.NODE_NAME}"
               }
             }

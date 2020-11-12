@@ -10,17 +10,10 @@ pipeline {
           env.PROJECT_PATH="./Marlo Runner"
           env.BUILD_NAME="MarloRunner"
           env.VERSION="1.0.0"
-          env.PLATFORMS="StandaloneWindows64"
+          env.PLATFORMS="StandaloneLinux64 StandaloneWindows64"
           env.IS_DEVELOPMENT_BUILD=false
         }
 
-        sh """echo "Ingest config file";
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                echo "${env.LICENSE}";
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                echo "${env.PROJECT_PATH}";
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                echo "${env.BUILD_NAME}";
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                echo "${env.VERSION}";
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                echo "${env.PLATFORMS}";
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                echo "${env.IS_DEVELOPMENT_BUILD}";"""
         echo 'Initialize complete'
       }
     }
@@ -28,12 +21,7 @@ pipeline {
     stage('Build') {
       parallel {
         stage('Build Linux x64') {
-          agent {
-            node {
-              label 'jenkins-agent'
-            }
-
-          }
+          agent any
           when {
             beforeAgent true
             expression {
@@ -49,12 +37,7 @@ pipeline {
         }
 
         stage('Build Windows x64') {
-          agent {
-            node {
-              label 'jenkins-agent'
-            }
-
-          }
+          agent any
           when {
             beforeAgent true
             expression {
@@ -67,6 +50,27 @@ pipeline {
             echo 'Hello'
             sh 'echo "$(hostname)";'
           }
+        }
+
+      }
+    }
+
+    stage('Matrix') {
+      agent any
+      steps {
+        script {
+          def axisValues = env.PLATFORMS.split(' ')
+          def tasks = [:]
+          for(int i=0; i< axisValues.size(); i++) {
+            def axisValue = axisValues[i]
+            tasks["${axisValue}"] = {
+              node(axisValue) {
+                println "Node=${env.NODE_NAME}"
+              }
+            }
+          }
+
+          parallel tasks
         }
 
       }

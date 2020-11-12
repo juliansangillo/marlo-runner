@@ -27,7 +27,7 @@ pipeline {
           def tasks = [:]
           for(int i=0; i< axisValues.size(); i++) {
             def axisValue = axisValues[i]
-            tasks["${axisValue}"] = {
+            tasks["${axisValue}-${i}"] = {
               node("${label}") {
                 println "Node=${env.NODE_NAME}"
               }

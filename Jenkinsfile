@@ -22,12 +22,13 @@ pipeline {
       agent any
       steps {
         script {
+          def label = 'jenkins-agent'
           def axisValues = env.PLATFORMS.split(' ')
           def tasks = [:]
           for(int i=0; i< axisValues.size(); i++) {
             def axisValue = axisValues[i]
             tasks["${axisValue}"] = {
-              node('jenkins-agent') {
+              node("${label}") {
                 println "Node=${env.NODE_NAME}"
               }
             }

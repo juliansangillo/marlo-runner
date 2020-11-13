@@ -42,6 +42,56 @@ pipeline {
       }
     }
 
+    stage('Test') {
+      parallel {
+        stage('Test 0') {
+          agent {
+            node {
+              label 'jenkins-agent-0'
+            }
+
+          }
+          steps {
+            script {
+              println "Node=${NODE_NAME}"
+            }
+
+          }
+        }
+
+        stage('Test 1') {
+          agent {
+            node {
+              label 'jenkins-agent-1'
+            }
+
+          }
+          steps {
+            script {
+              println "Node=${NODE_NAME}"
+            }
+
+          }
+        }
+
+        stage('Test 2') {
+          agent {
+            node {
+              label 'jenkins-agent-2'
+            }
+
+          }
+          steps {
+            script {
+              println "Node=${NODE_NAME}"
+            }
+
+          }
+        }
+
+      }
+    }
+
   }
   environment {
     BUILD_BUCKET = 'unity-firebuild-artifacts'

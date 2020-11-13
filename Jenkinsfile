@@ -30,9 +30,10 @@ pipeline {
                 println "Node=${env.NODE_NAME}"
               }
             }
+            parallel tasks["${axisValue}"]
           }
 
-          parallel tasks
+          //parallel tasks
         }
 
       }

@@ -1,8 +1,7 @@
 pipeline {
-  agent any
+  agent none
   stages {
     stage('Initialize') {
-      agent any
       steps {
         echo 'Initialize starting .....'
         script {
@@ -19,7 +18,6 @@ pipeline {
     }
 
     stage('Build') {
-      agent any
       steps {
         script {
           def label = 'jenkins-agent'

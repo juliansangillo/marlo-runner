@@ -45,45 +45,27 @@ pipeline {
     stage('Test') {
       parallel {
         stage('Test 0') {
-          agent {
-            node {
-              label 'jenkins-agent-0'
-            }
-
-          }
           steps {
             script {
-              println "Node=${NODE_NAME}"
+              build 'test-build'
             }
 
           }
         }
 
         stage('Test 1') {
-          agent {
-            node {
-              label 'jenkins-agent-1'
-            }
-
-          }
           steps {
             script {
-              println "Node=${NODE_NAME}"
+              build 'test-build'
             }
 
           }
         }
 
         stage('Test 2') {
-          agent {
-            node {
-              label 'jenkins-agent-2'
-            }
-
-          }
           steps {
             script {
-              println "Node=${NODE_NAME}"
+              build 'test-build'
             }
 
           }

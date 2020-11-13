@@ -26,14 +26,13 @@ pipeline {
           for(int i=0; i< axisValues.size(); i++) {
             def axisValue = axisValues[i]
             tasks["${axisValue}"] = {
-              node("${label}") {
+              node("${label}-${i}") {
                 println "Node=${env.NODE_NAME}"
               }
             }
-            parallel tasks["${axisValue}"]
           }
 
-          //parallel tasks
+          parallel tasks
         }
 
       }

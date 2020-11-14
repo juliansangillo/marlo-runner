@@ -4,7 +4,7 @@ pipeline {
     stage('Initialize') {
       agent {
         node {
-          label 'jenkins-agent'
+          label 'jenkins-agent-0'
         }
 
       }

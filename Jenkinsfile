@@ -25,7 +25,7 @@ pipeline {
           def tasks = [:]
           for(int i = 0; i < axisValues.size(); i++) {
             def axisValue = axisValues[i]
-            def label = prefix
+            def label = prefix + '-' + i
             tasks[axisValue] = {
               stage(axisValue) {
                 node(label) {

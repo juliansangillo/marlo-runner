@@ -25,7 +25,7 @@ pipeline {
           def tasks = [:]
           for(int i = 0; i < axisValues.size(); i++) {
             def axisValue = axisValues[i]
-            def label = prefix + '-' + i
+            def label = prefix
             tasks[axisValue] = {
               stage(axisValue) {
                 node(label) {
@@ -37,38 +37,6 @@ pipeline {
           }
 
           parallel tasks
-        }
-
-      }
-    }
-
-    stage('Test') {
-      parallel {
-        stage('Test 0') {
-          steps {
-            script {
-              build 'test-build'
-            }
-
-          }
-        }
-
-        stage('Test 1') {
-          steps {
-            script {
-              build 'test-build'
-            }
-
-          }
-        }
-
-        stage('Test 2') {
-          steps {
-            script {
-              build 'test-build'
-            }
-
-          }
         }
 
       }

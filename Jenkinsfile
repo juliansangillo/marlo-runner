@@ -1,5 +1,10 @@
 pipeline {
-  agent none
+  agent {
+    node {
+      label 'jenkins-agent-0'
+    }
+
+  }
   stages {
     stage('Initialize') {
       steps {

@@ -18,32 +18,31 @@ pipeline {
     }
 
     stage('Build') {
+      when {
+        expression {
+          return env.PLATFORMS.replaceAll("\\s","") != ""
+        }
+
+      }
       steps {
         script {
           def prefix = 'jenkins-agent'
-          if(env.PLATFORMS.replaceAll("\\s","") != "") {
-            def axisValues = env.PLATFORMS.split(' ')
-            def tasks = [:]
-            for(int i = 0; i < axisValues.size(); i++) {
-              def axisValue = axisValues[i]
-              def label = prefix + '-' + i
-              tasks[axisValue] = {
-                stage(axisValue) {
-                  node(label) {
-                    println "${label}"
-                    println "Node=${env.NODE_NAME}"
-                  }
+          def axisValues = env.PLATFORMS.split(' ')
+          def tasks = [:]
+          for(int i = 0; i < axisValues.size(); i++) {
+            def axisValue = axisValues[i]
+            def label = prefix + '-' + i
+            tasks[axisValue] = {
+              stage(axisValue) {
+                node(label) {
+                  println "${label}"
+                  println "Node=${env.NODE_NAME}"
                 }
               }
             }
+          }
 
-            parallel tasks
-          }
-          else {
-            when {
-              expression { true }
-            }
-          }
+          parallel tasks
         }
 
       }

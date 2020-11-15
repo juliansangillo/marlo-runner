@@ -1,3 +1,7 @@
+libraries {
+  lib('drg-jenkins-library@1.0')
+}
+
 pipeline {
   agent none
   stages {
@@ -15,7 +19,7 @@ pipeline {
           env.PROJECT_PATH="./Marlo Runner"
           env.BUILD_NAME="MarloRunner"
           env.VERSION="1.0.0"
-          env.PLATFORMS="StandaloneLinux64 StandaloneWindows64 StandaloneWindows32 StandaloneOSX"
+          env.PLATFORMS="StandaloneLinux64 StandaloneWindows64"
           env.IS_DEVELOPMENT_BUILD=false
         }
 
@@ -32,8 +36,6 @@ pipeline {
       }
       steps {
         script {
-          @Library('drg-jenkins-library@1.0') _
-
           parallelize 'jenkins-agent', env.PLATFORMS.split(' '), {
 
             println "${label}"

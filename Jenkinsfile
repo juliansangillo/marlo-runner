@@ -1,5 +1,5 @@
 #!groovy
-@Library('drg-jenkins-library@1.0') _
+@Library('drg-jenkins-library@master') _
 
 pipeline {
   agent none

@@ -1,12 +1,13 @@
 pipeline {
-  agent {
-    node {
-      label 'jenkins-agent-0'
-    }
-
-  }
+  agent none
   stages {
     stage('Initialize') {
+      agent {
+        node {
+          label 'jenkins-agent-0'
+        }
+
+      }
       steps {
         echo 'Initialize starting .....'
         script {

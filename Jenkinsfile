@@ -32,6 +32,8 @@ pipeline {
       }
       steps {
         script {
+          @Library('drg-jenkins-library@1.0') _
+
           parallelize 'jenkins-agent', env.PLATFORMS.split(' '), {
 
             println "${label}"

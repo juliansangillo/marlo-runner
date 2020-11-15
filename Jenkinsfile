@@ -40,7 +40,9 @@ pipeline {
             parallel tasks
           }
           else {
-            Utils.markStageSkippedForConditional('Build')
+            when {
+              expression { true }
+            }
           }
         }
 

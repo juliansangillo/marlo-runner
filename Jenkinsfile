@@ -21,9 +21,8 @@ pipeline {
       steps {
         script {
           def prefix = 'jenkins-agent'
-          def axisValues = env.PLATFORMS.split(' ')
-
-          if(axisValues.size() > 0) {
+          if(env.PLATFORMS.replaceAll("\\s","") != "") {
+            def axisValues = env.PLATFORMS.split(' ')
             def tasks = [:]
             for(int i = 0; i < axisValues.size(); i++) {
               def axisValue = axisValues[i]

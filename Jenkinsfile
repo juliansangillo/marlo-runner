@@ -32,19 +32,13 @@ pipeline {
       }
       steps {
         script {
-          println "Before=${env.NODE_NAME}"
-        }
-
-        script {
           parallelize 'jenkins-agent', env.PLATFORMS.split(' '), {
 
-            println "Node=${env.NODE_NAME}"
+            println "Build started on Node ${env.NODE_NAME} ..."
+            git(url: 'https://github.com/juliansangillo/marlo-runner', branch: 'alpha', credentialsId: 'github-credentials', changelog: true)
+            sh 'ls'
 
           }
-        }
-
-        script {
-          println "After=${env.NODE_NAME}"
         }
 
       }

@@ -32,11 +32,19 @@ pipeline {
       }
       steps {
         script {
+          println "Before=${env.NODE_NAME}"
+        }
+
+        script {
           parallelize 'jenkins-agent', env.PLATFORMS.split(' '), {
 
             println "Node=${env.NODE_NAME}"
 
           }
+        }
+
+        script {
+          println "After=${env.NODE_NAME}"
         }
 
       }

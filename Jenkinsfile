@@ -1,6 +1,3 @@
-#!groovy
-@Library('drg-jenkins-library@master') _
-
 pipeline {
   agent none
   stages {
@@ -37,7 +34,6 @@ pipeline {
         script {
           parallelize 'jenkins-agent', env.PLATFORMS.split(' '), {
 
-            println "${label}"
             println "Node=${env.NODE_NAME}"
 
           }

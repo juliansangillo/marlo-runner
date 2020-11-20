@@ -35,7 +35,7 @@ pipeline {
           parallelize 'jenkins-agent', env.PLATFORMS.split(' '), {
 
             println "Build started on Node ${env.NODE_NAME} ..."
-            git(url: 'https://github.com/juliansangillo/marlo-runner', branch: 'alpha', credentialsId: 'github-credentials', changelog: true)
+            git(url: 'https://github.com/juliansangillo/marlo-runner', branch: 'alpha', credentialsId: 'github-credentials', changelog: false)
             sh 'ls'
 
           }

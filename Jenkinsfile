@@ -15,7 +15,7 @@ pipeline {
           env.PROJECT_PATH="./Marlo Runner"
           env.BUILD_NAME="MarloRunner"
           env.VERSION="1.0.0"
-          env.PLATFORMS="StandaloneLinux64 StandaloneWindows64 StandaloneWindows32 StandaloneOSX"
+          env.PLATFORMS="StandaloneWindows64 StandaloneWindows32"
           env.IS_DEVELOPMENT_BUILD=false
         }
 
@@ -35,7 +35,7 @@ pipeline {
           parallelize 'jenkins-agent', env.PLATFORMS.split(' '), {
 
             println "Build started on Node ${env.NODE_NAME} ..."
-            git(url: 'https://github.com/juliansangillo/marlo-runner', branch: 'alpha', credentialsId: 'github-credentials', changelog: false)
+            git(url: 'https://github.com/juliansangillo/marlo-runner', branch: 'alpha', credentialsId: 'github-credentials', changelog: true)
             sh 'ls'
 
           }

@@ -24,6 +24,12 @@ pipeline {
     }
 
     stage('Preparing for build') {
+      agent {
+        node {
+          label 'jenkins-agent-0'
+        }
+
+      }
       when {
         beforeAgent true
         expression {

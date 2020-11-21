@@ -63,7 +63,7 @@ pipeline {
 
             echo "Build starting on Node ${env.NODE_NAME} ..."
             googleStorageDownload(bucketUri: "gs://${env.TMP_BUCKET}/${env.BUILD_TAG}.tar.gz", localDirectory: '/tmp', credentialsId: 'unity-firebuild')
-            tar -xf /tmp/${env.BUILD_TAG}.tar.gz
+            sh 'tar -xf /tmp/$BUILD_TAG.tar.gz'
             sh 'ls'
             echo "Build complete"
 

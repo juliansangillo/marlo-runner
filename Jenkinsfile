@@ -20,8 +20,8 @@ pipeline {
         }
 
         checkout(scm: [$class: 'GitSCM', branches: [[name: 'alpha']], userRemoteConfigs: [[credentialsId: 'github-credentials', url: 'https://github.com/juliansangillo/marlo-runner.git']]], changelog: true, poll: true)
-        sh 'ls'
-        googleStorageUpload(credentialsId: 'unity-firebuild', bucket: "gs://$TMP_BUCKET/$JOB_NAME-$BUILD_NUMBER", pattern: '*')
+        sh 'ls ..'
+        googleStorageUpload(credentialsId: 'unity-firebuild', bucket: "gs://$TMP_BUCKET/$JOB_NAME/$BUILD_NUMBER", pattern: '*')
         echo 'Initialize complete'
       }
     }

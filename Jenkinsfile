@@ -22,7 +22,11 @@ pipeline {
         checkout(scm: [$class: 'GitSCM', branches: [[name: 'alpha']], userRemoteConfigs: [[credentialsId: 'github-credentials', url: 'https://github.com/juliansangillo/marlo-runner.git']]], changelog: true, poll: true)
         sh '''ls
 ls ..'''
-        googleStorageUpload(credentialsId: 'unity-firebuild', bucket: "gs://$TMP_BUCKET/$JOB_NAME/$BUILD_NUMBER", pattern: "${env.WORKSPACE}")
+        script {
+          def working_dir = sh(returnStdout: true, script: "basename ${env.WORKPSACE}").trim()
+        }
+
+        googleStorageUpload(credentialsId: 'unity-firebuild', bucket: "gs://$TMP_BUCKET/$JOB_NAME/$BUILD_NUMBER", pattern: "../$working_dir")
         echo 'Initialize complete'
       }
     }

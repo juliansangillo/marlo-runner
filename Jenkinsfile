@@ -8,6 +8,13 @@ pipeline {
         }
 
       }
+      when {
+        beforeAgent true
+        expression {
+          return null
+        }
+
+      }
       steps {
         echo 'Initialize starting .....'
         script {
@@ -43,6 +50,7 @@ ls ..'''
           parallelize 'jenkins-agent', env.PLATFORMS.split(' '), {
 
             println "Build started on Node ${env.NODE_NAME} ..."
+            checkout scm
             sh 'ls'
 
           }

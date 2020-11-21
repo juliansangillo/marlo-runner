@@ -8,13 +8,6 @@ pipeline {
         }
 
       }
-      when {
-        beforeAgent true
-        expression {
-          return null
-        }
-
-      }
       steps {
         echo 'Initialize starting .....'
         script {
@@ -26,14 +19,12 @@ pipeline {
           env.IS_DEVELOPMENT_BUILD=false
         }
 
-        checkout(scm: [$class: 'GitSCM', branches: [[name: 'alpha']], userRemoteConfigs: [[credentialsId: 'github-credentials', url: 'https://github.com/juliansangillo/marlo-runner.git']]], changelog: true, poll: true)
         sh '''ls
 ls ..'''
         script {
           working_dir = sh(returnStdout: true, script: 'basename $(pwd)').trim()
         }
 
-        googleStorageUpload(credentialsId: 'unity-firebuild', bucket: "gs://$TMP_BUCKET/$JOB_NAME/$BUILD_NUMBER/$working_dir", pattern: '**')
         echo 'Initialize complete'
       }
     }

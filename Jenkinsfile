@@ -62,7 +62,9 @@ pipeline {
           parallelize 'jenkins-agent', env.PLATFORMS.split(' '), {
 
             echo "Build starting on Node ${env.NODE_NAME} ..."
-            googleStorageDownload(bucketUri: "gs://${env.TMP_BUCKET}/${env.BUILD_TAG}.tar.gz", localDirectory: '/tmp', credentialsId: 'unity-firebuild')
+            lock('google-storage-repo-archive') {
+              googleStorageDownload(bucketUri: "gs://${env.TMP_BUCKET}/${env.BUILD_TAG}.tar.gz", localDirectory: '/tmp', credentialsId: 'unity-firebuild')
+            }
             sh 'tar -xf /tmp/$BUILD_TAG.tar.gz'
             sh 'ls'
             echo "Build complete"

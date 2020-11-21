@@ -77,7 +77,7 @@ ls ..'''
           }
           steps {
             script {
-              checkout scm
+              checkout([$class: 'GitSCM', branches: [[name: 'beta']], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[credentialsId: 'github-credentials', url: 'https://github.com/juliansangillo/marlo-runner.git']]])
             }
 
           }

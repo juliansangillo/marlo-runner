@@ -9,7 +9,7 @@ pipeline {
 
       }
       steps {
-        echo 'Initialize starting .....'
+        echo "Initialize starting on Node ${env.NODE_NAME} ..."
         script {
           env.LICENSE=""
           env.PROJECT_PATH="./Marlo Runner"
@@ -19,12 +19,9 @@ pipeline {
           env.IS_DEVELOPMENT_BUILD=false
         }
 
-        sh '''ls
-ls ..'''
-        script {
-          working_dir = sh(returnStdout: true, script: 'basename $(pwd)').trim()
-        }
-
+        checkout scm
+        sh 'tar -czf /tmp/$BUILD_TAG.tar.gz .'
+        googleStorageUpload(credentialsId: 'unity-firebuild', bucket: "gs://${env.TMP_BUCKET}", pattern: "/tmp/${env.BUILD_TAG}.tar.gz")
         echo 'Initialize complete'
       }
     }
@@ -33,7 +30,7 @@ ls ..'''
       when {
         beforeAgent true
         expression {
-          return null
+          return env.PLATFORMS.replaceAll("\\s","") != ""
         }
 
       }
@@ -42,43 +39,7 @@ ls ..'''
           parallelize 'jenkins-agent', env.PLATFORMS.split(' '), {
 
             println "Build started on Node ${env.NODE_NAME} ..."
-            checkout scm
             sh 'ls'
-
-          }
-        }
-
-      }
-    }
-
-    stage('Test 1') {
-      parallel {
-        stage('Test 1') {
-          agent {
-            node {
-              label 'jenkins-agent-0'
-            }
-
-          }
-          steps {
-            script {
-              checkout scm
-            }
-
-          }
-        }
-
-        stage('Test 2') {
-          agent {
-            node {
-              label 'jenkins-agent-1'
-            }
-
-          }
-          steps {
-            script {
-              checkout([$class: 'GitSCM', branches: [[name: 'beta']], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[credentialsId: 'github-credentials', url: 'https://github.com/juliansangillo/marlo-runner.git']]])
-            }
 
           }
         }

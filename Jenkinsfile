@@ -26,7 +26,7 @@ ls ..'''
           working_dir = sh(returnStdout: true, script: 'basename $(pwd)').trim()
         }
 
-        googleStorageUpload(credentialsId: 'unity-firebuild', bucket: "gs://$TMP_BUCKET/$JOB_NAME/$BUILD_NUMBER", pattern: "../$working_dir")
+        googleStorageUpload(credentialsId: 'unity-firebuild', bucket: "gs://$TMP_BUCKET/$JOB_NAME/$BUILD_NUMBER", pattern: "../${working_dir}/")
         echo 'Initialize complete'
       }
     }

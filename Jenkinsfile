@@ -19,10 +19,24 @@ pipeline {
           env.IS_DEVELOPMENT_BUILD=false
         }
 
-        checkout scm
-        sh 'tar -czf /tmp/$BUILD_TAG.tar.gz .'
-        googleStorageUpload(credentialsId: 'unity-firebuild', bucket: "gs://${env.TMP_BUCKET}", pattern: "/tmp/${env.BUILD_TAG}.tar.gz")
         echo 'Initialize complete'
+      }
+    }
+
+    stage('Preparing for build') {
+      when {
+        beforeAgent true
+        expression {
+          return env.PLATFORMS.replaceAll("\\s","") != ""
+        }
+
+      }
+      steps {
+        echo '"Preparing for build starting on Node ${env.NODE_NAME} ..."'
+        checkout scm
+        sh 'tar -czf $BUILD_TAG.tar.gz .'
+        googleStorageUpload(credentialsId: 'unity-firebuild', bucket: "gs://${env.TMP_BUCKET}", pattern: "${env.BUILD_TAG}.tar.gz")
+        echo 'Preparing for build complete'
       }
     }
 
@@ -38,8 +52,11 @@ pipeline {
         script {
           parallelize 'jenkins-agent', env.PLATFORMS.split(' '), {
 
-            println "Build started on Node ${env.NODE_NAME} ..."
+            echo "Build starting on Node ${env.NODE_NAME} ..."
+            googleStorageDownload(bucketUri: "gs://${env.TMP_BUCKET}/${env.BUILD_TAG}.tar.gz", localDirectory: '/tmp', credentialsId: 'unity-firebuild')
+            tar -xf /tmp/${env.BUILD_TAG}.tar.gz
             sh 'ls'
+            echo "Build complete"
 
           }
         }

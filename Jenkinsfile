@@ -20,7 +20,8 @@ pipeline {
         }
 
         checkout(scm: [$class: 'GitSCM', branches: [[name: 'alpha']], userRemoteConfigs: [[credentialsId: 'github-credentials', url: 'https://github.com/juliansangillo/marlo-runner.git']]], changelog: true, poll: true)
-        googleStorageUpload(credentialsId: 'unity-firebuild', bucket: "gs://$TMP_BUCKET/$JOB_NAME-$BUILD_NUMBER", pattern: '.')
+        sh 'ls'
+        googleStorageUpload(credentialsId: 'unity-firebuild', bucket: "gs://$TMP_BUCKET/$JOB_NAME-$BUILD_NUMBER", pattern: '*')
         echo 'Initialize complete'
       }
     }
@@ -37,7 +38,6 @@ pipeline {
           parallelize 'jenkins-agent', env.PLATFORMS.split(' '), {
 
             println "Build started on Node ${env.NODE_NAME} ..."
-            googleStorageDownload(bucketUri: "gs://$TMP_BUCKET/$JOB_NAME-$BUILD_NUMBER", localDirectory: '.', credentialsId: 'unity-firebuild')
             sh 'ls'
 
           }

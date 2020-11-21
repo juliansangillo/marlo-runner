@@ -31,8 +31,9 @@ ls ..'''
 
     stage('Build') {
       when {
+        beforeAgent true
         expression {
-          return env.PLATFORMS.replaceAll("\\s","") != ""
+          return null
         }
 
       }
@@ -43,6 +44,41 @@ ls ..'''
             println "Build started on Node ${env.NODE_NAME} ..."
             checkout scm
             sh 'ls'
+
+          }
+        }
+
+      }
+    }
+
+    stage('Test 1') {
+      parallel {
+        stage('Test 1') {
+          agent {
+            node {
+              label 'jenkins-agent-0'
+            }
+
+          }
+          steps {
+            script {
+              checkout scm
+            }
+
+          }
+        }
+
+        stage('Test 2') {
+          agent {
+            node {
+              label 'jenkins-agent-1'
+            }
+
+          }
+          steps {
+            script {
+              checkout scm
+            }
 
           }
         }

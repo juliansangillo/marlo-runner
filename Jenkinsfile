@@ -38,10 +38,13 @@ pipeline {
 
       }
       steps {
-        echo '"Preparing for build starting on Node ${env.NODE_NAME} ..."'
+        echo "Preparing for build starting on Node ${env.NODE_NAME} ..."
         checkout scm
-        sh 'tar -czf $BUILD_TAG.tar.gz .'
-        googleStorageUpload(credentialsId: 'unity-firebuild', bucket: "gs://${env.TMP_BUCKET}", pattern: "${env.BUILD_TAG}.tar.gz")
+        sh 'tar -czf /tmp/$BUILD_TAG.tar.gz .'
+        dir(path: '/tmp') {
+          googleStorageUpload(credentialsId: 'unity-firebuild', bucket: "gs://${env.TMP_BUCKET}", pattern: "${env.BUILD_TAG}.tar.gz")
+        }
+
         echo 'Preparing for build complete'
       }
     }

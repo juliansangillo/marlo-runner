@@ -81,9 +81,8 @@ pipeline {
           parallelize 'jenkins-agent', env.PLATFORMS.split(' '), {
 
             echo "Build starting on Node ${env.NODE_NAME} ..."
-            lock('git-repository-api') {
+            dir("${env.NODE_NAME}") {
               checkout scm
-              sleep 5
             }
             sh 'ls'
             echo "Build complete"

@@ -45,8 +45,7 @@ pipeline {
 
         sh 'gcloud compute disks create jenkins-shared-workspace --size=50GB --type=pd-standard --zone=us-east1-b'
         sh 'gcloud compute instances attach-disk $NODE_NAME --disk=jenkins-shared-workspace --device-name=jsw --zone=us-east1-b'
-        sh 'apt-get install e2fsprogs'
-        sh 'mkfs.ext4 -m 0 -E lazy_itable_init=0,lazy_journal_init=0,discard /dev/jsw'
+        sh 'sudo mkfs.ext4 -m 0 -E lazy_itable_init=0,lazy_journal_init=0,discard /dev/jsw'
         sh 'mount -o discard,defaults /dev/jsw .'
         checkout scm
         echo 'Preparing for build complete'

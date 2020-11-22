@@ -39,7 +39,7 @@ pipeline {
       }
       steps {
         echo "Preparing for build starting on Node ${env.NODE_NAME} ..."
-        withCredentials(bindings: [[$class: 'MultiBinding', credentialsId: 'unity-firebuild', variable: 'SA_KEY']]) {
+        withCredentials(bindings: [file(credentialsId:'jenkins-sa', variable: 'SA_KEY')]) {
           sh "gcloud auth activate-service-account --key-file=${SA_KEY}"
         }
 
@@ -65,7 +65,7 @@ pipeline {
           parallelize 'jenkins-agent', env.PLATFORMS.split(' '), {
 
             echo "Build starting on Node ${env.NODE_NAME} ..."
-            withCredentials([[$class: 'MultiBinding', credentialsId: 'unity-firebuild', variable: 'SA_KEY']]) {
+            withCredentials([file(credentialsId:'jenkins-sa', variable: 'SA_KEY')]) {
               sh "gcloud auth activate-service-account --key-file=${SA_KEY}"
             }
             sh 'gcloud compute instances attach-disk $NODE_NAME --disk=jenkins-shared-workspace --device-name=jsw'

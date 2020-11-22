@@ -39,6 +39,10 @@ pipeline {
       }
       steps {
         echo "Preparing for build starting on Node ${env.NODE_NAME} ..."
+        withCredentials(bindings: [[$class: 'MultiBinding', credentialsId: 'unity-firebuild', variable: 'SA_KEY']]) {
+          sh "gcloud auth activate-service-account --key-file=${SA_KEY}"
+        }
+
         sh 'gcloud compute disks create jenkins-shared-workspace --size=50GB --type=pd-standard'
         sh 'gcloud compute instances attach-disk $NODE_NAME --disk=jenkins-shared-workspace --device-name=jsw'
         sh 'mkfs.ext4 -m 0 -E lazy_itable_init=0,lazy_journal_init=0,discard /dev/jsw'
@@ -61,6 +65,9 @@ pipeline {
           parallelize 'jenkins-agent', env.PLATFORMS.split(' '), {
 
             echo "Build starting on Node ${env.NODE_NAME} ..."
+            withCredentials([[$class: 'MultiBinding', credentialsId: 'unity-firebuild', variable: 'SA_KEY']]) {
+              sh "gcloud auth activate-service-account --key-file=${SA_KEY}"
+            }
             sh 'gcloud compute instances attach-disk $NODE_NAME --disk=jenkins-shared-workspace --device-name=jsw'
             sh 'mount -o discard,defaults /dev/jsw .'
             sh 'ls'

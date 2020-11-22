@@ -15,7 +15,7 @@ pipeline {
           env.PROJECT_PATH="./Marlo Runner"
           env.BUILD_NAME="MarloRunner"
           env.VERSION="1.0.0"
-          env.PLATFORMS="StandaloneWindows32 StandaloneOSX"
+          env.PLATFORMS="StandaloneOSX StandaloneWindows32"
           env.IS_DEVELOPMENT_BUILD=false
         }
 

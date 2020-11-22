@@ -33,7 +33,7 @@ pipeline {
       when {
         beforeAgent true
         expression {
-          return env.PLATFORMS.replaceAll("\\s","") != ""
+          return null
         }
 
       }
@@ -53,7 +53,7 @@ pipeline {
       when {
         beforeAgent true
         expression {
-          return env.PLATFORMS.replaceAll("\\s","") != ""
+          return null
         }
 
       }
@@ -66,6 +66,24 @@ pipeline {
               googleStorageDownload(bucketUri: "gs://${env.TMP_BUCKET}/${env.BUILD_TAG}.tar.gz", localDirectory: '/tmp', credentialsId: 'unity-firebuild')
             }
             sh 'tar -xf /tmp/$BUILD_TAG.tar.gz'
+            sh 'ls'
+            echo "Build complete"
+
+          }
+        }
+
+      }
+    }
+
+    stage('Test Build') {
+      steps {
+        script {
+          parallelize 'jenkins-agent', env.PLATFORMS.split(' '), {
+
+            echo "Build starting on Node ${env.NODE_NAME} ..."
+            lock('git-repository-api') {
+              checkout scm
+            }
             sh 'ls'
             echo "Build complete"
 

@@ -33,18 +33,17 @@ pipeline {
       when {
         beforeAgent true
         expression {
-          return null
+          return env.PLATFORMS.replaceAll("\\s","") != ""
         }
 
       }
       steps {
         echo "Preparing for build starting on Node ${env.NODE_NAME} ..."
+        sh 'gcloud compute disks create jenkins-shared-workspace --size=50GB --type=pd-standard'
+        sh 'gcloud compute instances attach-disk $NODE_NAME --disk=jenkins-shared-workspace --device-name=jsw'
+        sh 'mkfs.ext4 -m 0 -E lazy_itable_init=0,lazy_journal_init=0,discard /dev/jsw'
+        sh 'mount -o discard,defaults /dev/jsw .'
         checkout scm
-        sh 'tar -czf /tmp/$BUILD_TAG.tar.gz .'
-        dir(path: '/tmp') {
-          googleStorageUpload(credentialsId: 'unity-firebuild', bucket: "gs://${env.TMP_BUCKET}", pattern: "${env.BUILD_TAG}.tar.gz")
-        }
-
         echo 'Preparing for build complete'
       }
     }
@@ -53,7 +52,7 @@ pipeline {
       when {
         beforeAgent true
         expression {
-          return null
+          return env.PLATFORMS.replaceAll("\\s","") != ""
         }
 
       }
@@ -62,10 +61,8 @@ pipeline {
           parallelize 'jenkins-agent', env.PLATFORMS.split(' '), {
 
             echo "Build starting on Node ${env.NODE_NAME} ..."
-            lock('google-storage-repo-archive') {
-              googleStorageDownload(bucketUri: "gs://${env.TMP_BUCKET}/${env.BUILD_TAG}.tar.gz", localDirectory: '/tmp', credentialsId: 'unity-firebuild')
-            }
-            sh 'tar -xf /tmp/$BUILD_TAG.tar.gz'
+            sh 'gcloud compute instances attach-disk $NODE_NAME --disk=jenkins-shared-workspace --device-name=jsw'
+            sh 'mount -o discard,defaults /dev/jsw .'
             sh 'ls'
             echo "Build complete"
 
@@ -76,6 +73,13 @@ pipeline {
     }
 
     stage('Test Build') {
+      when {
+        beforeAgent true
+        expression {
+          return null
+        }
+
+      }
       steps {
         script {
           parallelize 'jenkins-agent', env.PLATFORMS.split(' '), {

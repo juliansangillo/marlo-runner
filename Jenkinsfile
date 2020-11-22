@@ -81,7 +81,8 @@ pipeline {
           parallelize 'jenkins-agent', env.PLATFORMS.split(' '), {
 
             echo "Build starting on Node ${env.NODE_NAME} ..."
-            checkout scm
+            scmUrl = scm.getUserRemoteConfigs()[0].getUrl()
+            sh 'git clone "$scmUrl" . -b $BRANCH_NAME'
             sh 'ls'
             echo "Build complete"
 

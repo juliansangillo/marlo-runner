@@ -83,7 +83,7 @@ pipeline {
             echo "Build starting on Node ${env.NODE_NAME} ..."
             lock('git-repository-api') {
               checkout scm
-              sleep 5s
+              sleep 5
             }
             sh 'ls'
             echo "Build complete"

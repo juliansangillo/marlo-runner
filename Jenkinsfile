@@ -83,7 +83,13 @@ pipeline {
             echo "Build starting on Node ${env.NODE_NAME} ..."
             lock('git-repository-api') {
               waitUntil {
-                checkout scm
+                try {
+                  checkout scm
+                  return true
+                }
+                catch(error) {
+                  return false
+                }
               }
             }
             sh 'ls'

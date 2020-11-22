@@ -81,9 +81,7 @@ pipeline {
           parallelize 'jenkins-agent', env.PLATFORMS.split(' '), {
 
             echo "Build starting on Node ${env.NODE_NAME} ..."
-            dir("${env.NODE_NAME}") {
-              checkout scm
-            }
+            checkout scm
             sh 'ls'
             echo "Build complete"
 
@@ -100,5 +98,6 @@ pipeline {
   }
   options {
     skipDefaultCheckout(true)
+    parallelsAlwaysFailFast()
   }
 }

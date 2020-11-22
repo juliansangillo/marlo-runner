@@ -88,6 +88,7 @@ pipeline {
                   return true
                 }
                 catch(error) {
+                  sleep 5s
                   return false
                 }
               }

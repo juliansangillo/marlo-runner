@@ -73,7 +73,9 @@ pipeline {
 
             echo "Build starting on Node ${env.NODE_NAME} ..."
             withCredentials([file(credentialsId:'jenkins-sa', variable: 'SA_KEY')]) {
-              sh "gcloud auth activate-service-account --key-file=${SA_KEY}"
+              lock('gcloud.auth.activate-service-account') {
+                sh "gcloud auth activate-service-account --key-file=${SA_KEY}"
+              }
             }
             sh 'gcloud compute instances attach-disk $NODE_NAME --disk=jenkins-shared-workspace --zone=us-east1-b'
             sh 'mkdir jenkins-shared-workspace'

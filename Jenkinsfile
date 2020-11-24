@@ -19,7 +19,7 @@ pipeline {
           env.PROJECT_PATH="./Marlo Runner"
           env.BUILD_NAME="MarloRunner"
           env.VERSION="1.0.0"
-          env.PLATFORMS="StandaloneOSX StandaloneWindows32"
+          env.PLATFORMS="StandaloneLinux64 StandaloneWindows64 StandaloneWindows32"
           env.IS_DEVELOPMENT_BUILD=false
         }
 
@@ -61,6 +61,8 @@ pipeline {
           parallelize 'jenkins-agent', env.PLATFORMS.split(' '), {
 
             echo "Build starting on Node ${env.NODE_NAME} ..."
+            sh 'touch ${env.NODE_NAME}'
+            sh 'ls'
             sh 'ls /tmp/repositories'
             echo "Build complete"
 

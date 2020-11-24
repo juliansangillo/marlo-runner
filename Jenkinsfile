@@ -10,7 +10,10 @@ pipeline {
       }
       steps {
         echo "Initialize starting on Node ${env.NODE_NAME} ..."
-        checkout scm
+        dir(path: '~/repositories') {
+          checkout scm
+        }
+
         script {
           env.LICENSE=""
           env.PROJECT_PATH="./Marlo Runner"
@@ -40,7 +43,7 @@ pipeline {
       }
       steps {
         echo "Preparing for build starting on Node ${env.NODE_NAME} ..."
-        sh 'ls'
+        sh 'ls ~/repositories'
         echo 'Preparing for build complete'
       }
     }
@@ -58,31 +61,7 @@ pipeline {
           parallelize 'jenkins-agent', env.PLATFORMS.split(' '), {
 
             echo "Build starting on Node ${env.NODE_NAME} ..."
-            sh 'ls'
-            echo "Build complete"
-
-          }
-        }
-
-      }
-    }
-
-    stage('Test Build') {
-      when {
-        beforeAgent true
-        expression {
-          return null
-        }
-
-      }
-      steps {
-        script {
-          parallelize 'jenkins-agent', env.PLATFORMS.split(' '), {
-
-            echo "Build starting on Node ${env.NODE_NAME} ..."
-            env.REPO_URL = scm.getUserRemoteConfigs()[0].getUrl()
-            sh 'git clone "$REPO_URL" . -b $BRANCH_NAME'
-            sh 'ls'
+            sh 'ls ~/repositories'
             echo "Build complete"
 
           }

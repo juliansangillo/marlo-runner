@@ -1,15 +1,16 @@
 pipeline {
-  agent {
-    node {
-      label 'jenkins-agent'
-    }
-
-  }
+  agent none
   stages {
     stage('Initialize') {
-      agent any
+      agent {
+        node {
+          label 'jenkins-agent'
+        }
+
+      }
       steps {
         echo "Initialize starting on Node ${env.NODE_NAME} ..."
+        checkout scm
         script {
           env.LICENSE=""
           env.PROJECT_PATH="./Marlo Runner"
@@ -24,7 +25,12 @@ pipeline {
     }
 
     stage('Preparing for build') {
-      agent any
+      agent {
+        node {
+          label 'jenkins-agent'
+        }
+
+      }
       when {
         beforeAgent true
         expression {
@@ -40,7 +46,6 @@ pipeline {
     }
 
     stage('Build') {
-      agent any
       when {
         beforeAgent true
         expression {
@@ -92,6 +97,7 @@ pipeline {
     TMP_BUCKET = 'unity-firebuild-tmp'
   }
   options {
+    skipDefaultCheckout(true)
     parallelsAlwaysFailFast()
   }
 }

@@ -4,7 +4,7 @@ pipeline {
     stage('Initialize') {
       agent {
         node {
-          label 'jenkins-agent-0'
+          label 'jenkins-agent'
         }
 
       }
@@ -26,7 +26,7 @@ pipeline {
     stage('Preparing for build') {
       agent {
         node {
-          label 'jenkins-agent-0'
+          label 'jenkins-agent'
         }
 
       }
@@ -39,27 +39,7 @@ pipeline {
       }
       steps {
         echo "Preparing for build starting on Node ${env.NODE_NAME} ..."
-        withCredentials(bindings: [file(credentialsId:'jenkins-sa', variable: 'SA_KEY')]) {
-          sh "gcloud auth activate-service-account --key-file=${SA_KEY}"
-          sh 'ls ~/.config/gcloud/**/*'
-          dir(path: '/home/jenkins') {
-            stash(name: 'jenkins-sa', includes: '.config/gcloud/**/*')
-          }
-
-        }
-
-        sh 'gcloud compute disks create jenkins-shared-workspace --size=50GB --type=pd-standard --zone=us-east1-b'
-        sh 'gcloud compute instances attach-disk $NODE_NAME --disk=jenkins-shared-workspace --zone=us-east1-b'
-        sh 'sudo mkfs.ext4 -m 0 -E lazy_itable_init=0,lazy_journal_init=0,discard /dev/sdb'
-        sh 'mkdir jenkins-shared-workspace'
-        sh 'sudo mount -o discard,defaults,rw /dev/sdb jenkins-shared-workspace'
-        sh 'sudo chown -R jenkins:jenkins jenkins-shared-workspace'
-        dir(path: 'jenkins-shared-workspace') {
-          checkout scm
-        }
-
-        sh 'sudo umount jenkins-shared-workspace'
-        sh 'gcloud compute instances detach-disk $NODE_NAME --disk=jenkins-shared-workspace --zone=us-east1-b'
+        checkout scm
         echo 'Preparing for build complete'
       }
     }
@@ -77,17 +57,7 @@ pipeline {
           parallelize 'jenkins-agent', env.PLATFORMS.split(' '), {
 
             echo "Build starting on Node ${env.NODE_NAME} ..."
-            dir('/home/jenkins') {
-              unstash('jenkins-sa')
-            }
-            sh 'gcloud compute instances attach-disk $NODE_NAME --disk=jenkins-shared-workspace --zone=us-east1-b'
-            sh 'mkdir jenkins-shared-workspace'
-            sh 'sudo mount -o discard,defaults,ro /dev/sdb jenkins-shared-workspace'
-            dir('jenkins-shared-workspace') {
-              sh 'ls'
-            }
-            sh 'sudo umount jenkins-shared-workspace'
-            sh 'gcloud compute instances detach-disk $NODE_NAME --disk=jenkins-shared-workspace --zone=us-east1-b'
+            sh 'ls'
             echo "Build complete"
 
           }

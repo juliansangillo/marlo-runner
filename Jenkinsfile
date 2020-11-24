@@ -59,6 +59,7 @@ pipeline {
       steps {
         script {
           parallelize 'jenkins-agent', env.PLATFORMS.split(' '), {
+            AXIS_NAME ->
             echo "Build starting on Node ${env.NODE_NAME} ..."
             sh "touch ${AXIS_NAME}"
             sh 'ls'

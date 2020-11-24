@@ -42,7 +42,10 @@ pipeline {
         withCredentials(bindings: [file(credentialsId:'jenkins-sa', variable: 'SA_KEY')]) {
           sh "gcloud auth activate-service-account --key-file=${SA_KEY}"
           sh 'ls ~/.config/gcloud/**/*'
-          stash(name: 'jenkins-sa', includes: '/home/jenkins/.config/gcloud/**/*')
+          dir(path: '~') {
+            stash(name: 'jenkins-sa', includes: '.config/gcloud/**/*')
+          }
+
         }
 
         sh 'gcloud compute disks create jenkins-shared-workspace --size=50GB --type=pd-standard --zone=us-east1-b'

@@ -21,6 +21,7 @@ pipeline {
           env.VERSION="1.0.0"
           env.PLATFORMS="StandaloneLinux64 StandaloneWindows64 StandaloneWindows32"
           env.IS_DEVELOPMENT_BUILD=false
+          env.TEST=1
         }
 
         echo 'Initialize complete'
@@ -61,7 +62,8 @@ pipeline {
           parallelize 'jenkins-agent', env.PLATFORMS.split(' '), {
 
             echo "Build starting on Node ${env.NODE_NAME} ..."
-            sh "touch $BUILD_TAG"
+            sh "touch $TEST"
+            env.TEST++
             sh 'ls'
             sh 'ls /tmp/repositories'
             echo "Build complete"

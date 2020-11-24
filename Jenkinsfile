@@ -41,6 +41,7 @@ pipeline {
         echo "Preparing for build starting on Node ${env.NODE_NAME} ..."
         withCredentials(bindings: [file(credentialsId:'jenkins-sa', variable: 'SA_KEY')]) {
           sh "gcloud auth activate-service-account --key-file=${SA_KEY}"
+          stash(name: 'jenkins-sa', includes: '~/.config/gcloud/')
         }
 
         sh 'gcloud compute disks create jenkins-shared-workspace --size=50GB --type=pd-standard --zone=us-east1-b'
@@ -72,6 +73,7 @@ pipeline {
           parallelize 'jenkins-agent', env.PLATFORMS.split(' '), {
 
             echo "Build starting on Node ${env.NODE_NAME} ..."
+            unstash('jenkins-sa')
             sh 'gcloud compute instances attach-disk $NODE_NAME --disk=jenkins-shared-workspace --zone=us-east1-b'
             sh 'mkdir jenkins-shared-workspace'
             sh 'sudo mount -o discard,defaults,rw /dev/sdb jenkins-shared-workspace'

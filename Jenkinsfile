@@ -34,7 +34,7 @@ pipeline {
       }
       steps {
         echo "Preparing for build starting on Node ${env.NODE_NAME} ..."
-        checkout scm
+        sh 'ls'
         echo 'Preparing for build complete'
       }
     }
@@ -92,7 +92,6 @@ pipeline {
     TMP_BUCKET = 'unity-firebuild-tmp'
   }
   options {
-    skipDefaultCheckout(true)
     parallelsAlwaysFailFast()
   }
 }

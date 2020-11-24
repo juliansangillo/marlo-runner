@@ -1,13 +1,13 @@
 pipeline {
-  agent none
+  agent {
+    node {
+      label 'jenkins-agent'
+    }
+
+  }
   stages {
     stage('Initialize') {
-      agent {
-        node {
-          label 'jenkins-agent'
-        }
-
-      }
+      agent any
       steps {
         echo "Initialize starting on Node ${env.NODE_NAME} ..."
         script {
@@ -24,12 +24,7 @@ pipeline {
     }
 
     stage('Preparing for build') {
-      agent {
-        node {
-          label 'jenkins-agent'
-        }
-
-      }
+      agent any
       when {
         beforeAgent true
         expression {
@@ -45,6 +40,7 @@ pipeline {
     }
 
     stage('Build') {
+      agent any
       when {
         beforeAgent true
         expression {

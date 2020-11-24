@@ -10,7 +10,7 @@ pipeline {
       }
       steps {
         echo "Initialize starting on Node ${env.NODE_NAME} ..."
-        dir(path: '~/repositories') {
+        dir(path: '/repositories') {
           checkout scm
         }
 
@@ -43,7 +43,7 @@ pipeline {
       }
       steps {
         echo "Preparing for build starting on Node ${env.NODE_NAME} ..."
-        sh 'ls ~/repositories'
+        sh 'ls /repositories'
         echo 'Preparing for build complete'
       }
     }
@@ -61,7 +61,7 @@ pipeline {
           parallelize 'jenkins-agent', env.PLATFORMS.split(' '), {
 
             echo "Build starting on Node ${env.NODE_NAME} ..."
-            sh 'ls ~/repositories'
+            sh 'ls /repositories'
             echo "Build complete"
 
           }

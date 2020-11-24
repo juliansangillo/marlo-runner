@@ -42,8 +42,8 @@ pipeline {
         withCredentials(bindings: [file(credentialsId:'jenkins-sa', variable: 'SA_KEY')]) {
           sh "gcloud auth activate-service-account --key-file=${SA_KEY}"
           sh 'ls ~/.config/gcloud/**/*'
-          dir(path: '~') {
-            sh 'ls -al'
+          dir(path: '/home/jenkins') {
+            sh 'ls -a'
             stash(name: 'jenkins-sa', includes: '.config/gcloud/**/*')
           }
 
@@ -78,7 +78,7 @@ pipeline {
           parallelize 'jenkins-agent', env.PLATFORMS.split(' '), {
 
             echo "Build starting on Node ${env.NODE_NAME} ..."
-            dir('~') {
+            dir('/home/jenkins') {
               unstash('jenkins-sa')
             }
             sh 'gcloud compute instances attach-disk $NODE_NAME --disk=jenkins-shared-workspace --zone=us-east1-b'

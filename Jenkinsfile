@@ -41,6 +41,7 @@ pipeline {
         echo "Preparing for build starting on Node ${env.NODE_NAME} ..."
         withCredentials(bindings: [file(credentialsId:'jenkins-sa', variable: 'SA_KEY')]) {
           sh "gcloud auth activate-service-account --key-file=${SA_KEY}"
+          sh 'ls ~/.config/gcloud/**/*'
           stash(name: 'jenkins-sa', includes: '~/.config/gcloud/**/*')
         }
 

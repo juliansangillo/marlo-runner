@@ -43,7 +43,8 @@ pipeline {
           sh "gcloud auth activate-service-account --key-file=${SA_KEY}"
           sh 'ls ~/.config/gcloud/**/*'
           dir(path: '~') {
-            stash(name: 'jenkins-sa', includes: '.config/gcloud/**/*', useDefaultExcludes: true)
+            sh 'ls -al'
+            stash(name: 'jenkins-sa', includes: '.config/gcloud/**/*')
           }
 
         }

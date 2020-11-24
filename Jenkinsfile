@@ -77,7 +77,7 @@ pipeline {
             }
             sh 'gcloud compute instances attach-disk $NODE_NAME --disk=jenkins-shared-workspace --zone=us-east1-b'
             sh 'mkdir jenkins-shared-workspace'
-            sh 'sudo mount -o discard,defaults,ro /dev/sdb jenkins-shared-workspace'
+            sh 'sudo mount -o discard,defaults,rw /dev/sdb jenkins-shared-workspace'
             sh 'sudo chown -R jenkins:jenkins jenkins-shared-workspace'
             dir('jenkins-shared-workspace') {
               sh 'ls'

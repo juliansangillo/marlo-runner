@@ -46,7 +46,8 @@ pipeline {
         sh 'gcloud compute disks create jenkins-shared-workspace --size=50GB --type=pd-standard --zone=us-east1-b'
         sh 'gcloud compute instances attach-disk $NODE_NAME --disk=jenkins-shared-workspace --zone=us-east1-b'
         sh 'sudo mkfs.ext4 -m 0 -E lazy_itable_init=0,lazy_journal_init=0,discard /dev/sdb'
-        sh 'sudo mount -o discard,defaults /dev/sdb .'
+        sh 'mkdir jenkins-shared-workspace'
+        sh 'sudo mount -o discard,defaults,rw /dev/sdb jenkins-shared-workspace'
         dir(path: 'jenkins-shared-workspace') {
           checkout scm
         }
@@ -72,8 +73,11 @@ pipeline {
               sh "gcloud auth activate-service-account --key-file=${SA_KEY}"
             }
             sh 'gcloud compute instances attach-disk $NODE_NAME --disk=jenkins-shared-workspace --zone=us-east1-b'
-            sh 'sudo mount -o discard,defaults /dev/sdb .'
-            sh 'ls jenkins-shared-workspace'
+            sh 'mkdir jenkins-shared-workspace'
+            sh 'sudo mount -o discard,defaults,ro /dev/sdb jenkins-shared-workspace'
+            dir('jenkins-shared-workspace') {
+              sh 'ls'
+            }
             echo "Build complete"
 
           }

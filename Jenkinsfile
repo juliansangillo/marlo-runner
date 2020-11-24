@@ -61,7 +61,7 @@ pipeline {
           parallelize 'jenkins-agent', env.PLATFORMS.split(' '), {
 
             echo "Build starting on Node ${env.NODE_NAME} ..."
-            sh "touch $AXIS_NAME"
+            sh "touch $BUILD_TAG"
             sh 'ls'
             sh 'ls /tmp/repositories'
             echo "Build complete"

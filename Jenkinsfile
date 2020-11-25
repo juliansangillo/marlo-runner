@@ -88,10 +88,10 @@ pipeline {
           -license "${env.LICENSE}" \
           -projectPath "${env.PROJECT_PATH}" \
           -platform ${PLATFORM} \
-          "$fileExtensionArg" \
+          ${fileExtensionArg} \
           -buildName "${env.BUILD_NAME}" \
           -version ${env.VERSION} \
-          "${developmentBuildFlag}"
+          ${developmentBuildFlag}
           """
 
           sh "ls /tmp/repository/bin/${PLATFORM}"

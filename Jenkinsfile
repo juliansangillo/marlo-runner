@@ -15,7 +15,7 @@ pipeline {
         }
 
         script {
-          env.LICENSE=""
+          env.LICENSE="12345"
           env.PROJECT_PATH="./Marlo Runner"
           env.BUILD_NAME="MarloRunner"
           env.VERSION="1.0.0"

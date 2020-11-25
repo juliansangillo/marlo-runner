@@ -15,13 +15,15 @@ pipeline {
         }
 
         script {
-          env.LICENSE="12345"
-          env.PROJECT_PATH="./Marlo Runner"
-          env.BUILD_NAME="MarloRunner"
-          env.VERSION="1.0.0"
-          env.PLATFORMS="StandaloneWindows64"
-          env.FILE_EXTENSIONS="StandaloneWindows64:exe,StandaloneWindows:exe,StandaloneOSX:app,Android:apk"
-          env.IS_DEVELOPMENT_BUILD=false
+          withCredentials([file(credentialsId: 'unity-license-v2019.x', variable: 'ULF')]) {
+            env.LICENSE = ULF
+          }
+          env.PROJECT_PATH = "./Marlo Runner"
+          env.BUILD_NAME = "MarloRunner"
+          env.VERSION = "1.0.0"
+          env.PLATFORMS = "StandaloneWindows64"
+          env.FILE_EXTENSIONS = "StandaloneWindows64:exe,StandaloneWindows:exe,StandaloneOSX:app,Android:apk"
+          env.IS_DEVELOPMENT_BUILD = false
         }
 
         echo 'Initialize complete'

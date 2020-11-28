@@ -15,7 +15,7 @@ pipeline {
         }
 
         script {
-          withCredentials([text(credentialsId: 'unity-license-v2019.x', variable: 'ULF')]) {
+          withCredentials([string(credentialsId: 'unity-license-v2019.x', variable: 'ULF')]) {
             env.LICENSE = ULF
             sh 'echo "$LICENSE" > /tmp/license.ulf'
           }

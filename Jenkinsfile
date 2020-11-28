@@ -17,8 +17,7 @@ pipeline {
         script {
           withCredentials([file(credentialsId: 'unity-license-v2019.x', variable: 'ULF')]) {
             env.LICENSE = ULF
-            sh 'echo "$ULF" > /tmp/license1.ulf'
-            sh 'echo "$LICENSE" > /tmp/license2.ulf'
+            sh 'echo "$LICENSE" > /tmp/license.ulf'
           }
           env.PROJECT_PATH = "./Marlo Runner"
           env.BUILD_NAME = "MarloRunner"

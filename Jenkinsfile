@@ -15,10 +15,6 @@ pipeline {
         }
 
         script {
-          withCredentials([string(credentialsId: 'unity-license-v2019.x', variable: 'ULF')]) {
-            env.LICENSE = ULF
-            sh 'echo "$LICENSE" > /tmp/license.ulf'
-          }
           env.PROJECT_PATH = "./Marlo Runner"
           env.BUILD_NAME = "MarloRunner"
           env.VERSION = "1.0.0"
@@ -88,7 +84,6 @@ pipeline {
           docker container run \
           --mount type=bind,source=/tmp/repository,target=/var/unity-home \
           sicklecell29/unity3d:latest \
-          -license "${env.LICENSE}" \
           -projectPath "${env.PROJECT_PATH}" \
           -platform ${PLATFORM} \
           ${fileExtensionArg} \

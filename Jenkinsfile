@@ -44,7 +44,7 @@ pipeline {
       steps {
         echo "Preparing for build starting on Node ${env.NODE_NAME} ..."
         sh 'ls /tmp/repository'
-        sh 'unity.init sicklecell29/unity3d:latest'
+        sh 'unity.init \'sicklecell29/unity3d:latest\''
         echo 'Preparing for build complete'
       }
     }

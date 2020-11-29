@@ -44,7 +44,7 @@ pipeline {
       steps {
         echo "Preparing for build starting on Node ${env.NODE_NAME} ..."
         sh 'ls /tmp/repository'
-        sh 'docker pull sicklecell29/unity3d:latest'
+        sh 'unity.init sicklecell29/unity3d:latest'
         echo 'Preparing for build complete'
       }
     }
@@ -63,50 +63,23 @@ pipeline {
             PLATFORM ->
             echo "Build starting on Node ${env.NODE_NAME} ..."
 
-            def extensions = [:]
-            env.FILE_EXTENSIONS.split(',').each {pair ->
-            def nameAndValue = pair.split(':')
-            extensions[nameAndValue[0]] = nameAndValue[1]
+            unity.build '/tmp/repository', 'sicklecell29/unity3d:latest', env.PROJECT_PATH, PLATFORM, env.FILE_EXTENSIONS, env.BUILD_NAME, env.VERSION, env.IS_DEVELOPMENT_BUILD
+
+            sh "ls /tmp/repository/bin/${PLATFORM}/${env.BUILD_NAME}"
+
+            echo "Build complete"
           }
-
-          def extension = extensions[PLATFORM]
-          def fileExtensionArg = ""
-          if(extension) {
-            fileExtensionArg = "-fileExtension ${extension}"
-          }
-
-          def developmentBuildFlag = ""
-          if(env.IS_DEVELOPMENT_BUILD) {
-            developmentBuildFlag = "-developmentBuild"
-          }
-
-          sh """
-          docker container run \
-          --mount type=bind,source=/tmp/repository,target=/var/unity-home \
-          sicklecell29/unity3d:latest \
-          -projectPath "${env.PROJECT_PATH}" \
-          -platform ${PLATFORM} \
-          ${fileExtensionArg} \
-          -buildName "${env.BUILD_NAME}" \
-          -version ${env.VERSION} \
-          ${developmentBuildFlag}
-          """
-
-          sh "ls /tmp/repository/bin/${PLATFORM}"
-
-          echo "Build complete"
         }
+
       }
-
     }
-  }
 
-}
-environment {
-  BUILD_BUCKET = 'unity-firebuild-artifacts'
-}
-options {
-  skipDefaultCheckout(true)
-  parallelsAlwaysFailFast()
-}
+  }
+  environment {
+    BUILD_BUCKET = 'unity-firebuild-artifacts'
+  }
+  options {
+    skipDefaultCheckout(true)
+    parallelsAlwaysFailFast()
+  }
 }

@@ -19,7 +19,7 @@ pipeline {
           env.BUILD_NAME = 'MarloRunner'
           env.VERSION = '1.0.0'
           env.PLATFORMS = 'StandaloneWindows64'
-          env.FILE_EXTENSIONS = 'StandaloneWindows64:exe StandaloneWindows:exe StandaloneOSX:app Android:apk'
+          env.FILE_EXTENSIONS = 'StandaloneWindows64=exe StandaloneWindows=exe StandaloneOSX=app Android=apk'
           env.IS_DEVELOPMENT_BUILD = false
         }
 
@@ -66,7 +66,7 @@ pipeline {
             PLATFORM ->
             echo "Build starting on Node ${env.NODE_NAME} ..."
 
-            unity.build '/tmp/repository', 'sicklecell29/unity3d:latest', env.PROJECT_PATH, PLATFORM, env.FILE_EXTENSIONS.replaceAll(':', '\\:'), env.BUILD_NAME, env.VERSION, env.IS_DEVELOPMENT_BUILD
+            unity.build '/tmp/repository', 'sicklecell29/unity3d:latest', env.PROJECT_PATH, PLATFORM, env.FILE_EXTENSIONS, env.BUILD_NAME, env.VERSION, env.IS_DEVELOPMENT_BUILD
 
             sh "ls /tmp/repository/bin/${PLATFORM}/${env.BUILD_NAME}"
 

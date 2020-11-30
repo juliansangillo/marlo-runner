@@ -19,7 +19,7 @@ pipeline {
           env.BUILD_NAME = 'MarloRunner'
           env.VERSION = '1.0.0'
           env.PLATFORMS = 'StandaloneWindows64'
-          env.FILE_EXTENSIONS = 'StandaloneWindows64:exe,StandaloneWindows:exe,StandaloneOSX:app,Android:apk'
+          env.FILE_EXTENSIONS = 'StandaloneWindows64:exe StandaloneWindows:exe StandaloneOSX:app Android:apk'
           env.IS_DEVELOPMENT_BUILD = false
         }
 
@@ -62,7 +62,7 @@ pipeline {
       }
       steps {
         script {
-          parallelize 'jenkins-agent', env.PLATFORMS.split(','), {
+          parallelize 'jenkins-agent', env.PLATFORMS.split(' '), {
             PLATFORM ->
             echo "Build starting on Node ${env.NODE_NAME} ..."
 

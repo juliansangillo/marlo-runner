@@ -70,6 +70,8 @@ pipeline {
               sh 'ln -s "/tmp/repository/$PROJECT_PATH/Assets"'
               sh 'ln -s "/tmp/repository/$PROJECT_PATH/ProjectSettings"'
               sh 'ln -s "/tmp/repository/$PROJECT_PATH/Packages"'
+              sh 'ln -s "/tmp/repository/$PROJECT_PATH/Logs"'
+              sh 'ln -s "/tmp/repository/$PROJECT_PATH/.vscode"'
               sh 'ls -l'
             }
 

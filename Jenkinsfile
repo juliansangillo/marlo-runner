@@ -17,8 +17,7 @@ pipeline {
         script {
           env.PROJECT_PATH = './Marlo Runner'
           env.BUILD_NAME = 'MarloRunner'
-          env.VERSION = '1.0.0'
-          env.PLATFORMS = 'StandaloneLinux64 StandaloneWindows64'
+          env.PLATFORMS = 'StandaloneLinux64'
           env.FILE_EXTENSIONS = 'StandaloneWindows64:exe StandaloneWindows:exe StandaloneOSX:app Android:apk'
           env.IS_DEVELOPMENT_BUILD = 'false'
         }
@@ -48,6 +47,13 @@ pipeline {
           unity.init 'sicklecell29/unity3d:latest'
         }
 
+        script {
+          withCredentials([usernameColonPassword(credentialsId: 'github-credentials', variable: 'GITHUB_CREDS')]) {
+            env.VERSION = semantic.version GITHUB_CREDS.split(':')[1]
+          }
+          sh 'printenv'
+        }
+
         echo 'Preparing for build complete'
       }
     }
@@ -71,6 +77,7 @@ pipeline {
 
             unity.build env.WORKSPACE, 'sicklecell29/unity3d:latest', env.PROJECT_PATH, PLATFORM, env.FILE_EXTENSIONS, env.BUILD_NAME, env.VERSION, env.IS_DEVELOPMENT_BUILD
             sh "ls bin/${PLATFORM}/${env.BUILD_NAME}"
+            sh 'cat "/tmp/repository/$PROJECT_PATH/ProjectSettings/ProjectSettings.asset"'
 
             echo "Build complete"
           }

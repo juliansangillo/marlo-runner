@@ -47,11 +47,14 @@ pipeline {
           unity.init 'sicklecell29/unity3d:latest'
         }
 
-        script {
-          withCredentials([usernameColonPassword(credentialsId: 'github-credentials', variable: 'GITHUB_CREDS')]) {
-            env.VERSION = semantic.version GITHUB_CREDS.split(':')[1]
+        dir(path: '/tmp/repository') {
+          script {
+            withCredentials([usernameColonPassword(credentialsId: 'github-credentials', variable: 'GITHUB_CREDS')]) {
+              env.VERSION = semantic.version GITHUB_CREDS.split(':')[1]
+            }
+            sh 'printenv'
           }
-          sh 'printenv'
+
         }
 
         echo 'Preparing for build complete'

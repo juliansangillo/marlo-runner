@@ -20,6 +20,16 @@ pipeline {
           env.PLATFORMS = 'StandaloneLinux64'
           env.FILE_EXTENSIONS = 'StandaloneWindows64:exe StandaloneWindows:exe StandaloneOSX:app Android:apk'
           env.IS_DEVELOPMENT_BUILD = 'false'
+
+          env.CHANGELOG_FILE_NAME = 'CHANGELOG.md'
+          env.CHANGELOG_TITLE = 'CHANGELOG'
+
+          env.MAPPING_PROD_BRANCH = 'master'
+          env.MAPPING_PROD_PRERELEASE = 'false'
+          env.MAPPING_TEST_BRANCH = 'beta'
+          env.MAPPING_TEST_PRERELEASE = 'true'
+          env.MAPPING_DEV_BRANCH = 'alpha'
+          env.MAPPING_DEV_PRERELEASE = 'true'
         }
 
         echo 'Initialize complete'
@@ -48,6 +58,10 @@ pipeline {
         }
 
         dir(path: '/tmp/repository') {
+          script {
+            semantic.init env.MAPPING_PROD_BRANCH env.MAPPING_TEST_BRANCH env.MAPPING_DEV_BRANCH env.MAPPING_PROD_PRERELEASE env.MAPPING_TEST_PRERELEASE env.MAPPING_DEV_PRERELEASE env.CHANGELOG_FILE_NAME env.CHANGELOG_TITLE
+          }
+
           script {
             withCredentials([usernameColonPassword(credentialsId: 'github-credentials', variable: 'GITHUB_CREDS')]) {
               env.VERSION = semantic.version GITHUB_CREDS.split(':')[1]

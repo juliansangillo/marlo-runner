@@ -17,7 +17,7 @@ pipeline {
         script {
           env.PROJECT_PATH = './Marlo Runner'
           env.BUILD_NAME = 'MarloRunner'
-          env.PLATFORMS = 'StandaloneLinux64 StandaloneWindows64'
+          env.PLATFORMS = 'StandaloneLinux64'
           env.FILE_EXTENSIONS = 'StandaloneWindows64:exe StandaloneWindows:exe StandaloneOSX:app Android:apk'
           env.IS_DEVELOPMENT_BUILD = 'false'
 
@@ -90,10 +90,14 @@ pipeline {
             unity.build env.WORKSPACE, env.UNITY_DOCKER_IMG, env.PROJECT_PATH, PLATFORM, env.FILE_EXTENSIONS, env.BUILD_NAME, env.VERSION, env.IS_DEVELOPMENT_BUILD
             echo 'Unity build complete'
 
+            sh 'ls -l'
+            sh 'ls -l bin'
+
             dir("bin/${PLATFORM}") {
+              sh 'ls -l'
               sh "ls ${env.BUILD_NAME}"
               sh 'mkdir -p /tmp/repository/bin'
-              sh "zip -r -m /tmp/repository/bin/${PLATFORM} ${env.BUILD_NAME}"
+              sh "sudo zip -r -m /tmp/repository/bin/${env.BUILD_NAME}-${PLATFORM}.zip ${env.BUILD_NAME}"
             }
           }
         }

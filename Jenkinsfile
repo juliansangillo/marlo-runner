@@ -111,8 +111,11 @@ pipeline {
 
       }
       steps {
-        script {
-          semantic.release "${env.GITHUB_CREDENTIALS_ID}"
+        dir(path: '/tmp/repository') {
+          script {
+            semantic.release "${env.GITHUB_CREDENTIALS_ID}"
+          }
+
         }
 
       }

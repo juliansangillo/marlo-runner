@@ -90,12 +90,9 @@ pipeline {
             unity.build env.WORKSPACE, env.UNITY_DOCKER_IMG, env.PROJECT_PATH, PLATFORM, env.FILE_EXTENSIONS, env.BUILD_NAME, env.VERSION, env.IS_DEVELOPMENT_BUILD
             echo 'Unity build complete'
 
-            sh 'ls -l'
-            sh 'ls -l bin'
             sh 'sudo chown -R jenkins:jenkins bin'
 
             dir("bin/${PLATFORM}") {
-              sh 'ls -l'
               sh "ls ${env.BUILD_NAME}"
               sh 'mkdir -p /tmp/repository/bin'
               sh "zip -r -m /tmp/repository/bin/${env.BUILD_NAME}-${PLATFORM}.zip ${env.BUILD_NAME}"
@@ -107,6 +104,12 @@ pipeline {
     }
 
     stage('Publish') {
+      agent {
+        node {
+          label 'jenkins-agent'
+        }
+
+      }
       steps {
         script {
           semantic.release "${env.GITHUB_CREDENTIALS_ID}"

@@ -112,6 +112,7 @@ pipeline {
       }
       steps {
         dir(path: '/tmp/repository') {
+          googleStorageUpload(credentialsId: "${env.JENKINS_CREDENTIALS_ID}", bucket: "gs://${env.BUILD_BUCKET}/${env.JOB_NAME}/${BUILD_NUMBER}", pattern: '**', pathPrefix: 'bin/')
           script {
             semantic.release "${env.GITHUB_CREDENTIALS_ID}"
           }
@@ -126,6 +127,7 @@ pipeline {
     BUILD_BUCKET = 'unity-firebuild-artifacts'
     UNITY_DOCKER_IMG = 'sicklecell29/unity3d:latest'
     GITHUB_CREDENTIALS_ID = 'github-credentials'
+    JENKINS_CREDENTIALS_ID = 'unity-firebuild'
   }
   options {
     skipDefaultCheckout(true)

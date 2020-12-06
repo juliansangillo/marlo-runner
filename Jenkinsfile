@@ -92,12 +92,13 @@ pipeline {
 
             sh 'ls -l'
             sh 'ls -l bin'
+            sh 'sudo chown -R jenkins:jenkins bin'
 
             dir("bin/${PLATFORM}") {
               sh 'ls -l'
               sh "ls ${env.BUILD_NAME}"
               sh 'mkdir -p /tmp/repository/bin'
-              sh "sudo zip -r -m /tmp/repository/bin/${env.BUILD_NAME}-${PLATFORM}.zip ${env.BUILD_NAME}"
+              sh "zip -r -m /tmp/repository/bin/${env.BUILD_NAME}-${PLATFORM}.zip ${env.BUILD_NAME}"
             }
           }
         }

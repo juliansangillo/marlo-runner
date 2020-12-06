@@ -17,7 +17,7 @@ pipeline {
         script {
           env.PROJECT_PATH = './Marlo Runner'
           env.BUILD_NAME = 'MarloRunner'
-          env.PLATFORMS = 'StandaloneLinux64'
+          env.PLATFORMS = 'StandaloneLinux64 StandaloneWindows64'
           env.FILE_EXTENSIONS = 'StandaloneWindows64:exe StandaloneWindows:exe StandaloneOSX:app Android:apk'
           env.IS_DEVELOPMENT_BUILD = 'false'
 
@@ -112,7 +112,7 @@ pipeline {
       }
       steps {
         dir(path: '/tmp/repository') {
-          googleStorageUpload(credentialsId: "${env.JENKINS_CREDENTIALS_ID}", bucket: "gs://${env.BUILD_BUCKET}/${env.JOB_NAME}/${BUILD_NUMBER}", pattern: '**', pathPrefix: 'bin/')
+          googleStorageUpload(credentialsId: "${env.JENKINS_CREDENTIALS_ID}", bucket: "gs://${env.BUILD_BUCKET}/${env.JOB_NAME}/${BUILD_NUMBER}", pattern: 'bin/**')
           script {
             semantic.release "${env.GITHUB_CREDENTIALS_ID}"
           }

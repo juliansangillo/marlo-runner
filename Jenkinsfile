@@ -87,8 +87,12 @@ pipeline {
             sh 'cat "/tmp/repository/$PROJECT_PATH/ProjectSettings/ProjectSettings.asset"'
 
             echo 'Pulling from cache ...'
-            googleStorageDownload(credentialsId: "${env.JENKINS_CREDENTIALS_ID}", bucketUri: "gs://${env.CACHE_BUCKET}/${env.JOB_NAME}/${PLATFORM}", localDirectory: "${env.PROJECT_PATH}")
-            echo 'Cache pulled successfully'
+            try {
+              googleStorageDownload(credentialsId: "${env.JENKINS_CREDENTIALS_ID}", bucketUri: "gs://${env.CACHE_BUCKET}/${env.JOB_NAME}/${PLATFORM}", localDirectory: "${env.PROJECT_PATH}")
+              echo 'Cache pulled successfully'
+            } catch(NotFoundException e) {
+              echo 'Cache objects don\'t exist. Skipping'
+            }
 
             echo 'Starting Unity build ...'
             unity.build env.WORKSPACE, env.UNITY_DOCKER_IMG, env.PROJECT_PATH, PLATFORM, env.FILE_EXTENSIONS, env.BUILD_NAME, env.VERSION, env.IS_DEVELOPMENT_BUILD

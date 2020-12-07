@@ -115,7 +115,7 @@ pipeline {
 
             post {
               always {
-                sh "rm -rf ${env.PROJECT_PATH}/**"
+                sh "rm -rf ./**"
               }
             }
           }
@@ -139,7 +139,6 @@ pipeline {
       }
       steps {
         dir(path: '/tmp/repository') {
-          googleStorageUpload(credentialsId: "${env.JENKINS_CREDENTIALS_ID}", bucket: "gs://${env.BUILD_BUCKET}/${env.JOB_NAME}/${env.BUILD_NUMBER}", pattern: 'bin/**')
           script {
             semantic.release "${env.GITHUB_CREDENTIALS_ID}"
           }
@@ -151,7 +150,6 @@ pipeline {
 
   }
   environment {
-    BUILD_BUCKET = 'unity-firebuild-artifacts'
     CACHE_BUCKET = 'unity-firebuild-cache'
     UNITY_DOCKER_IMG = 'sicklecell29/unity3d:latest'
     GITHUB_CREDENTIALS_ID = 'github-credentials'

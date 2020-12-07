@@ -112,6 +112,12 @@ pipeline {
               sh 'mkdir -p /tmp/repository/bin'
               sh "zip -r -m /tmp/repository/bin/${env.BUILD_NAME}-${PLATFORM}.zip ${env.BUILD_NAME}"
             }
+
+            post {
+              always {
+                sh "rm -rf ${env.PROJECT_PATH}/**"
+              }
+            }
           }
         }
 
@@ -122,6 +128,12 @@ pipeline {
       agent {
         node {
           label 'jenkins-agent'
+        }
+
+      }
+      post {
+        always {
+          sh 'rm -rf bin/**'
         }
 
       }

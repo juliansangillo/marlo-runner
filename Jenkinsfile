@@ -91,7 +91,7 @@ pipeline {
               googleStorageDownload(credentialsId: "${env.JENKINS_CREDENTIALS_ID}", bucketUri: "gs://${env.CACHE_BUCKET}/${env.JOB_NAME}/${PLATFORM}", localDirectory: "${env.PROJECT_PATH}")
               echo 'Cache pulled successfully'
             }
-            catch(com.google.jenkins.plugins.util.NotFoundException e) {
+            catch(Exception e) {
               echo 'Cache objects don\'t exist. Skipping'
             }
 

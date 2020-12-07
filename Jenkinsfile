@@ -86,9 +86,19 @@ pipeline {
             sh 'ls -l "$PROJECT_PATH/Assets"'
             sh 'cat "/tmp/repository/$PROJECT_PATH/ProjectSettings/ProjectSettings.asset"'
 
+            echo 'Pulling from cache ...'
+            googleStorageDownload(credentialsId: "${env.JENKINS_CREDENTIALS_ID}", bucketUri: "gs://${env.CACHE_BUCKET}/${env.JOB_NAME}/${PLATFORM}", localDirectory: "${env.PROJECT_PATH}")
+            echo 'Cache pulled successfully'
+
             echo 'Starting Unity build ...'
             unity.build env.WORKSPACE, env.UNITY_DOCKER_IMG, env.PROJECT_PATH, PLATFORM, env.FILE_EXTENSIONS, env.BUILD_NAME, env.VERSION, env.IS_DEVELOPMENT_BUILD
             echo 'Unity build complete'
+
+            echo 'Pushing to cache ...'
+            dir("${env.PROJECT_PATH}") {
+              googleStorageUpload(credentialsId: "${env.JENKINS_CREDENTIALS_ID}", bucket: "gs://${env.CACHE_BUCKET}/${env.JOB_NAME}/${PLATFORM}", pattern: 'Library/**')
+            }
+            echo 'Cache pushed successfully'
 
             sh 'sudo chown -R jenkins:jenkins bin'
 
@@ -112,7 +122,7 @@ pipeline {
       }
       steps {
         dir(path: '/tmp/repository') {
-          googleStorageUpload(credentialsId: "${env.JENKINS_CREDENTIALS_ID}", bucket: "gs://${env.BUILD_BUCKET}/${env.JOB_NAME}/${BUILD_NUMBER}", pattern: 'bin/**')
+          googleStorageUpload(credentialsId: "${env.JENKINS_CREDENTIALS_ID}", bucket: "gs://${env.BUILD_BUCKET}/${env.JOB_NAME}/${env.BUILD_NUMBER}", pattern: 'bin/**')
           script {
             semantic.release "${env.GITHUB_CREDENTIALS_ID}"
           }
@@ -125,6 +135,7 @@ pipeline {
   }
   environment {
     BUILD_BUCKET = 'unity-firebuild-artifacts'
+    CACHE_BUCKET = 'unity-firebuild-cache'
     UNITY_DOCKER_IMG = 'sicklecell29/unity3d:latest'
     GITHUB_CREDENTIALS_ID = 'github-credentials'
     JENKINS_CREDENTIALS_ID = 'unity-firebuild'

@@ -88,7 +88,7 @@ pipeline {
 
             echo 'Pulling from cache ...'
             //try {
-              googleStorageDownload(credentialsId: "${env.JENKINS_CREDENTIALS_ID}", bucketUri: "gs://${env.CACHE_BUCKET}/${env.JOB_NAME}/${PLATFORM}", localDirectory: "${env.PROJECT_PATH}")
+              googleStorageDownload(credentialsId: "${env.JENKINS_CREDENTIALS_ID}", bucketUri: "gs://${env.CACHE_BUCKET}/${env.JOB_NAME}/${PLATFORM}/**", localDirectory: "${env.PROJECT_PATH}")
               echo 'Cache pulled successfully'
               //}
               //catch(Exception e) {

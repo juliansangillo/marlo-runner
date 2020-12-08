@@ -4,13 +4,13 @@ pipeline {
     stage('Initialize') {
       agent {
         node {
-          label 'jenkins-agent'
+          label "${env.AGENT_PREFIX}"
         }
 
       }
       steps {
         echo "Initialized on node: ${env.NODE_NAME}"
-        dir(path: '/tmp/repository') {
+        dir(path: "${env.LOCAL_REPOSITORY}") {
           checkout scm
         }
 
@@ -38,7 +38,7 @@ pipeline {
     stage('Preparing for build') {
       agent {
         node {
-          label 'jenkins-agent'
+          label "${env.AGENT_PREFIX}"
         }
 
       }
@@ -50,7 +50,7 @@ pipeline {
 
       }
       steps {
-        dir(path: '/tmp/repository') {
+        dir(path: "${env.LOCAL_REPOSITORY}") {
           script {
             semantic.init env.MAPPING_PROD_BRANCH, env.MAPPING_TEST_BRANCH, env.MAPPING_DEV_BRANCH, env.MAPPING_PROD_PRERELEASE, env.MAPPING_TEST_PRERELEASE, env.MAPPING_DEV_PRERELEASE, env.CHANGELOG_FILE_NAME, env.CHANGELOG_TITLE
           }
@@ -67,7 +67,7 @@ pipeline {
         }
 
         script {
-          echo 'Authenticating with google storage ...'
+          echo 'Authenticating with google cloud ...'
           withCredentials([file(credentialsId: "${env.JENKINS_CREDENTIALS_ID}", variable: 'SA_KEY')]) {
             sh "gcloud auth activate-service-account jenkins@unity-firebuild.iam.gserviceaccount.com --key-file=${SA_KEY} --project=${env.GOOGLE_PROJECT}"
           }
@@ -87,13 +87,13 @@ pipeline {
       }
       steps {
         script {
-          parallelize 'jenkins-agent', env.PLATFORMS.split(' '), {
+          parallelize env.AGENT_PREFIX, env.PLATFORMS.split(' '), {
             PLATFORM ->
             try {
-              sh 'cp -al "/tmp/repository/$PROJECT_PATH" .'
+              sh 'cp -al "$LOCAL_REPOSITORY/$PROJECT_PATH" .'
               echo 'Hard linked project to workspace'
               sh 'ls -l "$PROJECT_PATH/Assets"'
-              sh 'cat "/tmp/repository/$PROJECT_PATH/ProjectSettings/ProjectSettings.asset"'
+              sh 'cat "$LOCAL_REPOSITORY/$PROJECT_PATH/ProjectSettings/ProjectSettings.asset"'
 
               echo 'Pulling from cache ...'
               def status = sh(
@@ -120,12 +120,12 @@ pipeline {
 
               dir("bin/${PLATFORM}") {
                 sh "ls ${env.BUILD_NAME}"
-                sh 'mkdir -p /tmp/repository/bin'
-                sh "zip -r -m /tmp/repository/bin/${env.BUILD_NAME}-${PLATFORM}.zip ${env.BUILD_NAME}"
+                sh "mkdir -p ${env.LOCAL_REPOSITORY}/bin"
+                sh "zip -r -m ${env.LOCAL_REPOSITORY}/bin/${env.BUILD_NAME}-${PLATFORM}.zip ${env.BUILD_NAME}"
               }
             }
             finally {
-              sh "rm -rf ./**"
+              cleanWs(deleteDirs:true, disableDeferredWipeout: true)
             }
           }
         }
@@ -136,18 +136,19 @@ pipeline {
     stage('Publish') {
       agent {
         node {
-          label 'jenkins-agent'
+          label "${env.AGENT_PREFIX}"
         }
 
       }
-      post {
-        always {
-          sh 'rm -rf bin/**'
+      when {
+        beforeAgent true
+        expression {
+          return env.PLATFORMS.replaceAll("\\s","") != ""
         }
 
       }
       steps {
-        dir(path: '/tmp/repository') {
+        dir(path: "${env.LOCAL_REPOSITORY}") {
           script {
             semantic.release "${env.GITHUB_CREDENTIALS_ID}"
           }
@@ -159,11 +160,22 @@ pipeline {
 
   }
   environment {
+    GOOGLE_PROJECT = 'unity-firebuild'
     CACHE_BUCKET = 'unity-firebuild-cache'
     UNITY_DOCKER_IMG = 'sicklecell29/unity3d:latest'
-    GITHUB_CREDENTIALS_ID = 'github-credentials'
+    AGENT_PREFIX = 'jenkins-agent'
+    LOCAL_REPOSITORY = '/tmp/repository'
     JENKINS_CREDENTIALS_ID = 'jenkins-sa'
-    GOOGLE_PROJECT = 'unity-firebuild'
+    GITHUB_CREDENTIALS_ID = 'github-credentials'
+  }
+  post {
+    always {
+      node(env.AGENT_PREFIX) {
+        sh 'rm -rf $LOCAL_REPOSITORY/bin/**'
+      }
+
+    }
+
   }
   options {
     skipDefaultCheckout(true)

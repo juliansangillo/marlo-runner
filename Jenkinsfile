@@ -100,7 +100,7 @@ pipeline {
               returnStatus: true
             )
             if(status == 0) {
-              sh "gsutil -m -q cp -r \"gs://${env.CACHE_BUCKET}/${env.JOB_NAME}/${PLATFORM}/**\" \"${env.PROJECT_PATH}\""
+              sh "gsutil -m -q cp -r \"gs://${env.CACHE_BUCKET}/${env.JOB_NAME}/${PLATFORM}/Library\" \"${env.PROJECT_PATH}\""
               echo 'Cache pulled successfully'
             }
             else {
@@ -114,7 +114,7 @@ pipeline {
             echo 'Unity build complete'
 
             echo 'Pushing to cache ...'
-            sh "gsutil -m rsync -r \"${env.PROJECT_PATH}/Library\" \"gs://${env.CACHE_BUCKET}/${env.JOB_NAME}/${PLATFORM}/Library/\""
+            sh "gsutil -m rsync -d -r \"${env.PROJECT_PATH}/Library\" \"gs://${env.CACHE_BUCKET}/${env.JOB_NAME}/${PLATFORM}/Library/\""
             echo 'Cache pushed successfully'
 
             sh 'sudo chown -R jenkins:jenkins bin'

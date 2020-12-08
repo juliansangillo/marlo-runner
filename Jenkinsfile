@@ -96,7 +96,7 @@ pipeline {
 
             echo 'Pulling from cache ...'
             def status = sh(
-              script: "gsutil -q stat 'gs://${env.CACHE_BUCKET}/${env.JOB_NAME}/${PLATFORM}/'",
+              script: "gsutil ls -l 'gs://${env.CACHE_BUCKET}/${env.JOB_NAME}/${PLATFORM}/'",
               returnStatus: true
             )
             if(status == 0) {

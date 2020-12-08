@@ -100,12 +100,14 @@ pipeline {
               returnStatus: true
             )
             if(status == 0) {
-              sh "gsutil -m cp \"gs://${env.CACHE_BUCKET}/${env.JOB_NAME}/${PLATFORM}/**\" \"${env.PROJECT_PATH}\""
+              sh "gsutil -m -q cp \"gs://${env.CACHE_BUCKET}/${env.JOB_NAME}/${PLATFORM}/**\" \"${env.PROJECT_PATH}\""
               echo 'Cache pulled successfully'
             }
             else {
               echo 'Cache objects don\'t exist. Skipping'
             }
+
+            sh 'ls -l "$PROJECT_PATH"'
 
             echo 'Starting Unity build ...'
             unity.build env.WORKSPACE, env.UNITY_DOCKER_IMG, env.PROJECT_PATH, PLATFORM, env.FILE_EXTENSIONS, env.BUILD_NAME, env.VERSION, env.IS_DEVELOPMENT_BUILD

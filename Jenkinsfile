@@ -100,7 +100,7 @@ pipeline {
               returnStatus: true
             )
             if(status == 0) {
-              sh "gsutil -m -q cp \"gs://${env.CACHE_BUCKET}/${env.JOB_NAME}/${PLATFORM}/**\" \"${env.PROJECT_PATH}\""
+              sh "gsutil -m -q cp -r \"gs://${env.CACHE_BUCKET}/${env.JOB_NAME}/${PLATFORM}/**\" \"${env.PROJECT_PATH}\""
               echo 'Cache pulled successfully'
             }
             else {

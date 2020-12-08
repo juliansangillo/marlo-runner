@@ -86,77 +86,86 @@ pipeline {
             sh 'ls -l "$PROJECT_PATH/Assets"'
             sh 'cat "/tmp/repository/$PROJECT_PATH/ProjectSettings/ProjectSettings.asset"'
 
+            echo 'Authenticating with google storage ...'
+            withCredentials([file(credentialsId: "${env.JENKINS_CREDENTIALS_ID}", variable: 'SA_KEY')]) {
+              sh "gcloud auth activate-service-account jenkins@unity-firebuild.iam.gserviceaccount.com --key-file=${SA_KEY} --project=${env.GOOGLE_PROJECT}"
+            }
+            echo 'success'
+
             echo 'Pulling from cache ...'
-            //try {
-              googleStorageDownload(credentialsId: "${env.JENKINS_CREDENTIALS_ID}", bucketUri: "gs://${env.CACHE_BUCKET}/${env.JOB_NAME}/${PLATFORM}/**", localDirectory: "${env.PROJECT_PATH}")
+            def status = sh(
+              script: "gsutil -q stat 'gs://${env.CACHE_BUCKET}/${env.JOB_NAME}/${PLATFORM}'",
+              returnStatus: true
+            )
+            if(status == 0) {
+              sh "gsutil -m cp \"gs://${env.CACHE_BUCKET}/${env.JOB_NAME}/${PLATFORM}/**\" \"${env.PROJECT_PATH}\""
               echo 'Cache pulled successfully'
-              //}
-              //catch(Exception e) {
-                //  echo 'Cache objects don\'t exist. Skipping'
-                //}
-
-                echo 'Starting Unity build ...'
-                unity.build env.WORKSPACE, env.UNITY_DOCKER_IMG, env.PROJECT_PATH, PLATFORM, env.FILE_EXTENSIONS, env.BUILD_NAME, env.VERSION, env.IS_DEVELOPMENT_BUILD
-                echo 'Unity build complete'
-
-                echo 'Pushing to cache ...'
-                dir("${env.PROJECT_PATH}") {
-                  googleStorageUpload(credentialsId: "${env.JENKINS_CREDENTIALS_ID}", bucket: "gs://${env.CACHE_BUCKET}/${env.JOB_NAME}/${PLATFORM}", pattern: 'Library/**')
-                }
-                echo 'Cache pushed successfully'
-
-                sh 'sudo chown -R jenkins:jenkins bin'
-
-                dir("bin/${PLATFORM}") {
-                  sh "ls ${env.BUILD_NAME}"
-                  sh 'mkdir -p /tmp/repository/bin'
-                  sh "zip -r -m /tmp/repository/bin/${env.BUILD_NAME}-${PLATFORM}.zip ${env.BUILD_NAME}"
-                }
-
-                post {
-                  always {
-                    sh "rm -rf ./**"
-                  }
-                }
-              }
+            }
+            else {
+              echo 'Cache objects don\'t exist. Skipping'
             }
 
+            echo 'Starting Unity build ...'
+            unity.build env.WORKSPACE, env.UNITY_DOCKER_IMG, env.PROJECT_PATH, PLATFORM, env.FILE_EXTENSIONS, env.BUILD_NAME, env.VERSION, env.IS_DEVELOPMENT_BUILD
+            echo 'Unity build complete'
+
+            echo 'Pushing to cache ...'
+            sh "gsutil -m rsync -r \"${env.PROJECT_PATH}/Library\" \"gs://${env.CACHE_BUCKET}/${env.JOB_NAME}/${PLATFORM}/Library\""
+            echo 'Cache pushed successfully'
+
+            sh 'sudo chown -R jenkins:jenkins bin'
+
+            dir("bin/${PLATFORM}") {
+              sh "ls ${env.BUILD_NAME}"
+              sh 'mkdir -p /tmp/repository/bin'
+              sh "zip -r -m /tmp/repository/bin/${env.BUILD_NAME}-${PLATFORM}.zip ${env.BUILD_NAME}"
+            }
+
+            post {
+              always {
+                sh "rm -rf ./**"
+              }
+            }
           }
         }
 
-        stage('Publish') {
-          agent {
-            node {
-              label 'jenkins-agent'
-            }
-
-          }
-          post {
-            always {
-              sh 'rm -rf bin/**'
-            }
-
-          }
-          steps {
-            dir(path: '/tmp/repository') {
-              script {
-                semantic.release "${env.GITHUB_CREDENTIALS_ID}"
-              }
-
-            }
-
-          }
-        }
-
-      }
-      environment {
-        CACHE_BUCKET = 'unity-firebuild-cache'
-        UNITY_DOCKER_IMG = 'sicklecell29/unity3d:latest'
-        GITHUB_CREDENTIALS_ID = 'github-credentials'
-        JENKINS_CREDENTIALS_ID = 'unity-firebuild'
-      }
-      options {
-        skipDefaultCheckout(true)
-        parallelsAlwaysFailFast()
       }
     }
+
+    stage('Publish') {
+      agent {
+        node {
+          label 'jenkins-agent'
+        }
+
+      }
+      post {
+        always {
+          sh 'rm -rf bin/**'
+        }
+
+      }
+      steps {
+        dir(path: '/tmp/repository') {
+          script {
+            semantic.release "${env.GITHUB_CREDENTIALS_ID}"
+          }
+
+        }
+
+      }
+    }
+
+  }
+  environment {
+    CACHE_BUCKET = 'unity-firebuild-cache'
+    UNITY_DOCKER_IMG = 'sicklecell29/unity3d:latest'
+    GITHUB_CREDENTIALS_ID = 'github-credentials'
+    JENKINS_CREDENTIALS_ID = 'jenkins-sa'
+    GOOGLE_PROJECT = 'unity-firebuild'
+  }
+  options {
+    skipDefaultCheckout(true)
+    parallelsAlwaysFailFast()
+  }
+}

@@ -96,7 +96,7 @@ pipeline {
 
             echo 'Pulling from cache ...'
             def status = sh(
-              script: "gsutil stat 'gs://${env.CACHE_BUCKET}/${env.JOB_NAME}/${PLATFORM}'",
+              script: "gsutil stat 'gs://${env.CACHE_BUCKET}/${env.JOB_NAME}/${PLATFORM}/'",
               returnStatus: true
             )
             if(status == 0) {
@@ -112,7 +112,7 @@ pipeline {
             echo 'Unity build complete'
 
             echo 'Pushing to cache ...'
-            sh "gsutil -m rsync -r \"${env.PROJECT_PATH}/Library\" \"gs://${env.CACHE_BUCKET}/${env.JOB_NAME}/${PLATFORM}/Library\""
+            sh "gsutil -m rsync -r \"${env.PROJECT_PATH}/Library\" \"gs://${env.CACHE_BUCKET}/${env.JOB_NAME}/${PLATFORM}/Library/\""
             echo 'Cache pushed successfully'
 
             sh 'sudo chown -R jenkins:jenkins bin'

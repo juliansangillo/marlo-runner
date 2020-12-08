@@ -89,46 +89,43 @@ pipeline {
         script {
           parallelize 'jenkins-agent', env.PLATFORMS.split(' '), {
             PLATFORM ->
-            sh 'cp -al "/tmp/repository/$PROJECT_PATH" .'
-            echo 'Hard linked project to workspace'
-            sh 'ls -l "$PROJECT_PATH/Assets"'
-            sh 'cat "/tmp/repository/$PROJECT_PATH/ProjectSettings/ProjectSettings.asset"'
+            try {
+              sh 'cp -al "/tmp/repository/$PROJECT_PATH" .'
+              echo 'Hard linked project to workspace'
+              sh 'ls -l "$PROJECT_PATH/Assets"'
+              sh 'cat "/tmp/repository/$PROJECT_PATH/ProjectSettings/ProjectSettings.asset"'
 
-            echo 'Pulling from cache ...'
-            def status = sh(
-              script: "gsutil ls -l 'gs://${env.CACHE_BUCKET}/${env.JOB_NAME}/${PLATFORM}/'",
-              returnStatus: true
-            )
-            if(status == 0) {
-              sh "gsutil -m -q cp -r \"gs://${env.CACHE_BUCKET}/${env.JOB_NAME}/${PLATFORM}/Library\" \"${env.PROJECT_PATH}\""
-              echo 'Cache pulled successfully'
-            }
-            else {
-              echo 'Cache objects don\'t exist. Skipping'
-            }
-
-            sh 'ls -l "$PROJECT_PATH"'
-
-            echo 'Starting Unity build ...'
-            unity.build env.WORKSPACE, env.UNITY_DOCKER_IMG, env.PROJECT_PATH, PLATFORM, env.FILE_EXTENSIONS, env.BUILD_NAME, env.VERSION, env.IS_DEVELOPMENT_BUILD
-            echo 'Unity build complete'
-
-            echo 'Pushing to cache ...'
-            sh "gsutil -m rsync -d -r \"${env.PROJECT_PATH}/Library\" \"gs://${env.CACHE_BUCKET}/${env.JOB_NAME}/${PLATFORM}/Library/\""
-            echo 'Cache pushed successfully'
-
-            sh 'sudo chown -R jenkins:jenkins bin'
-
-            dir("bin/${PLATFORM}") {
-              sh "ls ${env.BUILD_NAME}"
-              sh 'mkdir -p /tmp/repository/bin'
-              sh "zip -r -m /tmp/repository/bin/${env.BUILD_NAME}-${PLATFORM}.zip ${env.BUILD_NAME}"
-            }
-
-            post {
-              always {
-                sh "rm -rf ./**"
+              echo 'Pulling from cache ...'
+              def status = sh(
+                script: "gsutil ls -l 'gs://${env.CACHE_BUCKET}/${env.JOB_NAME}/${PLATFORM}/'",
+                returnStatus: true
+              )
+              if(status == 0) {
+                sh "gsutil -m -q cp -r \"gs://${env.CACHE_BUCKET}/${env.JOB_NAME}/${PLATFORM}/Library\" \"${env.PROJECT_PATH}\""
+                echo 'Cache pulled successfully'
               }
+              else {
+                echo 'Cache objects don\'t exist. Skipping'
+              }
+
+              echo 'Starting Unity build ...'
+              unity.build env.WORKSPACE, env.UNITY_DOCKER_IMG, env.PROJECT_PATH, PLATFORM, env.FILE_EXTENSIONS, env.BUILD_NAME, env.VERSION, env.IS_DEVELOPMENT_BUILD
+              echo 'Unity build complete'
+
+              echo 'Pushing to cache ...'
+              sh "gsutil -m -q rsync -d -r \"${env.PROJECT_PATH}/Library\" \"gs://${env.CACHE_BUCKET}/${env.JOB_NAME}/${PLATFORM}/Library/\""
+              echo 'Cache pushed successfully'
+
+              sh 'sudo chown -R jenkins:jenkins bin'
+
+              dir("bin/${PLATFORM}") {
+                sh "ls ${env.BUILD_NAME}"
+                sh 'mkdir -p /tmp/repository/bin'
+                sh "zip -r -m /tmp/repository/bin/${env.BUILD_NAME}-${PLATFORM}.zip ${env.BUILD_NAME}"
+              }
+            }
+            finally {
+              sh "rm -rf ./**"
             }
           }
         }

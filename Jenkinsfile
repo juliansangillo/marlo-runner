@@ -66,6 +66,14 @@ pipeline {
           unity.init env.UNITY_DOCKER_IMG
         }
 
+        script {
+          echo 'Authenticating with google storage ...'
+          withCredentials([file(credentialsId: "${env.JENKINS_CREDENTIALS_ID}", variable: 'SA_KEY')]) {
+            sh "gcloud auth activate-service-account jenkins@unity-firebuild.iam.gserviceaccount.com --key-file=${SA_KEY} --project=${env.GOOGLE_PROJECT}"
+          }
+          echo 'success'
+        }
+
       }
     }
 
@@ -85,12 +93,6 @@ pipeline {
             echo 'Hard linked project to workspace'
             sh 'ls -l "$PROJECT_PATH/Assets"'
             sh 'cat "/tmp/repository/$PROJECT_PATH/ProjectSettings/ProjectSettings.asset"'
-
-            echo 'Authenticating with google storage ...'
-            withCredentials([file(credentialsId: "${env.JENKINS_CREDENTIALS_ID}", variable: 'SA_KEY')]) {
-              sh "gcloud auth activate-service-account jenkins@unity-firebuild.iam.gserviceaccount.com --key-file=${SA_KEY} --project=${env.GOOGLE_PROJECT}"
-            }
-            echo 'success'
 
             echo 'Pulling from cache ...'
             def status = sh(

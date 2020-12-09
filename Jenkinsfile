@@ -67,7 +67,7 @@ pipeline {
         }
 
         script {
-          cloud.login env.GOOGLE_PROJECT env.JENKINS_CREDENTIALS_ID
+          cloud.login env.GOOGLE_PROJECT, env.JENKINS_CREDENTIALS_ID
         }
 
       }
@@ -91,13 +91,13 @@ pipeline {
               sh 'ls -l "$PROJECT_PATH/Assets"'
               sh 'cat "$LOCAL_REPOSITORY/$PROJECT_PATH/ProjectSettings/ProjectSettings.asset"'
 
-              cloud.uncache "//${env.CACHE_BUCKET}/${env.JOB_NAME}/${PLATFORM}" "${env.PROJECT_PATH}"
+              cloud.uncache "//${env.CACHE_BUCKET}/${env.JOB_NAME}/${PLATFORM}", "${env.PROJECT_PATH}"
 
               echo 'Starting Unity build ...'
               unity.build env.WORKSPACE, env.UNITY_DOCKER_IMG, env.PROJECT_PATH, PLATFORM, env.FILE_EXTENSIONS, env.BUILD_NAME, env.VERSION, env.IS_DEVELOPMENT_BUILD
               echo 'Unity build complete'
 
-              cloud.cache "//${env.CACHE_BUCKET}/${env.JOB_NAME}/${PLATFORM}" "${env.PROJECT_PATH}" 'Library'
+              cloud.cache "//${env.CACHE_BUCKET}/${env.JOB_NAME}/${PLATFORM}", "${env.PROJECT_PATH}", 'Library'
 
               sh 'sudo chown -R jenkins:jenkins bin'
 

@@ -125,7 +125,7 @@ pipeline {
               }
             }
             finally {
-              cleanWs(deleteDirs:true, disableDeferredWipeout: true)
+              sh 'sudo rm -rf ./**'
             }
           }
         }

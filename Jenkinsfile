@@ -67,11 +67,7 @@ pipeline {
         }
 
         script {
-          echo 'Authenticating with google cloud ...'
-          withCredentials([file(credentialsId: "${env.JENKINS_CREDENTIALS_ID}", variable: 'SA_KEY')]) {
-            sh "gcloud auth activate-service-account jenkins@unity-firebuild.iam.gserviceaccount.com --key-file=${SA_KEY} --project=${env.GOOGLE_PROJECT}"
-          }
-          echo 'success'
+          cloud.login env.GOOGLE_PROJECT env.JENKINS_CREDENTIALS_ID
         }
 
       }
@@ -95,26 +91,13 @@ pipeline {
               sh 'ls -l "$PROJECT_PATH/Assets"'
               sh 'cat "$LOCAL_REPOSITORY/$PROJECT_PATH/ProjectSettings/ProjectSettings.asset"'
 
-              echo 'Pulling from cache ...'
-              def status = sh(
-                script: "gsutil ls -l 'gs://${env.CACHE_BUCKET}/${env.JOB_NAME}/${PLATFORM}/'",
-                returnStatus: true
-              )
-              if(status == 0) {
-                sh "gsutil -m -q cp -r \"gs://${env.CACHE_BUCKET}/${env.JOB_NAME}/${PLATFORM}/Library\" \"${env.PROJECT_PATH}\""
-                echo 'Cache pulled successfully'
-              }
-              else {
-                echo 'Cache objects don\'t exist. Skipping'
-              }
+              cloud.uncache "//${env.CACHE_BUCKET}/${env.JOB_NAME}/${PLATFORM}" "${env.PROJECT_PATH}"
 
               echo 'Starting Unity build ...'
               unity.build env.WORKSPACE, env.UNITY_DOCKER_IMG, env.PROJECT_PATH, PLATFORM, env.FILE_EXTENSIONS, env.BUILD_NAME, env.VERSION, env.IS_DEVELOPMENT_BUILD
               echo 'Unity build complete'
 
-              echo 'Pushing to cache ...'
-              sh "gsutil -m -q rsync -d -r \"${env.PROJECT_PATH}/Library\" \"gs://${env.CACHE_BUCKET}/${env.JOB_NAME}/${PLATFORM}/Library/\""
-              echo 'Cache pushed successfully'
+              cloud.cache "//${env.CACHE_BUCKET}/${env.JOB_NAME}/${PLATFORM}" "${env.PROJECT_PATH}" 'Library'
 
               sh 'sudo chown -R jenkins:jenkins bin'
 

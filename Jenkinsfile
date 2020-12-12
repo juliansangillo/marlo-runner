@@ -12,33 +12,31 @@ pipeline {
         echo "Initialized on node: ${env.NODE_NAME}"
         dir(path: "${env.LOCAL_REPOSITORY}") {
           checkout scm
-          script {
-            def config = readYaml file: "${env.CONFIG_FILE}"
-
-            env.PROJECT_PATH = config.project-path
-            env.BUILD_NAME = config.build-name
-            env.PLATFORMS = config.platforms.join(' ')
-
-            env.FILE_EXTENSIONS = ''
-            def list = []
-            config.file-extensions.each { p ->
-            list += p.name + ':' + p.ext
-          }
-          env.FILE_EXTENSIONS = list.join(' ')
-
-          env.IS_DEVELOPMENT_BUILD = Boolean.toString(config.development-build)
-
-          env.CHANGELOG_FILE_NAME = config.changelog.file-name
-          env.CHANGELOG_TITLE = config.changelog.title
-
-          env.MAPPING_PROD_BRANCH = config.mapping.prod.branch
-          env.MAPPING_PROD_PRERELEASE = Boolean.toString(config.mapping.prod.prerelease)
-          env.MAPPING_TEST_BRANCH = config.mapping.test.branch
-          env.MAPPING_TEST_PRERELEASE = Boolean.toString(config.mapping.test.prerelease)
-          env.MAPPING_DEV_BRANCH = config.mapping.dev.branch
-          env.MAPPING_DEV_PRERELEASE = Boolean.toString(config.mapping.dev.prerelease)
         }
 
+        script {
+          def config = readYaml file: "${env.LOCAL_REPOSITORY}/${env.CONFIG_FILE}"
+
+          env.PROJECT_PATH = config.project-path
+          env.BUILD_NAME = config.build-name
+          env.IS_DEVELOPMENT_BUILD = Boolean.toString(config.development-build)
+          env.PLATFORMS = config.platforms.join(' ')
+
+          def list = []
+          config.file-extensions.each { p ->
+          list += p.name + ':' + p.ext
+        }
+        env.FILE_EXTENSIONS = list.join(' ')
+
+        env.CHANGELOG_FILE_NAME = config.changelog.file-name
+        env.CHANGELOG_TITLE = config.changelog.title
+
+        env.MAPPING_PROD_BRANCH = config.mapping.prod.branch
+        env.MAPPING_PROD_PRERELEASE = Boolean.toString(config.mapping.prod.prerelease)
+        env.MAPPING_TEST_BRANCH = config.mapping.test.branch
+        env.MAPPING_TEST_PRERELEASE = Boolean.toString(config.mapping.test.prerelease)
+        env.MAPPING_DEV_BRANCH = config.mapping.dev.branch
+        env.MAPPING_DEV_PRERELEASE = Boolean.toString(config.mapping.dev.prerelease)
       }
 
     }

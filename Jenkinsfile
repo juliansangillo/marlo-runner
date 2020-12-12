@@ -86,29 +86,47 @@ pipeline {
           parallelize env.AGENT_PREFIX, env.PLATFORMS.split(' '), {
             PLATFORM ->
             try {
-              sh 'cp -al "$LOCAL_REPOSITORY/$PROJECT_PATH" .'
-              echo 'Hard linked project to workspace'
-              sh 'ls -l "$PROJECT_PATH/Assets"'
-              sh 'cat "$LOCAL_REPOSITORY/$PROJECT_PATH/ProjectSettings/ProjectSettings.asset"'
+              sh (
+                script: 'cp -al "$LOCAL_REPOSITORY/$PROJECT_PATH" .',
+                label: 'Hard link project to workspace'
+              )
+              sh (
+                script: 'ls -l "$PROJECT_PATH/Assets"',
+                label: 'List project assets'
+              )
+              sh (
+                script: 'cat "$LOCAL_REPOSITORY/$PROJECT_PATH/ProjectSettings/ProjectSettings.asset"',
+                label: 'Print project settings'
+              )
 
               cloud.uncache "//${env.CACHE_BUCKET}/${env.JOB_NAME}/${PLATFORM}", "${env.PROJECT_PATH}"
 
-              echo 'Starting Unity build ...'
               unity.build env.WORKSPACE, env.UNITY_DOCKER_IMG, env.PROJECT_PATH, PLATFORM, env.FILE_EXTENSIONS, env.BUILD_NAME, env.VERSION, env.IS_DEVELOPMENT_BUILD
-              echo 'Unity build complete'
 
               cloud.cache "//${env.CACHE_BUCKET}/${env.JOB_NAME}/${PLATFORM}", "${env.PROJECT_PATH}", 'Library'
 
               sh 'sudo chown -R jenkins:jenkins bin'
 
               dir("bin/${PLATFORM}") {
-                sh "ls ${env.BUILD_NAME}"
-                sh "mkdir -p ${env.LOCAL_REPOSITORY}/bin"
-                sh "zip -r -m ${env.LOCAL_REPOSITORY}/bin/${env.BUILD_NAME}-${PLATFORM}.zip ${env.BUILD_NAME}"
+                sh (
+                  script: "ls ${env.BUILD_NAME}",
+                  label: 'List artifacts'
+                )
+                sh (
+                  script: "mkdir -p ${env.LOCAL_REPOSITORY}/bin",
+                  label: 'Create repository bin if doesnt exist'
+                )
+                sh (
+                  script: "zip -r -m ${env.LOCAL_REPOSITORY}/bin/${env.BUILD_NAME}-${PLATFORM}.zip ${env.BUILD_NAME}",
+                  label: 'Archive artifacts'
+                )
               }
             }
             finally {
-              sh 'sudo rm -rf ./**'
+              sh (
+                script: 'sudo rm -rf ./**',
+                label: 'Post workspace cleanup'
+              )
             }
           }
         }

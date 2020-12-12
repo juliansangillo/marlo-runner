@@ -172,7 +172,7 @@ pipeline {
   post {
     always {
       node(env.AGENT_PREFIX) {
-        sh 'rm -rf $LOCAL_REPOSITORY/bin/**'
+        sh(script: 'rm -rf $LOCAL_REPOSITORY/bin/**', label: 'Post repository cleanup')
       }
 
     }

@@ -19,8 +19,8 @@ pipeline {
         script {
           def config = readYaml file: 'unityci.yml'
 
-          env.PROJECT_PATH = config.project-path
-          env.BUILD_NAME = config.build-name
+          //env.PROJECT_PATH = config.project-path
+          /*env.BUILD_NAME = config.build-name
           env.IS_DEVELOPMENT_BUILD = Boolean.toString(config.development-build)
           env.PLATFORMS = config.platforms.join(' ')
 
@@ -38,7 +38,7 @@ pipeline {
         env.MAPPING_TEST_BRANCH = config.mapping.test.branch
         env.MAPPING_TEST_PRERELEASE = Boolean.toString(config.mapping.test.prerelease)
         env.MAPPING_DEV_BRANCH = config.mapping.dev.branch
-        env.MAPPING_DEV_PRERELEASE = Boolean.toString(config.mapping.dev.prerelease)
+        env.MAPPING_DEV_PRERELEASE = Boolean.toString(config.mapping.dev.prerelease)*/
       }
 
     }

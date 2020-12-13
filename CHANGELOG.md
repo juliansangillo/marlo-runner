@@ -1,5 +1,17 @@
 # CHANGELOG
 
+# [1.0.0-alpha.2](https://github.com/juliansangillo/marlo-runner/compare/v1.0.0-alpha.1...v1.0.0-alpha.2) (2020-12-13)
+
+
+### Bug Fixes
+
+* **unityci:** Hyphens in properties were being treated as minus signs when parsed. Replaced with underscores ([32ade94](https://github.com/juliansangillo/marlo-runner/commit/32ade94b9b26dc9c461038dc6ad4c9c7ecf9b5f7))
+
+
+### Features
+
+* Added unityci.yml jenkins config file ([1c768dc](https://github.com/juliansangillo/marlo-runner/commit/1c768dca7c4e90d7e1da43bb91a0fed2bda8344c))
+
 # 1.0.0-alpha.1 (2020-12-06)
 
 

@@ -17,9 +17,9 @@ pipeline {
         sh 'cp $LOCAL_REPOSITORY/$CONFIG_FILE .'
         sh 'ls'
         script {
-          def datas = readYaml file: 'unityci.yml'
+          def datas = loadYaml file: "${env.CONFIG_FILE}"
 
-          echo datas.message
+          echo datas.project-path
 
           env.PROJECT_PATH = datas.project-path
 

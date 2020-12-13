@@ -14,7 +14,7 @@ pipeline {
           checkout scm
         }
 
-        sh 'cp "${env.LOCAL_REPOSITORY}/${env.CONFIG_FILE}" .'
+        sh 'cp $LOCAL_REPOSITORY/$CONFIG_FILE .'
         script {
           def config = readYaml file: "${env.CONFIG_FILE}"
 

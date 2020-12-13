@@ -14,9 +14,9 @@ pipeline {
           checkout scm
           script {
             datas = readYaml (file: 'unityci.yml')
+            echo datas.changelog.title.toString()
           }
 
-          echo datas.project-path.toString()
         }
 
       }

@@ -39,7 +39,7 @@ pipeline {
         dir(path: "${env.LOCAL_REPOSITORY}") {
           echo datas.project_path
           script {
-            semantic.init env.MAPPING_PROD_BRANCH, env.MAPPING_TEST_BRANCH, env.MAPPING_DEV_BRANCH, env.MAPPING_PROD_PRERELEASE, env.MAPPING_TEST_PRERELEASE, env.MAPPING_DEV_PRERELEASE, env.CHANGELOG_FILE_NAME, env.CHANGELOG_TITLE
+            semantic.init datas.mapping.prod.branch, datas.mapping.test.branch, datas.mapping.dev.branch, datas.mapping.prod.prerelease.toString(), datas.mapping.test.prerelease.toString(), datas.mapping.dev.prerelease.toString(), datas.changelog.file_name, datas.changelog.title
           }
 
           script {

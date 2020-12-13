@@ -1,6 +1,5 @@
 project_path: ./Marlo Runner
 build_name: MarloRunner
-development_build: false
 platforms:
   - StandaloneLinux64
   - StandaloneWindows64

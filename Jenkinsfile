@@ -14,6 +14,7 @@ pipeline {
           checkout scm
         }
 
+        sh 'ls $LOCAL_REPOSITORY/$CONFIG_FILE'
         script {
           def datas = loadYaml "${env.LOCAL_REPOSITORY}/${env.CONFIG_FILE}"
 

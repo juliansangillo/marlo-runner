@@ -13,9 +13,7 @@ pipeline {
         dir(path: "${env.LOCAL_REPOSITORY}") {
           checkout scm
           script {
-            def datas = readYaml file: "${env.CONFIG_FILE}"
-
-            echo datas.project_path
+            datas = readYaml file: "${env.CONFIG_FILE}"
           }
 
         }
@@ -39,6 +37,7 @@ pipeline {
       }
       steps {
         dir(path: "${env.LOCAL_REPOSITORY}") {
+          echo datas.project_path
           script {
             semantic.init env.MAPPING_PROD_BRANCH, env.MAPPING_TEST_BRANCH, env.MAPPING_DEV_BRANCH, env.MAPPING_PROD_PRERELEASE, env.MAPPING_TEST_PRERELEASE, env.MAPPING_DEV_PRERELEASE, env.CHANGELOG_FILE_NAME, env.CHANGELOG_TITLE
           }

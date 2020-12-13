@@ -1,10 +1,10 @@
-project-path: ./Marlo Runner
-build-name: MarloRunner
-development-build: false
+project_path: ./Marlo Runner
+build_name: MarloRunner
+development_build: false
 platforms:
   - StandaloneLinux64
   - StandaloneWindows64
-file-extensions:
+file_extensions:
   - name: StandaloneWindows64
     ext: exe
   - name: StandaloneWindows
@@ -14,7 +14,7 @@ file-extensions:
   - name: Android
     ext: apk
 changelog:
-  file-name: CHANGELOG.md
+  file_name: CHANGELOG.md
   title: CHANGELOG
 mapping:
   prod:

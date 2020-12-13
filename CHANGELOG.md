@@ -1,5 +1,12 @@
 # CHANGELOG
 
+# [1.0.0-alpha.3](https://github.com/juliansangillo/marlo-runner/compare/v1.0.0-alpha.2...v1.0.0-alpha.3) (2020-12-13)
+
+
+### Bug Fixes
+
+* **unityci:** Removed development build property as no longer needed ([73644c0](https://github.com/juliansangillo/marlo-runner/commit/73644c0fc68379c61cb56df53c17f54b3e723e77))
+
 # [1.0.0-alpha.2](https://github.com/juliansangillo/marlo-runner/compare/v1.0.0-alpha.1...v1.0.0-alpha.2) (2020-12-13)
 
 

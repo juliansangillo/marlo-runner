@@ -17,7 +17,6 @@ pipeline {
 
             env.PROJECT_PATH = datas.project_path
             env.BUILD_NAME = datas.build_name
-            env.IS_DEVELOPMENT_BUILD = datas.development_build
             env.PLATFORMS = datas.platforms.join(' ')
 
             def list = []
@@ -35,6 +34,14 @@ pipeline {
           env.MAPPING_TEST_PRERELEASE = datas.mapping.test.prerelease
           env.MAPPING_DEV_BRANCH = datas.mapping.dev.branch
           env.MAPPING_DEV_PRERELEASE = datas.mapping.dev.prerelease
+
+          if(env.MAPPING_PROD_BRANCH == env.BRANCH_NAME) {
+            env.IS_DEVELOPMENT_BUILD = env.MAPPING_PROD_PRERELEASE
+          } else if(env.MAPPING_TEST_BRANCH == env.BRANCH_NAME) {
+            env.IS_DEVELOPMENT_BUILD = env.MAPPING_TEST_PRERELEASE
+          } else {
+            env.IS_DEVELOPMENT_BUILD = env.MAPPING_DEV_PRERELEASE
+          }
         }
 
       }

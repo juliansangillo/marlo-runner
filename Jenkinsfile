@@ -17,7 +17,7 @@ pipeline {
         sh 'cp $LOCAL_REPOSITORY/$CONFIG_FILE .'
         sh 'ls'
         script {
-          def datas = loadYaml file: "${env.CONFIG_FILE}"
+          def datas = loadYaml "${env.CONFIG_FILE}"
 
           echo datas.project-path
 

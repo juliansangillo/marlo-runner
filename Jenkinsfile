@@ -15,7 +15,7 @@ pipeline {
           script {
             def datas = readYaml file: "${env.CONFIG_FILE}"
 
-            echo "${datas.project-path}"
+            echo datas.project_path
           }
 
         }

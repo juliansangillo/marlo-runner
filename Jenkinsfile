@@ -19,7 +19,7 @@ pipeline {
         script {
           def datas = readYaml file: 'unityci.yml'
 
-          echo datas.project-path
+          echo datas.message
 
           env.PROJECT_PATH = datas.project-path
 

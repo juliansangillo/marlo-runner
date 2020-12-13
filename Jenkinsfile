@@ -15,7 +15,7 @@ pipeline {
           script {
             def datas = readYaml file: "${env.CONFIG_FILE}"
 
-            echo datas.changelog.title
+            echo "${datas.project-path}"
           }
 
         }

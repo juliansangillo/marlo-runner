@@ -12,17 +12,16 @@ pipeline {
         echo "Initialized on node: ${env.NODE_NAME}"
         dir(path: "${env.LOCAL_REPOSITORY}") {
           checkout scm
-        }
+          script {
+            def datas = loadYaml "${env.CONFIG_FILE}"
 
-        sh 'ls $LOCAL_REPOSITORY/$CONFIG_FILE'
-        script {
-          def datas = loadYaml "${env.LOCAL_REPOSITORY}/${env.CONFIG_FILE}"
+            echo datas.project-path
 
-          echo datas.project-path
+            env.PROJECT_PATH = datas.project-path
 
-          env.PROJECT_PATH = datas.project-path
+            echo "${env.PROJECT_PATH}"
+          }
 
-          echo "${env.PROJECT_PATH}"
         }
 
       }

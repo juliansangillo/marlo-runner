@@ -13,13 +13,8 @@ pipeline {
         dir(path: "${env.LOCAL_REPOSITORY}") {
           checkout scm
           script {
-            def datas = loadYaml "${env.CONFIG_FILE}"
-
-            echo datas.project-path
-
-            env.PROJECT_PATH = datas.project-path
-
-            echo "${env.PROJECT_PATH}"
+            datas = readYaml (file: 'unityci.yml')
+            echo datas.project-path.toString()
           }
 
         }

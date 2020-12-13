@@ -12,24 +12,12 @@ pipeline {
         echo "Initialized on node: ${env.NODE_NAME}"
         dir(path: "${env.LOCAL_REPOSITORY}") {
           checkout scm
-        }
+          script {
+            def datas = readYaml file: "${env.CONFIG_FILE}"
 
-        script {
-          env.PROJECT_PATH = './Marlo Runner'
-          env.BUILD_NAME = 'MarloRunner'
-          env.PLATFORMS = 'StandaloneLinux64 StandaloneWindows64'
-          env.FILE_EXTENSIONS = 'StandaloneWindows64:exe StandaloneWindows:exe StandaloneOSX:app Android:apk'
-          env.IS_DEVELOPMENT_BUILD = 'false'
+            echo "${datas.project-path}"
+          }
 
-          env.CHANGELOG_FILE_NAME = 'CHANGELOG.md'
-          env.CHANGELOG_TITLE = 'CHANGELOG'
-
-          env.MAPPING_PROD_BRANCH = 'master'
-          env.MAPPING_PROD_PRERELEASE = 'false'
-          env.MAPPING_TEST_BRANCH = 'beta'
-          env.MAPPING_TEST_PRERELEASE = 'true'
-          env.MAPPING_DEV_BRANCH = 'alpha'
-          env.MAPPING_DEV_PRERELEASE = 'true'
         }
 
       }
@@ -168,6 +156,7 @@ pipeline {
     LOCAL_REPOSITORY = '/tmp/repository'
     JENKINS_CREDENTIALS_ID = 'jenkins-sa'
     GITHUB_CREDENTIALS_ID = 'github-credentials'
+    CONFIG_FILE = 'unityci.yml'
   }
   post {
     always {

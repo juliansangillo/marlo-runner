@@ -15,8 +15,9 @@ pipeline {
         }
 
         sh 'cp $LOCAL_REPOSITORY/$CONFIG_FILE .'
+        sh 'ls'
         script {
-          def config = readYaml file: "${env.CONFIG_FILE}"
+          def config = readYaml file: 'unityci.yml'
 
           env.PROJECT_PATH = config.project-path
           env.BUILD_NAME = config.build-name

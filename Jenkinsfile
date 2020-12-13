@@ -13,8 +13,9 @@ pipeline {
         dir(path: "${env.LOCAL_REPOSITORY}") {
           checkout scm
           script {
-            datas = readYaml (file: 'unityci.yml')
-            echo datas.changelog.title.toString()
+            def datas = readYaml file: "${env.CONFIG_FILE}"
+
+            echo datas.changelog.title
           }
 
         }

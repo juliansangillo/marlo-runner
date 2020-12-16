@@ -3,6 +3,8 @@ build_name: MarloRunner
 platforms:
   - StandaloneLinux64
   - StandaloneWindows64
+  - StandaloneWindows
+  - StandaloneOSX
 file_extensions:
   - name: StandaloneWindows64
     ext: exe

@@ -183,6 +183,7 @@ environment {
   JENKINS_CREDENTIALS_ID = 'jenkins-sa'
   GITHUB_CREDENTIALS_ID = 'github-credentials'
   CONFIG_FILE = 'unityci.yml'
+  EMAIL_ADDRESS = 'juliansangillo@gmail.com'
 }
 post {
   always {
@@ -190,7 +191,7 @@ post {
       sh(script: 'rm -rf $LOCAL_REPOSITORY/bin/**', label: 'Post repository cleanup')
     }
 
-    emailext(body: "UnityCI - ${env.JOB_NAME} - Build #${env.BUILD_NUMBER} - ${currentBuild.currentResult}:\n\nCheck console output at ${env.BUILD_URL} to view the results.", recipientProviders: [[$class: 'DevelopersRecipientProvider'], [$class: 'RequesterRecipientProvider']], subject: "UnityCI - ${env.JOB_NAME} - Build #${env.BUILD_NUMBER} - ${currentBuild.currentResult}!")
+    emailext(to: "${env.EMAIL_ADDRESS}", body: "UnityCI - ${env.JOB_NAME} - Build #${env.BUILD_NUMBER} - ${currentBuild.currentResult}:\n\nCheck console output at ${env.BUILD_URL} to view the results.", subject: "UnityCI - ${env.JOB_NAME} - Build #${env.BUILD_NUMBER} - ${currentBuild.currentResult}!")
   }
 
 }

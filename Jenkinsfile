@@ -187,27 +187,54 @@ environment {
 }
 post {
   success {
-    script {
-      env.STATUS_IMG = "https://unityci.deltarenegadegames.com/static/c5c835c9/images/48x48/blue.png"
-      env.IMG_ALT = 'blue'
-    }
-
+    emailext(to: "${env.EMAIL_ADDRESS}", subject: "${env.JOB_NAME} - Build #${env.BUILD_NUMBER} - SUCCESS!", body: """
+                                                <html>
+                                                  <header></header>
+                                                  <body>
+                                                    <img src="${env.JENKINS_URL}/static/c5c835c9/images/48x48/blue.png" alt="blue" width="48" height="48" style="float:left" />
+                                                    <h1>BUILD SUCCESS</h1>
+                                                    <p>Project: UnityCI<br>
+                                                    Job: ${env.JOB_NAME}<br>
+                                                    Date of build: ${env.BUILD_TIMESTAMP}<br>
+                                                    Build duration: ${currentBuild.durationString}<br><br>
+                                                    Check console output <a href="${env.BUILD_URL}">here</a> to view the results.</p>
+                                                  </body>
+                                                </html>
+                                                                  """)
   }
 
   failure {
-    script {
-      env.STATUS_IMG = "https://unityci.deltarenegadegames.com/static/c5c835c9/images/48x48/red.png"
-      env.IMG_ALT = 'red'
-    }
-
+    emailext(to: "${env.EMAIL_ADDRESS}", subject: "${env.JOB_NAME} - Build #${env.BUILD_NUMBER} - FAILED!", body: """
+                                                <html>
+                                                  <header></header>
+                                                  <body>
+                                                    <img src="${env.JENKINS_URL}/static/c5c835c9/images/48x48/red.png" alt="red" width="48" height="48" style="float:left" />
+                                                    <h1>BUILD FAILED</h1>
+                                                    <p>Project: UnityCI<br>
+                                                    Job: ${env.JOB_NAME}<br>
+                                                    Date of build: ${env.BUILD_TIMESTAMP}<br>
+                                                    Build duration: ${currentBuild.durationString}<br><br>
+                                                    Check console output <a href="${env.BUILD_URL}">here</a> to view the results.</p>
+                                                  </body>
+                                                </html>
+                                                                  """)
   }
 
   aborted {
-    script {
-      env.STATUS_IMG = "https://unityci.deltarenegadegames.com/static/c5c835c9/images/48x48/aborted.png"
-      env.IMG_ALT = 'aborted'
-    }
-
+    emailext(to: "${env.EMAIL_ADDRESS}", subject: "${env.JOB_NAME} - Build #${env.BUILD_NUMBER} - ABORTED!", body: """
+                                                <html>
+                                                  <header></header>
+                                                  <body>
+                                                    <img src="${env.JENKINS_URL}/static/c5c835c9/images/48x48/aborted.png" alt="aborted" width="48" height="48" style="float:left" />
+                                                    <h1>BUILD ABORTED</h1>
+                                                    <p>Project: UnityCI<br>
+                                                    Job: ${env.JOB_NAME}<br>
+                                                    Date of build: ${env.BUILD_TIMESTAMP}<br>
+                                                    Build duration: ${currentBuild.durationString}<br><br>
+                                                    Check console output <a href="${env.BUILD_URL}">here</a> to view the results.</p>
+                                                  </body>
+                                                </html>
+                                                                  """)
   }
 
   always {
@@ -215,20 +242,6 @@ post {
       sh(script: 'rm -rf $LOCAL_REPOSITORY/bin/**', label: 'Post repository cleanup')
     }
 
-    emailext(to: "${env.EMAIL_ADDRESS}", from: 'Jenkins <noreply@gmail.com>', replyTo: 'noreply@gmail.com', subject: "${env.JOB_NAME} - Build #${env.BUILD_NUMBER} - ${currentBuild.currentResult}!", body: """
-                                    <html>
-                                      <header></header>
-                                      <body>
-                                        <img src="${env.STATUS_IMG}" alt="${env.IMG_ALT}" width="48" height="48" style="float:left" />
-                                        <h1>BUILD ${currentBuild.currentResult}</h1>
-                                        <p>Project: UnityCI<br>
-                                        Job: ${env.JOB_NAME}<br>
-                                        Date of build: ${env.BUILD_TIMESTAMP}<br>
-                                        Build duration: ${currentBuild.durationString}<br><br>
-                                        Check console output <a href="${env.BUILD_URL}">here</a> to view the results.</p>
-                                      </body>
-                                    </html>
-                                                      """)
   }
 
 }

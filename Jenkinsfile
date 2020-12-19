@@ -192,19 +192,19 @@ post {
     }
 
     emailext(to: "${env.EMAIL_ADDRESS}", from: 'Jenkins <noreply@gmail.com>', replyTo: 'noreply@gmail.com', subject: "${env.JOB_NAME} - Build #${env.BUILD_NUMBER} - ${currentBuild.currentResult}!", body: """
-                    <html>
-                      <header></header>
-                      <body>
-                        <img src="https://unityci.deltarenegadegames.com/static/c5c835c9/images/48x48/blue.png" alt="blue" width="48" height="48" style="float:left" />
-                        <h1>BUILD ${currentBuild.currentResult}</h1><br>
-                        <p>Project: UnityCI<br>
-                        Job: ${env.JOB_NAME}<br>
-                        Date of build: ${env.BUILD_TIMESTAMP}<br>
-                        Build duration: ${currentBuild.durationString}<br><br>
-                        Check console output at ${env.BUILD_URL} to view the results.</p>
-                      </body>
-                    </html>
-                                      """)
+                            <html>
+                              <header></header>
+                              <body>
+                                <img src="https://unityci.deltarenegadegames.com/static/c5c835c9/images/48x48/blue.png" alt="blue" width="48" height="48" style="float:left" />
+                                <h1>BUILD ${currentBuild.currentResult}</h1>
+                                <p>Project: UnityCI<br>
+                                Job: ${env.JOB_NAME}<br>
+                                Date of build: ${env.BUILD_TIMESTAMP}<br>
+                                Build duration: ${currentBuild.durationString}<br><br>
+                                Check console output <a href="${env.BUILD_URL}">here</a> to view the results.</p>
+                              </body>
+                            </html>
+                                              """)
   }
 
 }

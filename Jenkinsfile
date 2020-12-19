@@ -192,16 +192,16 @@ post {
     }
 
     emailext(to: "${env.EMAIL_ADDRESS}", from: 'Jenkins <noreply@gmail.com>', replyTo: 'noreply@gmail.com', subject: "${env.JOB_NAME} - Build #${env.BUILD_NUMBER} - ${currentBuild.currentResult}!", body: """
-                
-                BUILD ${currentBuild.currentResult}
-                
-                Project: UnityCI
-                Job: ${env.JOB_NAME}
-                Date of build: 
-                Build duration: ${currentBuild.durationString}
+                        
+    BUILD ${currentBuild.currentResult}
+                       
+    Project: UnityCI
+    Job: ${env.JOB_NAME}
+    Date of build: ${env.BUILD_TIMESTAMP}
+    Build duration: ${currentBuild.durationString}
 
-                Check console output at ${env.BUILD_URL} to view the results.
-              """)
+    Check console output at ${env.BUILD_URL} to view the results.
+                      """)
   }
 
 }

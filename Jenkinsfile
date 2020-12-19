@@ -191,7 +191,17 @@ post {
       sh(script: 'rm -rf $LOCAL_REPOSITORY/bin/**', label: 'Post repository cleanup')
     }
 
-    emailext(to: "${env.EMAIL_ADDRESS}", body: "UnityCI - ${env.JOB_NAME} - Build #${env.BUILD_NUMBER} - ${currentBuild.currentResult}:\n\nCheck console output at ${env.BUILD_URL} to view the results.", subject: "UnityCI - ${env.JOB_NAME} - Build #${env.BUILD_NUMBER} - ${currentBuild.currentResult}!")
+    emailext(to: "${env.EMAIL_ADDRESS}", from: 'Jenkins <noreply@gmail.com>', replyTo: 'noreply@gmail.com', subject: "${env.JOB_NAME} - Build #${env.BUILD_NUMBER} - ${currentBuild.currentResult}!", body: """
+                
+                BUILD ${currentBuild.currentResult}
+                
+                Project: UnityCI
+                Job: ${env.JOB_NAME}
+                Date of build: 
+                Build duration: ${currentBuild.durationString}
+
+                Check console output at ${env.BUILD_URL} to view the results.
+              """)
   }
 
 }

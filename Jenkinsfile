@@ -17,7 +17,7 @@ pipeline {
 
             env.PROJECT_PATH = datas.project_path
             env.BUILD_NAME = datas.build_name
-            env.PLATFORMS = datas.platforms.join(' ')
+            env.PLATFORMS = ""
 
             def list = []
             datas.file_extensions.each { p ->
@@ -190,6 +190,7 @@ post {
       sh(script: 'rm -rf $LOCAL_REPOSITORY/bin/**', label: 'Post repository cleanup')
     }
 
+    emailext(body: "UnityCI - ${env.JOB_NAME} - Build #${env.BUILD_NUMBER} - ${currentBuild.currentResult}:\n\nCheck console output at ${env.BUILD_URL} to view the results.", recipientProviders: [[$class: 'DevelopersRecipientProvider'], [$class: 'RequesterRecipientProvider']], subject: "UnityCI - ${env.JOB_NAME} - Build #${env.BUILD_NUMBER} - ${currentBuild.currentResult}!")
   }
 
 }

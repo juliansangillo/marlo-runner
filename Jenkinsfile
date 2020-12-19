@@ -186,25 +186,49 @@ environment {
   EMAIL_ADDRESS = 'juliansangillo@gmail.com'
 }
 post {
+  success {
+    script {
+      env.STATUS_IMG = "https://unityci.deltarenegadegames.com/static/c5c835c9/images/48x48/blue.png"
+      env.IMG_ALT = 'blue'
+    }
+
+  }
+
+  failure {
+    script {
+      env.STATUS_IMG = "https://unityci.deltarenegadegames.com/static/c5c835c9/images/48x48/red.png"
+      env.IMG_ALT = 'red'
+    }
+
+  }
+
+  aborted {
+    script {
+      env.STATUS_IMG = "https://unityci.deltarenegadegames.com/static/c5c835c9/images/48x48/aborted.png"
+      env.IMG_ALT = 'aborted'
+    }
+
+  }
+
   always {
     node(env.AGENT_PREFIX) {
       sh(script: 'rm -rf $LOCAL_REPOSITORY/bin/**', label: 'Post repository cleanup')
     }
 
     emailext(to: "${env.EMAIL_ADDRESS}", from: 'Jenkins <noreply@gmail.com>', replyTo: 'noreply@gmail.com', subject: "${env.JOB_NAME} - Build #${env.BUILD_NUMBER} - ${currentBuild.currentResult}!", body: """
-                            <html>
-                              <header></header>
-                              <body>
-                                <img src="https://unityci.deltarenegadegames.com/static/c5c835c9/images/48x48/blue.png" alt="blue" width="48" height="48" style="float:left" />
-                                <h1>BUILD ${currentBuild.currentResult}</h1>
-                                <p>Project: UnityCI<br>
-                                Job: ${env.JOB_NAME}<br>
-                                Date of build: ${env.BUILD_TIMESTAMP}<br>
-                                Build duration: ${currentBuild.durationString}<br><br>
-                                Check console output <a href="${env.BUILD_URL}">here</a> to view the results.</p>
-                              </body>
-                            </html>
-                                              """)
+                                    <html>
+                                      <header></header>
+                                      <body>
+                                        <img src="${env.STATUS_IMG}" alt="${env.IMG_ALT}" width="48" height="48" style="float:left" />
+                                        <h1>BUILD ${currentBuild.currentResult}</h1>
+                                        <p>Project: UnityCI<br>
+                                        Job: ${env.JOB_NAME}<br>
+                                        Date of build: ${env.BUILD_TIMESTAMP}<br>
+                                        Build duration: ${currentBuild.durationString}<br><br>
+                                        Check console output <a href="${env.BUILD_URL}">here</a> to view the results.</p>
+                                      </body>
+                                    </html>
+                                                      """)
   }
 
 }

@@ -183,58 +183,58 @@ environment {
   JENKINS_CREDENTIALS_ID = 'jenkins-sa'
   GITHUB_CREDENTIALS_ID = 'github-credentials'
   CONFIG_FILE = 'unityci.yml'
-  EMAIL_ADDRESS = 'juliansangillo@gmail.com'
+  EMAIL_ADDRESS = 'development@naughtybikergames.io'
 }
 post {
   success {
     emailext(to: "${env.EMAIL_ADDRESS}", subject: "${env.JOB_NAME} - Build #${env.BUILD_NUMBER} - SUCCESS!", body: """
-                                                            <html>
-                                                              <header></header>
-                                                              <body>
-                                                                <img src="${env.JENKINS_URL}/static/c5c835c9/images/48x48/blue.png" alt="blue" width="48" height="48" style="float:left" />
-                                                                <h1>BUILD SUCCESS</h1>
-                                                                <p>Project: UnityCI<br>
-                                                                Job: ${env.JOB_NAME}<br>
-                                                                Date of build: ${env.BUILD_TIMESTAMP}<br>
-                                                                Build duration: ${currentBuild.durationString}<br><br>
-                                                                Check console output <a href="${env.BUILD_URL}">here</a> to view the results.</p>
-                                                              </body>
-                                                            </html>
-                                                                              """)
+                                                                <html>
+                                                                  <header></header>
+                                                                  <body>
+                                                                    <img src="${env.JENKINS_URL}/static/c5c835c9/images/48x48/blue.png" alt="blue" width="48" height="48" style="float:left" />
+                                                                    <h1>BUILD SUCCESS</h1>
+                                                                    <p>Project: UnityCI<br>
+                                                                    Job: ${env.JOB_NAME}<br>
+                                                                    Date of build: ${env.BUILD_TIMESTAMP}<br>
+                                                                    Build duration: ${currentBuild.durationString}<br><br>
+                                                                    Check console output <a href="${env.BUILD_URL}">here</a> to view the results.</p>
+                                                                  </body>
+                                                                </html>
+                                                                                  """)
   }
 
   failure {
     emailext(to: "${env.EMAIL_ADDRESS}", subject: "${env.JOB_NAME} - Build #${env.BUILD_NUMBER} - FAILED!", body: """
-                                                            <html>
-                                                              <header></header>
-                                                              <body>
-                                                                <img src="${env.JENKINS_URL}/static/c5c835c9/images/48x48/red.png" alt="red" width="48" height="48" style="float:left" />
-                                                                <h1>BUILD FAILED</h1>
-                                                                <p>Project: UnityCI<br>
-                                                                Job: ${env.JOB_NAME}<br>
-                                                                Date of build: ${env.BUILD_TIMESTAMP}<br>
-                                                                Build duration: ${currentBuild.durationString}<br><br>
-                                                                Check console output <a href="${env.BUILD_URL}">here</a> to view the results.</p>
-                                                              </body>
-                                                            </html>
-                                                                              """)
+                                                                <html>
+                                                                  <header></header>
+                                                                  <body>
+                                                                    <img src="${env.JENKINS_URL}/static/c5c835c9/images/48x48/red.png" alt="red" width="48" height="48" style="float:left" />
+                                                                    <h1>BUILD FAILED</h1>
+                                                                    <p>Project: UnityCI<br>
+                                                                    Job: ${env.JOB_NAME}<br>
+                                                                    Date of build: ${env.BUILD_TIMESTAMP}<br>
+                                                                    Build duration: ${currentBuild.durationString}<br><br>
+                                                                    Check console output <a href="${env.BUILD_URL}">here</a> to view the results.</p>
+                                                                  </body>
+                                                                </html>
+                                                                                  """)
   }
 
   aborted {
     emailext(to: "${env.EMAIL_ADDRESS}", subject: "${env.JOB_NAME} - Build #${env.BUILD_NUMBER} - ABORTED!", body: """
-                                                            <html>
-                                                              <header></header>
-                                                              <body>
-                                                                <img src="${env.JENKINS_URL}/static/c5c835c9/images/48x48/aborted.png" alt="aborted" width="48" height="48" style="float:left" />
-                                                                <h1>BUILD ABORTED</h1>
-                                                                <p>Project: UnityCI<br>
-                                                                Job: ${env.JOB_NAME}<br>
-                                                                Date of build: ${env.BUILD_TIMESTAMP}<br>
-                                                                Build duration: ${currentBuild.durationString}<br><br>
-                                                                Check console output <a href="${env.BUILD_URL}">here</a> to view the results.</p>
-                                                              </body>
-                                                            </html>
-                                                                              """)
+                                                                <html>
+                                                                  <header></header>
+                                                                  <body>
+                                                                    <img src="${env.JENKINS_URL}/static/c5c835c9/images/48x48/aborted.png" alt="aborted" width="48" height="48" style="float:left" />
+                                                                    <h1>BUILD ABORTED</h1>
+                                                                    <p>Project: UnityCI<br>
+                                                                    Job: ${env.JOB_NAME}<br>
+                                                                    Date of build: ${env.BUILD_TIMESTAMP}<br>
+                                                                    Build duration: ${currentBuild.durationString}<br><br>
+                                                                    Check console output <a href="${env.BUILD_URL}">here</a> to view the results.</p>
+                                                                  </body>
+                                                                </html>
+                                                                                  """)
   }
 
   always {

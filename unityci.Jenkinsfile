@@ -17,7 +17,7 @@ pipeline {
 
             env.PROJECT_PATH = datas.project_path
             env.BUILD_NAME = datas.build_name
-            env.PLATFORMS = ""
+            env.PLATFORMS = datas.platforms.join(' ')
 
             def list = []
             datas.file_extensions.each { p ->

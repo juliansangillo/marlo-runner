@@ -248,5 +248,6 @@ post {
 options {
   skipDefaultCheckout(true)
   parallelsAlwaysFailFast()
+  disableConcurrentBuilds()
 }
 }

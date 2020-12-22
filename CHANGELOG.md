@@ -1,5 +1,13 @@
 # CHANGELOG
 
+# [1.0.0-alpha.2](https://github.com/juliansangillo/marlo-runner/compare/v1.0.0-alpha.1...v1.0.0-alpha.2) (2020-12-22)
+
+
+### Features
+
+* Added unityci.Jenkinsfile ([5406ec5](https://github.com/juliansangillo/marlo-runner/commit/5406ec548c2f8e5c58cc021d13638f09f8686c97))
+* Re-added platforms in Jenkinsfile ([f1dcfc5](https://github.com/juliansangillo/marlo-runner/commit/f1dcfc5b57cbeacdaaaa1484b27128d27a521e68))
+
 # 1.0.0-alpha.1 (2020-12-16)
 
 

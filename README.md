@@ -1,5 +1,5 @@
 ![GitHub release (latest by date)](https://img.shields.io/github/v/release/juliansangillo/marlo-runner?label=stable)  
-![Combined Checks (master branch)](https://badgen.net/github/status/juliansangillo/marlo-runner?label=build)  
+![Combined Checks (master branch)](https://badgen.net/github/checks/juliansangillo/marlo-runner?label=build)  
 ![GitHub issues](https://img.shields.io/github/issues/juliansangillo/marlo-runner)  
 ![GitHub last commit](https://img.shields.io/github/last-commit/juliansangillo/marlo-runner)  
 ![GitHub All Releases](https://img.shields.io/github/downloads/juliansangillo/marlo-runner/total)  

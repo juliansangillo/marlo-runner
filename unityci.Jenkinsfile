@@ -177,7 +177,7 @@ pipeline {
 environment {
   GOOGLE_PROJECT = 'unity-firebuild'
   CACHE_BUCKET = 'unity-firebuild-cache'
-  UNITY_DOCKER_IMG = 'sicklecell29/unity3d:latest'
+  UNITY_DOCKER_IMG = 'darkbiker/unity3d:latest'
   AGENT_PREFIX = 'jenkins-agent'
   LOCAL_REPOSITORY = '/tmp/repository'
   JENKINS_CREDENTIALS_ID = 'jenkins-sa'

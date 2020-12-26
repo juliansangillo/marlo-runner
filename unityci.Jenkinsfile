@@ -12,6 +12,7 @@ pipeline {
         echo "Initialized on node: ${env.NODE_NAME}"
         dir(path: "${env.LOCAL_REPOSITORY}") {
           checkout scm
+          scmSkip(deleteBuild: true, skipPattern:'chore(release): .*')
           script {
             def datas = readYaml file: "${env.CONFIG_FILE}"
 

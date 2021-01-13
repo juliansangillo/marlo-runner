@@ -13,7 +13,7 @@ pipeline {
         dir(path: "${env.LOCAL_REPOSITORY}") {
           checkout scm
           script {
-            def isReleaseCommit = sh (script: "git log -1 | grep '^chore\\(release\\): .*'", returnStatus: true)
+            def isReleaseCommit = sh (script: "git log -1 | grep '\\[skip ci\\]'", returnStatus: true)
             if(isReleaseCommit == 0) {
                 currentBuild.result = currentBuild.getPreviousBuild()?.result
                 error('Last commit is from Jenkins release, cancel execution')

@@ -10,10 +10,12 @@ pipeline {
       }
       steps {
         echo "Initialized on node: ${env.NODE_NAME}"
-        isReleaseCommit = sh (script: "git log -1 | grep '^chore\\(release\\): .*'", returnStatus: true)
-        if(isReleaseCommit == 0) {
-            currentBuild.result = currentBuild.getPreviousBuild()?.result
-            error('Last commit is from Jenkins release, cancel execution')
+        script {
+            isReleaseCommit = sh (script: "git log -1 | grep '^chore\\(release\\): .*'", returnStatus: true)
+            if(isReleaseCommit == 0) {
+                currentBuild.result = currentBuild.getPreviousBuild()?.result
+                error('Last commit is from Jenkins release, cancel execution')
+            }
         }
         
         dir(path: "${env.LOCAL_REPOSITORY}") {

@@ -188,18 +188,20 @@ environment {
 post {
   success {
     dir(path: "${env.LOCAL_REPOSITORY}") {
-        def releaseSha = sh (
-            script: '''
-                git pull origin $BRANCH_NAME > /dev/null;
-                git rev-list -n 1 $VERSION | git show -s | grep '.* chore\\(release\\): .*' > /dev/null;
-                if [[ $? -eq 0 ]]; then
-                    echo "$(git rev-list -n 1 $VERSION)";
-                fi
-            ''',
-            returnStdout: true
-        )
-        if (releaseSha != '') {
-            githubNotify description: 'This commit looks good', sha: releaseSha, status: 'SUCCESS'
+        script {
+            def releaseSha = sh (
+                script: '''
+                    git pull origin $BRANCH_NAME > /dev/null;
+                    git rev-list -n 1 $VERSION | git show -s | grep '.* chore\\(release\\): .*' > /dev/null;
+                    if [[ $? -eq 0 ]]; then
+                        echo "$(git rev-list -n 1 $VERSION)";
+                    fi
+                ''',
+                returnStdout: true
+            )
+            if (releaseSha != '') {
+                githubNotify description: 'This commit looks good', sha: releaseSha, status: 'SUCCESS'
+            }
         }
     }
     emailext(to: "${env.EMAIL_ADDRESS}", subject: "${env.JOB_NAME} - Build #${env.BUILD_NUMBER} - SUCCESS!", body: """
@@ -220,18 +222,20 @@ post {
 
   failure {
     dir(path: "${env.LOCAL_REPOSITORY}") {
-        def releaseSha = sh (
-            script: '''
-                git pull origin $BRANCH_NAME > /dev/null;
-                git rev-list -n 1 $VERSION | git show -s | grep '.* chore\\(release\\): .*' > /dev/null;
-                if [[ $? -eq 0 ]]; then
-                    echo "$(git rev-list -n 1 $VERSION)";
-                fi
-            ''',
-            returnStdout: true
-        )
-        if (releaseSha != '') {
-            githubNotify description: 'This commit cannot be built', sha: '', status: 'ERROR'
+        script {
+            def releaseSha = sh (
+                script: '''
+                    git pull origin $BRANCH_NAME > /dev/null;
+                    git rev-list -n 1 $VERSION | git show -s | grep '.* chore\\(release\\): .*' > /dev/null;
+                    if [[ $? -eq 0 ]]; then
+                        echo "$(git rev-list -n 1 $VERSION)";
+                    fi
+                ''',
+                returnStdout: true
+            )
+            if (releaseSha != '') {
+                githubNotify description: 'This commit cannot be built', sha: '', status: 'ERROR'
+            }
         }
     }
     emailext(to: "${env.EMAIL_ADDRESS}", subject: "${env.JOB_NAME} - Build #${env.BUILD_NUMBER} - FAILED!", body: """
@@ -252,18 +256,20 @@ post {
 
   aborted {
     dir(path: "${env.LOCAL_REPOSITORY}") {
-        def releaseSha = sh (
-            script: '''
-                git pull origin $BRANCH_NAME > /dev/null;
-                git rev-list -n 1 $VERSION | git show -s | grep '.* chore\\(release\\): .*' > /dev/null;
-                if [[ $? -eq 0 ]]; then
-                    echo "$(git rev-list -n 1 $VERSION)";
-                fi
-            ''',
-            returnStdout: true
-        )
-        if (releaseSha != '') {
-            githubNotify description: 'This build of this commit was aborted', sha: '', status: 'ERROR'
+        script {
+            def releaseSha = sh (
+                script: '''
+                    git pull origin $BRANCH_NAME > /dev/null;
+                    git rev-list -n 1 $VERSION | git show -s | grep '.* chore\\(release\\): .*' > /dev/null;
+                    if [[ $? -eq 0 ]]; then
+                        echo "$(git rev-list -n 1 $VERSION)";
+                    fi
+                ''',
+                returnStdout: true
+            )
+            if (releaseSha != '') {
+                githubNotify description: 'This build of this commit was aborted', sha: '', status: 'ERROR'
+            }
         }
     }
     emailext(to: "${env.EMAIL_ADDRESS}", subject: "${env.JOB_NAME} - Build #${env.BUILD_NUMBER} - ABORTED!", body: """

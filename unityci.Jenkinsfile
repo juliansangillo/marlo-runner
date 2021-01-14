@@ -13,12 +13,6 @@ pipeline {
         dir(path: "${env.LOCAL_REPOSITORY}") {
           checkout scm
           script {
-            def isReleaseCommit = sh (script: "git log -1 | grep '\\[skip ci\\]'", returnStatus: true)
-            if(isReleaseCommit == 0) {
-                currentBuild.result = currentBuild.getPreviousBuild()?.result
-                error('Last commit is from Jenkins release, cancel execution')
-            }
-          
             def datas = readYaml file: "${env.CONFIG_FILE}"
 
             env.PROJECT_PATH = datas.project_path
@@ -193,6 +187,21 @@ environment {
 }
 post {
   success {
+    dir(path: "${env.LOCAL_REPOSITORY}") {
+        def releaseSha = sh (
+            script: '''
+                git pull origin $BRANCH_NAME > /dev/null;
+                git rev-list -n 1 $VERSION | git show -s | grep '.* chore\\(release\\): .*' > /dev/null;
+                if [[ $? -eq 0 ]]; then
+                    echo "$(git rev-list -n 1 $VERSION)";
+                fi
+            ''',
+            returnStdout: true
+        )
+        if (releaseSha != '') {
+            githubNotify description: 'This commit looks good', sha: releaseSha, status: 'SUCCESS'
+        }
+    }
     emailext(to: "${env.EMAIL_ADDRESS}", subject: "${env.JOB_NAME} - Build #${env.BUILD_NUMBER} - SUCCESS!", body: """
                                                                 <html>
                                                                   <header></header>
@@ -210,6 +219,21 @@ post {
   }
 
   failure {
+    dir(path: "${env.LOCAL_REPOSITORY}") {
+        def releaseSha = sh (
+            script: '''
+                git pull origin $BRANCH_NAME > /dev/null;
+                git rev-list -n 1 $VERSION | git show -s | grep '.* chore\\(release\\): .*' > /dev/null;
+                if [[ $? -eq 0 ]]; then
+                    echo "$(git rev-list -n 1 $VERSION)";
+                fi
+            ''',
+            returnStdout: true
+        )
+        if (releaseSha != '') {
+            githubNotify description: 'This commit cannot be built', sha: '', status: 'ERROR'
+        }
+    }
     emailext(to: "${env.EMAIL_ADDRESS}", subject: "${env.JOB_NAME} - Build #${env.BUILD_NUMBER} - FAILED!", body: """
                                                                 <html>
                                                                   <header></header>
@@ -227,6 +251,21 @@ post {
   }
 
   aborted {
+    dir(path: "${env.LOCAL_REPOSITORY}") {
+        def releaseSha = sh (
+            script: '''
+                git pull origin $BRANCH_NAME > /dev/null;
+                git rev-list -n 1 $VERSION | git show -s | grep '.* chore\\(release\\): .*' > /dev/null;
+                if [[ $? -eq 0 ]]; then
+                    echo "$(git rev-list -n 1 $VERSION)";
+                fi
+            ''',
+            returnStdout: true
+        )
+        if (releaseSha != '') {
+            githubNotify description: 'This build of this commit was aborted', sha: '', status: 'ERROR'
+        }
+    }
     emailext(to: "${env.EMAIL_ADDRESS}", subject: "${env.JOB_NAME} - Build #${env.BUILD_NUMBER} - ABORTED!", body: """
                                                                 <html>
                                                                   <header></header>

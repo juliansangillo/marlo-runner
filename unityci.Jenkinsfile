@@ -193,7 +193,7 @@ post {
                 def releaseSha = sh (
                     script: '''
                         git pull origin $BRANCH_NAME > /dev/null;
-                        git rev-list -n 1 v$VERSION | git show -s | grep '.* chore(release): .*' > /dev/null;
+                        git rev-list -n 1 v$VERSION | git show -s | grep '.* chore\(release\): .*' > /dev/null;
                         if [[ $? -eq 0 ]]; then
                             echo "$(git rev-list -n 1 $VERSION)";
                         fi
@@ -230,7 +230,7 @@ post {
                 def releaseSha = sh (
                     script: '''
                         git pull origin $BRANCH_NAME > /dev/null;
-                        git rev-list -n 1 v$VERSION | git show -s | grep '.* chore(release): .*' > /dev/null;
+                        git rev-list -n 1 v$VERSION | git show -s | grep '.* chore\(release\): .*' > /dev/null;
                         if [[ $? -eq 0 ]]; then
                             echo "$(git rev-list -n 1 $VERSION)";
                         fi
@@ -267,7 +267,7 @@ post {
                 def releaseSha = sh (
                     script: '''
                         git pull origin $BRANCH_NAME > /dev/null;
-                        git rev-list -n 1 v$VERSION | git show -s | grep '.* chore(release): .*' > /dev/null;
+                        git rev-list -n 1 v$VERSION | git show -s | grep '.* chore\(release\): .*' > /dev/null;
                         if [[ $? -eq 0 ]]; then
                             echo "$(git rev-list -n 1 $VERSION)";
                         fi

@@ -201,7 +201,7 @@ post {
                 )
                 if (releaseSha != '') {
                     echo releaseSha
-                    githubNotify description: 'This commit looks good', sha: "${releaseSha}", status: 'SUCCESS'
+                    githubNotify credentialsId: 'github-credentials', description: 'This commit looks good', sha: releaseSha, status: 'SUCCESS'
                 }
             }
         }
@@ -237,7 +237,7 @@ post {
                 )
                 if (releaseSha != '') {
                     echo releaseSha
-                    githubNotify description: 'This commit cannot be built', sha: "${releaseSha}", status: 'ERROR'
+                    githubNotify credentialsId: 'github-credentials', description: 'This commit cannot be built', sha: releaseSha, status: 'ERROR'
                 }
             }
         }
@@ -273,7 +273,7 @@ post {
                 )
                 if (releaseSha != '') {
                     echo releaseSha
-                    githubNotify description: 'This build of this commit was aborted', sha: "${releaseSha}", status: 'ERROR'
+                    githubNotify credentialsId: 'github-credentials', description: 'This build of this commit was aborted', sha: releaseSha, status: 'ERROR'
                 }
             }
         }

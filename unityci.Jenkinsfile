@@ -192,7 +192,7 @@ post {
             script {
                 def releaseSha = sh (
                     script: '''
-                        git pull origin $BRANCH_NAME > /dev/null;
+                        git pull origin $BRANCH_NAME > /dev/null 2>&1;
                         if git rev-list -n 1 v$VERSION | git show -s | grep "chore(release): " > /dev/null; then
                             echo "$(git rev-list -n 1 v$VERSION)";
                         fi
@@ -200,6 +200,7 @@ post {
                     returnStdout: true
                 )
                 if (releaseSha != '') {
+                    echo releaseSha
                     githubNotify description: 'This commit looks good', sha: releaseSha, status: 'SUCCESS'
                 }
             }
@@ -227,7 +228,7 @@ post {
             script {
                 def releaseSha = sh (
                     script: '''
-                        git pull origin $BRANCH_NAME > /dev/null;
+                        git pull origin $BRANCH_NAME > /dev/null 2>&1;
                         if git rev-list -n 1 v$VERSION | git show -s | grep "chore(release): " > /dev/null; then
                             echo "$(git rev-list -n 1 v$VERSION)";
                         fi
@@ -235,6 +236,7 @@ post {
                     returnStdout: true
                 )
                 if (releaseSha != '') {
+                    echo releaseSha
                     githubNotify description: 'This commit cannot be built', sha: releaseSha, status: 'ERROR'
                 }
             }
@@ -262,7 +264,7 @@ post {
             script {
                 def releaseSha = sh (
                     script: '''
-                        git pull origin $BRANCH_NAME > /dev/null;
+                        git pull origin $BRANCH_NAME > /dev/null 2>&1;
                         if git rev-list -n 1 v$VERSION | git show -s | grep "chore(release): " > /dev/null; then
                             echo "$(git rev-list -n 1 v$VERSION)";
                         fi
@@ -270,6 +272,7 @@ post {
                     returnStdout: true
                 )
                 if (releaseSha != '') {
+                    echo releaseSha
                     githubNotify description: 'This build of this commit was aborted', sha: releaseSha, status: 'ERROR'
                 }
             }

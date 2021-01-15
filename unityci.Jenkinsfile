@@ -194,7 +194,7 @@ post {
                     script: '''
                         git pull origin $BRANCH_NAME > /dev/null;
                         if git rev-list -n 1 v$VERSION | git show -s | grep "chore(release): " > /dev/null; then
-                            echo "$(git rev-list -n 1 $VERSION)";
+                            echo "$(git rev-list -n 1 v$VERSION)";
                         fi
                     ''',
                     returnStdout: true
@@ -229,13 +229,13 @@ post {
                     script: '''
                         git pull origin $BRANCH_NAME > /dev/null;
                         if git rev-list -n 1 v$VERSION | git show -s | grep "chore(release): " > /dev/null; then
-                            echo "$(git rev-list -n 1 $VERSION)";
+                            echo "$(git rev-list -n 1 v$VERSION)";
                         fi
                     ''',
                     returnStdout: true
                 )
                 if (releaseSha != '') {
-                    githubNotify description: 'This commit cannot be built', sha: '', status: 'ERROR'
+                    githubNotify description: 'This commit cannot be built', sha: releaseSha, status: 'ERROR'
                 }
             }
         }
@@ -264,13 +264,13 @@ post {
                     script: '''
                         git pull origin $BRANCH_NAME > /dev/null;
                         if git rev-list -n 1 v$VERSION | git show -s | grep "chore(release): " > /dev/null; then
-                            echo "$(git rev-list -n 1 $VERSION)";
+                            echo "$(git rev-list -n 1 v$VERSION)";
                         fi
                     ''',
                     returnStdout: true
                 )
                 if (releaseSha != '') {
-                    githubNotify description: 'This build of this commit was aborted', sha: '', status: 'ERROR'
+                    githubNotify description: 'This build of this commit was aborted', sha: releaseSha, status: 'ERROR'
                 }
             }
         }

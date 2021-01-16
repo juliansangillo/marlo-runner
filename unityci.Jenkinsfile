@@ -190,6 +190,7 @@ post {
     node(env.AGENT_PREFIX) {
         dir(path: "${env.LOCAL_REPOSITORY}") {
             script {
+                def url = scm.getUserRemoteConfigs()[0].getUrl()
                 def sha = sh (
                     script: '''
                         git pull origin $BRANCH_NAME > /dev/null 2>&1;
@@ -203,7 +204,7 @@ post {
                     echo sha
                     step([
                         $class: "GitHubCommitStatusSetter",
-                        reposSource: [$class: "ManuallyEnteredRepositorySource", url: env.GIT_URL],
+                        reposSource: [$class: "ManuallyEnteredRepositorySource", url: url],
                         contextSource: [$class: "ManuallyEnteredCommitContextSource", context: 'continuous-integration/jenkins/branch'],
                         commitShaSource: [$class: "ManuallyEnteredShaSource", sha: sha],
                         errorHandlers: [[$class: "ChangingBuildStatusErrorHandler", result: 'UNSTABLE']],
@@ -233,6 +234,7 @@ post {
     node(env.AGENT_PREFIX) {
         dir(path: "${env.LOCAL_REPOSITORY}") {
             script {
+                def url = scm.getUserRemoteConfigs()[0].getUrl()
                 def sha = sh (
                     script: '''
                         git pull origin $BRANCH_NAME > /dev/null 2>&1;
@@ -246,11 +248,11 @@ post {
                     echo sha
                     step([
                         $class: "GitHubCommitStatusSetter",
-                        reposSource: [$class: "ManuallyEnteredRepositorySource", url: env.GIT_URL],
+                        reposSource: [$class: "ManuallyEnteredRepositorySource", url: url],
                         contextSource: [$class: "ManuallyEnteredCommitContextSource", context: 'continuous-integration/jenkins/branch'],
                         commitShaSource: [$class: "ManuallyEnteredShaSource", sha: sha],
                         errorHandlers: [[$class: "ChangingBuildStatusErrorHandler", result: 'UNSTABLE']],
-                        statusResultSource: [ $class: "ConditionalStatusResultSource", results: [[$class: "AnyBuildResult", message: 'This commit cannot be built', state: 'FAILURE']] ]
+                        statusResultSource: [ $class: "ConditionalStatusResultSource", results: [[$class: "AnyBuildResult", message: 'This commit cannot be built', state: 'ERROR']] ]
                     ])
                 }
             }
@@ -276,6 +278,7 @@ post {
     node(env.AGENT_PREFIX) {
         dir(path: "${env.LOCAL_REPOSITORY}") {
             script {
+                def url = scm.getUserRemoteConfigs()[0].getUrl()
                 def sha = sh (
                     script: '''
                         git pull origin $BRANCH_NAME > /dev/null 2>&1;
@@ -289,11 +292,11 @@ post {
                     echo sha
                     step([
                         $class: "GitHubCommitStatusSetter",
-                        reposSource: [$class: "ManuallyEnteredRepositorySource", url: env.GIT_URL],
+                        reposSource: [$class: "ManuallyEnteredRepositorySource", url: url],
                         contextSource: [$class: "ManuallyEnteredCommitContextSource", context: 'continuous-integration/jenkins/branch'],
                         commitShaSource: [$class: "ManuallyEnteredShaSource", sha: sha],
                         errorHandlers: [[$class: "ChangingBuildStatusErrorHandler", result: 'UNSTABLE']],
-                        statusResultSource: [ $class: "ConditionalStatusResultSource", results: [[$class: "AnyBuildResult", message: 'This build of this commit was aborted', state: 'FAILURE']] ]
+                        statusResultSource: [ $class: "ConditionalStatusResultSource", results: [[$class: "AnyBuildResult", message: 'This build of this commit was aborted', state: 'ERROR']] ]
                     ])
                 }
             }

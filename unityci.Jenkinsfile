@@ -190,7 +190,7 @@ post {
     node(env.AGENT_PREFIX) {
         dir(path: "${env.LOCAL_REPOSITORY}") {
             script {
-                def releaseSha = sh (
+                def sha = sh (
                     script: '''
                         git pull origin $BRANCH_NAME > /dev/null 2>&1;
                         if git rev-list -n 1 v$VERSION | git show -s | grep "chore(release): " > /dev/null; then
@@ -199,9 +199,16 @@ post {
                     ''',
                     returnStdout: true
                 )
-                if (releaseSha != '') {
-                    echo releaseSha
-                    githubNotify credentialsId: 'github-credentials', description: 'This commit looks good', sha: releaseSha, status: 'SUCCESS'
+                if (sha != '') {
+                    echo sha
+                    step([
+                        $class: "GitHubCommitStatusSetter",
+                        reposSource: [$class: "ManuallyEnteredRepositorySource", url: env.GIT_URL],
+                        contextSource: [$class: "ManuallyEnteredCommitContextSource", context: 'continuous-integration/jenkins/branch'],
+                        commitShaSource: [$class: "ManuallyEnteredShaSource", sha: sha],
+                        errorHandlers: [[$class: "ChangingBuildStatusErrorHandler", result: 'UNSTABLE']],
+                        statusResultSource: [ $class: "ConditionalStatusResultSource", results: [[$class: "AnyBuildResult", message: 'This commit looks good', state: 'SUCCESS']] ]
+                    ])
                 }
             }
         }
@@ -226,7 +233,7 @@ post {
     node(env.AGENT_PREFIX) {
         dir(path: "${env.LOCAL_REPOSITORY}") {
             script {
-                def releaseSha = sh (
+                def sha = sh (
                     script: '''
                         git pull origin $BRANCH_NAME > /dev/null 2>&1;
                         if git rev-list -n 1 v$VERSION | git show -s | grep "chore(release): " > /dev/null; then
@@ -235,9 +242,16 @@ post {
                     ''',
                     returnStdout: true
                 )
-                if (releaseSha != '') {
-                    echo releaseSha
-                    githubNotify credentialsId: 'github-credentials', description: 'This commit cannot be built', sha: releaseSha, status: 'ERROR'
+                if (sha != '') {
+                    echo sha
+                    step([
+                        $class: "GitHubCommitStatusSetter",
+                        reposSource: [$class: "ManuallyEnteredRepositorySource", url: env.GIT_URL],
+                        contextSource: [$class: "ManuallyEnteredCommitContextSource", context: 'continuous-integration/jenkins/branch'],
+                        commitShaSource: [$class: "ManuallyEnteredShaSource", sha: sha],
+                        errorHandlers: [[$class: "ChangingBuildStatusErrorHandler", result: 'UNSTABLE']],
+                        statusResultSource: [ $class: "ConditionalStatusResultSource", results: [[$class: "AnyBuildResult", message: 'This commit cannot be built', state: 'FAILURE']] ]
+                    ])
                 }
             }
         }
@@ -262,7 +276,7 @@ post {
     node(env.AGENT_PREFIX) {
         dir(path: "${env.LOCAL_REPOSITORY}") {
             script {
-                def releaseSha = sh (
+                def sha = sh (
                     script: '''
                         git pull origin $BRANCH_NAME > /dev/null 2>&1;
                         if git rev-list -n 1 v$VERSION | git show -s | grep "chore(release): " > /dev/null; then
@@ -271,9 +285,16 @@ post {
                     ''',
                     returnStdout: true
                 )
-                if (releaseSha != '') {
-                    echo releaseSha
-                    githubNotify credentialsId: 'github-credentials', description: 'This build of this commit was aborted', sha: releaseSha, status: 'ERROR'
+                if (sha != '') {
+                    echo sha
+                    step([
+                        $class: "GitHubCommitStatusSetter",
+                        reposSource: [$class: "ManuallyEnteredRepositorySource", url: env.GIT_URL],
+                        contextSource: [$class: "ManuallyEnteredCommitContextSource", context: 'continuous-integration/jenkins/branch'],
+                        commitShaSource: [$class: "ManuallyEnteredShaSource", sha: sha],
+                        errorHandlers: [[$class: "ChangingBuildStatusErrorHandler", result: 'UNSTABLE']],
+                        statusResultSource: [ $class: "ConditionalStatusResultSource", results: [[$class: "AnyBuildResult", message: 'This build of this commit was aborted', state: 'FAILURE']] ]
+                    ])
                 }
             }
         }

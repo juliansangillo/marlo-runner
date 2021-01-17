@@ -12,7 +12,6 @@ pipeline {
         echo "Initialized on node: ${env.NODE_NAME}"
         dir(path: "${env.LOCAL_REPOSITORY}") {
           checkout scm
-          scmSkip(deleteBuild: true, skipPattern:'chore(release): .*')
           script {
             def datas = readYaml file: "${env.CONFIG_FILE}"
 
@@ -25,9 +24,6 @@ pipeline {
             list += p.name + ':' + p.ext
           }
           env.FILE_EXTENSIONS = list.join(' ')
-
-          env.CHANGELOG_FILE_NAME = datas.changelog.file_name
-          env.CHANGELOG_TITLE = datas.changelog.title
 
           env.MAPPING_PROD_BRANCH = datas.mapping.prod.branch
           env.MAPPING_PROD_PRERELEASE = datas.mapping.prod.prerelease
@@ -59,6 +55,11 @@ pipeline {
     }
     when {
       beforeAgent true
+      anyOf {
+        branch env.MAPPING_PROD_BRANCH;
+        branch env.MAPPING_TEST_BRANCH;
+        branch env.MAPPING_DEV_BRANCH
+      }
       expression {
         return env.PLATFORMS.replaceAll("\\s","") != ""
       }
@@ -67,7 +68,7 @@ pipeline {
     steps {
       dir(path: "${env.LOCAL_REPOSITORY}") {
         script {
-          semantic.init env.MAPPING_PROD_BRANCH, env.MAPPING_TEST_BRANCH, env.MAPPING_DEV_BRANCH, env.MAPPING_PROD_PRERELEASE, env.MAPPING_TEST_PRERELEASE, env.MAPPING_DEV_PRERELEASE, env.CHANGELOG_FILE_NAME, env.CHANGELOG_TITLE
+          semantic.init env.MAPPING_PROD_BRANCH, env.MAPPING_TEST_BRANCH, env.MAPPING_DEV_BRANCH, env.MAPPING_PROD_PRERELEASE, env.MAPPING_TEST_PRERELEASE, env.MAPPING_DEV_PRERELEASE
         }
 
         script {
@@ -91,6 +92,11 @@ pipeline {
   stage('Build') {
     when {
       beforeAgent true
+      anyOf {
+        branch env.MAPPING_PROD_BRANCH;
+        branch env.MAPPING_TEST_BRANCH;
+        branch env.MAPPING_DEV_BRANCH
+      }
       expression {
         return env.PLATFORMS.replaceAll("\\s","") != ""
       }
@@ -158,6 +164,11 @@ pipeline {
     }
     when {
       beforeAgent true
+      anyOf {
+        branch env.MAPPING_PROD_BRANCH;
+        branch env.MAPPING_TEST_BRANCH;
+        branch env.MAPPING_DEV_BRANCH
+      }
       expression {
         return env.PLATFORMS.replaceAll("\\s","") != ""
       }

@@ -14,9 +14,6 @@ file_extensions:
     ext: app
   - name: Android
     ext: apk
-changelog:
-  file_name: CHANGELOG.md
-  title: CHANGELOG
 mapping:
   prod:
     branch: master

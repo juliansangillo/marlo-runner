@@ -55,6 +55,11 @@ pipeline {
     }
     when {
       beforeAgent true
+      anyOf {
+        branch env.MAPPING_PROD_BRANCH;
+        branch env.MAPPING_TEST_BRANCH;
+        branch env.MAPPING_DEV_BRANCH
+      }
       expression {
         return env.PLATFORMS.replaceAll("\\s","") != ""
       }
@@ -87,6 +92,11 @@ pipeline {
   stage('Build') {
     when {
       beforeAgent true
+      anyOf {
+        branch env.MAPPING_PROD_BRANCH;
+        branch env.MAPPING_TEST_BRANCH;
+        branch env.MAPPING_DEV_BRANCH
+      }
       expression {
         return env.PLATFORMS.replaceAll("\\s","") != ""
       }
@@ -154,6 +164,11 @@ pipeline {
     }
     when {
       beforeAgent true
+      anyOf {
+        branch env.MAPPING_PROD_BRANCH;
+        branch env.MAPPING_TEST_BRANCH;
+        branch env.MAPPING_DEV_BRANCH
+      }
       expression {
         return env.PLATFORMS.replaceAll("\\s","") != ""
       }

@@ -26,9 +26,6 @@ pipeline {
           }
           env.FILE_EXTENSIONS = list.join(' ')
 
-          env.CHANGELOG_FILE_NAME = datas.changelog.file_name
-          env.CHANGELOG_TITLE = datas.changelog.title
-
           env.MAPPING_PROD_BRANCH = datas.mapping.prod.branch
           env.MAPPING_PROD_PRERELEASE = datas.mapping.prod.prerelease
           env.MAPPING_TEST_BRANCH = datas.mapping.test.branch
@@ -67,7 +64,7 @@ pipeline {
     steps {
       dir(path: "${env.LOCAL_REPOSITORY}") {
         script {
-          semantic.init env.MAPPING_PROD_BRANCH, env.MAPPING_TEST_BRANCH, env.MAPPING_DEV_BRANCH, env.MAPPING_PROD_PRERELEASE, env.MAPPING_TEST_PRERELEASE, env.MAPPING_DEV_PRERELEASE, env.CHANGELOG_FILE_NAME, env.CHANGELOG_TITLE
+          semantic.init env.MAPPING_PROD_BRANCH, env.MAPPING_TEST_BRANCH, env.MAPPING_DEV_BRANCH, env.MAPPING_PROD_PRERELEASE, env.MAPPING_TEST_PRERELEASE, env.MAPPING_DEV_PRERELEASE
         }
 
         script {
@@ -188,33 +185,6 @@ environment {
 }
 post {
   success {
-    node(env.AGENT_PREFIX) {
-        dir(path: "${env.LOCAL_REPOSITORY}") {
-            script {
-                def url = scm.getUserRemoteConfigs()[0].getUrl()
-                def sha = sh (
-                    script: '''
-                        git pull origin $BRANCH_NAME > /dev/null 2>&1;
-                        if git rev-list -n 1 v$VERSION | git show -s | grep "chore(release): " > /dev/null; then
-                            echo "$(git rev-list -n 1 v$VERSION)";
-                        fi
-                    ''',
-                    returnStdout: true
-                )
-                if (sha != '') {
-                    echo sha
-                    step([
-                        $class: "GitHubCommitStatusSetter",
-                        reposSource: [$class: "ManuallyEnteredRepositorySource", url: url],
-                        contextSource: [$class: "ManuallyEnteredCommitContextSource", context: 'continuous-integration/jenkins/branch'],
-                        commitShaSource: [$class: "ManuallyEnteredShaSource", sha: sha],
-                        errorHandlers: [[$class: "ChangingBuildStatusErrorHandler", result: 'UNSTABLE']],
-                        statusResultSource: [ $class: "ConditionalStatusResultSource", results: [[$class: "AnyBuildResult", message: 'This commit looks good', state: 'SUCCESS']] ]
-                    ])
-                }
-            }
-        }
-    }
     emailext(to: "${env.EMAIL_ADDRESS}", subject: "${env.JOB_NAME} - Build #${env.BUILD_NUMBER} - SUCCESS!", body: """
                                                                 <html>
                                                                   <header></header>
@@ -232,33 +202,6 @@ post {
   }
 
   failure {
-    node(env.AGENT_PREFIX) {
-        dir(path: "${env.LOCAL_REPOSITORY}") {
-            script {
-                def url = scm.getUserRemoteConfigs()[0].getUrl()
-                def sha = sh (
-                    script: '''
-                        git pull origin $BRANCH_NAME > /dev/null 2>&1;
-                        if git rev-list -n 1 v$VERSION | git show -s | grep "chore(release): " > /dev/null; then
-                            echo "$(git rev-list -n 1 v$VERSION)";
-                        fi
-                    ''',
-                    returnStdout: true
-                )
-                if (sha != '') {
-                    echo sha
-                    step([
-                        $class: "GitHubCommitStatusSetter",
-                        reposSource: [$class: "ManuallyEnteredRepositorySource", url: url],
-                        contextSource: [$class: "ManuallyEnteredCommitContextSource", context: 'continuous-integration/jenkins/branch'],
-                        commitShaSource: [$class: "ManuallyEnteredShaSource", sha: sha],
-                        errorHandlers: [[$class: "ChangingBuildStatusErrorHandler", result: 'UNSTABLE']],
-                        statusResultSource: [ $class: "ConditionalStatusResultSource", results: [[$class: "AnyBuildResult", message: 'This commit cannot be built', state: 'ERROR']] ]
-                    ])
-                }
-            }
-        }
-    }
     emailext(to: "${env.EMAIL_ADDRESS}", subject: "${env.JOB_NAME} - Build #${env.BUILD_NUMBER} - FAILED!", body: """
                                                                 <html>
                                                                   <header></header>
@@ -276,33 +219,6 @@ post {
   }
 
   aborted {
-    node(env.AGENT_PREFIX) {
-        dir(path: "${env.LOCAL_REPOSITORY}") {
-            script {
-                def url = scm.getUserRemoteConfigs()[0].getUrl()
-                def sha = sh (
-                    script: '''
-                        git pull origin $BRANCH_NAME > /dev/null 2>&1;
-                        if git rev-list -n 1 v$VERSION | git show -s | grep "chore(release): " > /dev/null; then
-                            echo "$(git rev-list -n 1 v$VERSION)";
-                        fi
-                    ''',
-                    returnStdout: true
-                )
-                if (sha != '') {
-                    echo sha
-                    step([
-                        $class: "GitHubCommitStatusSetter",
-                        reposSource: [$class: "ManuallyEnteredRepositorySource", url: url],
-                        contextSource: [$class: "ManuallyEnteredCommitContextSource", context: 'continuous-integration/jenkins/branch'],
-                        commitShaSource: [$class: "ManuallyEnteredShaSource", sha: sha],
-                        errorHandlers: [[$class: "ChangingBuildStatusErrorHandler", result: 'UNSTABLE']],
-                        statusResultSource: [ $class: "ConditionalStatusResultSource", results: [[$class: "AnyBuildResult", message: 'This build of this commit was aborted', state: 'ERROR']] ]
-                    ])
-                }
-            }
-        }
-    }
     emailext(to: "${env.EMAIL_ADDRESS}", subject: "${env.JOB_NAME} - Build #${env.BUILD_NUMBER} - ABORTED!", body: """
                                                                 <html>
                                                                   <header></header>

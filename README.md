@@ -1,12 +1,9 @@
-![GitHub release (latest by date)](https://img.shields.io/github/v/release/juliansangillo/unity3d-game-template?label=stable&style=plastic)
-![GitHub Workflow Status (branch)](https://img.shields.io/github/workflow/status/juliansangillo/unity3d-game-template/Unity3D/master?style=plastic)
-![GitHub Workflow Status (branch)](https://img.shields.io/github/workflow/status/juliansangillo/unity3d-game-template/Unity3D/beta?label=beta&style=plastic)
-![GitHub Workflow Status (branch)](https://img.shields.io/github/workflow/status/juliansangillo/unity3d-game-template/Unity3D/alpha?label=alpha&style=plastic)
-![GitHub issues](https://img.shields.io/github/issues/juliansangillo/unity3d-game-template?style=plastic)
-![GitHub last commit](https://img.shields.io/github/last-commit/juliansangillo/unity3d-game-template?style=plastic)
-![GitHub Releases](https://img.shields.io/github/downloads/juliansangillo/unity3d-game-template/latest/total?style=plastic)
-![GitHub All Releases](https://img.shields.io/github/downloads/juliansangillo/unity3d-game-template/total?style=plastic)
-![GitHub](https://img.shields.io/github/license/juliansangillo/unity3d-game-template?color=blue&style=plastic)
+![GitHub release (latest by date)](https://img.shields.io/github/v/release/juliansangillo/marlo-runner?label=stable)  
+![Combined Checks (master branch)](https://badgen.net/github/status/juliansangillo/marlo-runner?label=build)  
+![GitHub issues](https://img.shields.io/github/issues/juliansangillo/marlo-runner)  
+![GitHub last commit](https://img.shields.io/github/last-commit/juliansangillo/marlo-runner)  
+![GitHub All Releases](https://img.shields.io/github/downloads/juliansangillo/marlo-runner/total)  
+![GitHub License](https://img.shields.io/github/license/juliansangillo/marlo-runner?color=blue)
 
 # Marlo Runner
 Super MARLO Runner clone made in Unity3D
